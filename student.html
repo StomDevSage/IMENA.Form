@@ -6,153 +6,32 @@
     <title>Student Dashboard - IMENA</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f5f5f5;
-        }
-        
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        
-        .join-card {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .join-card h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .join-input-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .join-input-group input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        
-        .result-card {
-            background: white;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-        
-        .result-card:hover {
-            transform: translateX(5px);
-        }
-        
-        .score-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        .score-high {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .score-medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .score-low {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5a67d8;
-        }
-        
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            padding: 8px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1000;
-            overflow: auto;
-        }
-        
-        .modal-content {
-            background: white;
-            margin: 50px auto;
-            padding: 30px;
-            max-width: 600px;
-            border-radius: 20px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .join-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .join-card h3 { margin-bottom: 15px; color: #333; }
+        .join-input-group { display: flex; gap: 10px; margin-top: 10px; }
+        .join-input-group input { flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; }
+        .result-card { background: white; padding: 20px; margin: 15px 0; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .result-card:hover { transform: translateX(5px); }
+        .score-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 10px 0; }
+        .score-high { background: #d4edda; color: #155724; }
+        .score-medium { background: #fff3cd; color: #856404; }
+        .score-low { background: #f8d7da; color: #721c24; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5a67d8; }
+        .logout-btn { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 8px; cursor: pointer; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow: auto; }
+        .modal-content { background: white; margin: 50px auto; padding: 30px; max-width: 600px; border-radius: 20px; }
+        .loading { text-align: center; padding: 40px; color: #666; }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <div>
-            <span style="font-size: 24px; font-weight: bold;">🇷🇼 IMENA Quiz</span>
-        </div>
+        <div style="font-size: 24px; font-weight: bold;">🇷🇼 IMENA Quiz</div>
         <div style="display: flex; align-items: center; gap: 20px;">
             <span>👨‍🎓 <span id="studentName">Student</span></span>
             <div class="logout-btn" onclick="logout()">🚪 Logout</div>
@@ -162,7 +41,7 @@
     <div class="container">
         <div class="join-card">
             <h3>📝 Take a Quiz / Kora Ikizamini</h3>
-            <p>Paste the link or code your teacher gave you:</p>
+            <p>Paste the link your teacher gave you:</p>
             <div class="join-input-group">
                 <input type="text" id="quizLink" placeholder="Paste quiz link here...">
                 <button class="btn btn-primary" onclick="joinQuiz()">Start Quiz →</button>
@@ -170,12 +49,9 @@
         </div>
         
         <h3>📊 My Previous Results / Ibisubizo Byanjye</h3>
-        <div id="resultsList">
-            <div class="loading">Loading your results...</div>
-        </div>
+        <div id="resultsList"><div class="loading">Loading your results...</div></div>
     </div>
     
-    <!-- Details Modal -->
     <div id="detailsModal" class="modal">
         <div class="modal-content">
             <h2>📋 Detailed Results</h2>
@@ -184,101 +60,56 @@
         </div>
     </div>
 
-    <script src="supabase-config.js"></script>
     <script>
+        const SUPABASE_URL = 'https://yakusekcvidtvgcbbeap.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_s0CWHnbcqVTVHScSM4dMGQ_GYliBfEu';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
         let currentStudentId = null;
         let currentStudentName = '';
         
         async function checkAuth() {
             const { data: { session } } = await supabase.auth.getSession();
-            
-            if (!session) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
+            if (!session) { window.location.href = 'index.html'; return; }
             currentStudentId = session.user.id;
             
-            // Get student profile
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('name')
-                .eq('id', currentStudentId)
-                .single();
-            
-            if (profile) {
-                currentStudentName = profile.name;
-                document.getElementById('studentName').innerText = profile.name.split(' ')[0];
-            }
-            
+            const { data: profile } = await supabase.from('profiles').select('name').eq('id', currentStudentId).single();
+            if (profile) { currentStudentName = profile.name; document.getElementById('studentName').innerText = profile.name.split(' ')[0]; }
             await loadMyResults();
         }
         
         function joinQuiz() {
             const link = document.getElementById('quizLink').value;
-            
-            // Extract quiz ID from URL
             let quizId = null;
-            if (link.includes('quizId=')) {
-                quizId = link.split('quizId=')[1].split('&')[0];
-            } else if (link.length === 36) { // UUID format
-                quizId = link;
-            } else {
-                alert('Invalid quiz link. Please ask your teacher for the correct link.');
-                return;
-            }
-            
+            if (link.includes('quizId=')) quizId = link.split('quizId=')[1].split('&')[0];
+            else if (link.length === 36) quizId = link;
+            else { alert('Invalid quiz link. Please ask your teacher for the correct link.'); return; }
             window.location.href = `take-quiz.html?quizId=${quizId}`;
         }
         
         async function loadMyResults() {
-            const { data: attempts, error } = await supabase
-                .from('attempts')
-                .select('*')
-                .eq('student_id', currentStudentId)
-                .order('submitted_at', { ascending: false });
-            
+            const { data: attempts } = await supabase.from('attempts').select('*').eq('student_id', currentStudentId).order('submitted_at', { ascending: false });
             const container = document.getElementById('resultsList');
             
-            if (error || !attempts || attempts.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; background: white; border-radius: 15px;">
-                        <p>📝 You haven't taken any quizzes yet.</p>
-                        <p style="color: #666; margin-top: 10px;">Ask your teacher for a quiz link to get started!</p>
-                        <p style="color: #999; margin-top: 5px;">Nta kizamini wigeze ukora. Saba mwarimu wawe akuguhe umurongo!</p>
-                    </div>
-                `;
+            if (!attempts || attempts.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; background:white; border-radius:15px;"><p>📝 You haven\'t taken any quizzes yet.</p><p style="color:#666; margin-top:10px;">Ask your teacher for a quiz link to get started!</p></div>';
                 return;
             }
             
             let html = '';
             for (let attempt of attempts) {
-                // Get quiz title
-                const { data: quiz } = await supabase
-                    .from('quizzes')
-                    .select('title')
-                    .eq('id', attempt.quiz_id)
-                    .single();
-                
+                const { data: quiz } = await supabase.from('quizzes').select('title').eq('id', attempt.quiz_id).single();
                 const quizTitle = quiz ? quiz.title : 'Unknown Quiz';
                 const date = new Date(attempt.submitted_at).toLocaleString('en-RW');
-                
-                let scoreClass = '';
-                if (attempt.percentage >= 70) scoreClass = 'score-high';
-                else if (attempt.percentage >= 50) scoreClass = 'score-medium';
-                else scoreClass = 'score-low';
+                let scoreClass = attempt.percentage >= 70 ? 'score-high' : (attempt.percentage >= 50 ? 'score-medium' : 'score-low');
                 
                 html += `
                     <div class="result-card">
                         <h3>${escapeHtml(quizTitle)}</h3>
-                        <div class="score-badge ${scoreClass}">
-                            ${attempt.percentage}% - ${attempt.total_score}/${attempt.total_possible} points
-                        </div>
+                        <div class="score-badge ${scoreClass}">${attempt.percentage}% - ${attempt.total_score}/${attempt.total_possible} points</div>
                         <p style="margin: 10px 0; color: #666;">📅 ${date}</p>
                         <p style="color: #666;">⏱️ Time spent: ${Math.floor(attempt.time_spent_seconds/60)}m ${attempt.time_spent_seconds%60}s</p>
-                        <button class="btn btn-primary" onclick="viewDetails('${attempt.id}', '${attempt.quiz_id}')">
-                            View Details
-                        </button>
+                        <button class="btn btn-primary" onclick="viewDetails('${attempt.id}', '${attempt.quiz_id}')">View Details</button>
                     </div>
                 `;
             }
@@ -286,63 +117,32 @@
         }
         
         async function viewDetails(attemptId, quizId) {
-            // Get attempt details
-            const { data: attempt } = await supabase
-                .from('attempts')
-                .select('*')
-                .eq('id', attemptId)
-                .single();
+            const { data: attempt } = await supabase.from('attempts').select('*').eq('id', attemptId).single();
+            const { data: quiz } = await supabase.from('quizzes').select('*').eq('id', quizId).single();
             
-            // Get quiz with questions
-            const { data: quiz } = await supabase
-                .from('quizzes')
-                .select('*')
-                .eq('id', quizId)
-                .single();
-            
-            if (!attempt || !quiz) {
-                alert('Could not load details');
-                return;
-            }
+            if (!attempt || !quiz) { alert('Could not load details'); return; }
             
             let html = '<div style="max-height: 500px; overflow-y: auto;">';
-            
             attempt.answers.forEach((answer, index) => {
                 const question = quiz.questions.find(q => q.id === answer.questionId);
                 if (question) {
                     const isCorrect = answer.selectedAnswer === question.options[question.correctAnswer];
-                    html += `
-                        <div style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 10px; background: ${isCorrect ? '#e8f5e9' : '#ffebee'}">
-                            <p><strong>Q${index + 1}:</strong> ${escapeHtml(question.text)}</p>
-                            <p><strong>Your answer / Igisubizo cyawe:</strong> ${escapeHtml(answer.selectedAnswer)}</p>
-                            <p><strong>Correct answer / Igisubizo nyacyo:</strong> ${escapeHtml(question.options[question.correctAnswer])}</p>
-                            <p><strong>Points earned / Amanota:</strong> ${answer.pointsEarned}/${question.points}</p>
-                        </div>
-                    `;
+                    html += `<div style="border:1px solid #ddd; padding:15px; margin:10px 0; border-radius:10px; background:${isCorrect ? '#e8f5e9' : '#ffebee'}">
+                        <p><strong>Q${index+1}:</strong> ${escapeHtml(question.text)}</p>
+                        <p><strong>Your answer:</strong> ${escapeHtml(answer.selectedAnswer)}</p>
+                        <p><strong>Correct answer:</strong> ${escapeHtml(question.options[question.correctAnswer])}</p>
+                        <p><strong>Points earned:</strong> ${answer.pointsEarned}/${question.points}</p>
+                    </div>`;
                 }
             });
-            
             html += '</div>';
             document.getElementById('detailsContent').innerHTML = html;
             document.getElementById('detailsModal').style.display = 'block';
         }
         
-        function closeModal() {
-            document.getElementById('detailsModal').style.display = 'none';
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        async function logout() {
-            await supabase.auth.signOut();
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-        
+        function closeModal() { document.getElementById('detailsModal').style.display = 'none'; }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        async function logout() { await supabase.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; }
         checkAuth();
     </script>
 </body>
