@@ -4,117 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Quiz - IMENA</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
         .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; }
         .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .form-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .form-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; }
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 500; color: #333; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; }
         input, textarea, select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; }
-        input:focus, textarea:focus { outline: none; border-color: #667eea; }
         .question-card { background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 15px; border-left: 4px solid #667eea; }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
         .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5a67d8; }
         .btn-success { background: #4CAF50; color: white; font-size: 18px; padding: 15px; width: 100%; }
         .btn-danger { background: #dc3545; color: white; }
-        .back-link { display: inline-block; margin-bottom: 20px; color: #667eea; text-decoration: none; font-weight: 500; }
-        .back-link:hover { text-decoration: underline; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #667eea; text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="navbar"><h2>📝 Create New Quiz / Kora Ikizamini</h2></div>
+    <div class="navbar"><h2>📝 Create New Quiz</h2></div>
     <div class="container">
         <a href="teacher.html" class="back-link">← Back to Dashboard</a>
         
         <div class="form-card">
-            <h3>Quiz Details / Amakuru y'ikizamini</h3>
-            <div class="form-group"><label>📌 Quiz Title / Izina ry'ikizamini</label><input type="text" id="quizTitle" placeholder="e.g., Mathematics Exam Term 1"></div>
-            <div class="form-group"><label>📝 Description / Ibisobanuro (Optional)</label><textarea id="quizDesc" rows="3" placeholder="Describe what this quiz covers..."></textarea></div>
-            <div class="form-group"><label>⏱️ Duration (minutes) / Igihe (iminota)</label><input type="number" id="duration" placeholder="30" min="1"></div>
+            <h3>Quiz Details</h3>
+            <div class="form-group"><label>📌 Quiz Title</label><input type="text" id="quizTitle" placeholder="e.g., Mathematics Exam"></div>
+            <div class="form-group"><label>📝 Description</label><textarea id="quizDesc" rows="3"></textarea></div>
+            <div class="form-group"><label>⏱️ Duration (minutes)</label><input type="number" id="duration" placeholder="30" min="1"></div>
         </div>
         
         <div class="form-card">
-            <h3>Questions / Ibibazo</h3>
+            <h3>Questions</h3>
             <div id="questionsContainer"></div>
             <button class="btn btn-primary" onclick="addQuestion()">+ Add Question</button>
         </div>
         
-        <button class="btn-success" onclick="saveQuiz()">💾 Save Quiz / Bika Ikizamini</button>
+        <button class="btn-success" onclick="saveQuiz()">💾 Save Quiz</button>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://yakusekcvidtvgcbbeap.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_s0CWHnbcqVTVHScSM4dMGQ_GYliBfEu';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
         let questions = [];
-        let questionCounter = 0;
+        let qCounter = 0;
         
         function addQuestion() {
-            questions.push({ id: questionCounter++, text: '', options: ['', '', '', ''], correctAnswer: 0, points: 5 });
+            questions.push({ id: qCounter++, text: '', options: ['', '', '', ''], correct: 0, points: 5 });
             renderQuestions();
         }
         
         function renderQuestions() {
             const container = document.getElementById('questionsContainer');
             let html = '';
-            questions.forEach((q, index) => {
-                html += `<div class="question-card"><h4>Question ${index + 1}</h4>
-                    <div class="form-group"><input type="text" placeholder="Question text / Ikibazo" onchange="updateQuestion(${index}, 'text', this.value)" value="${escapeHtml(q.text)}"></div>
-                    <p><strong>Options / Amahitamo:</strong></p>
-                    ${['A', 'B', 'C', 'D'].map((letter, optIndex) => `<div style="margin:10px 0;"><span style="display:inline-block; width:30px; font-weight:bold;">${letter}:</span>
-                    <input type="text" placeholder="Option ${letter}" style="width:90%" onchange="updateQuestion(${index}, 'options', ${optIndex}, this.value)" value="${escapeHtml(q.options[optIndex] || '')}"></div>`).join('')}
-                    <div class="form-group"><label>Correct Answer / Igisubizo Nyacyo</label><select onchange="updateQuestion(${index}, 'correctAnswer', parseInt(this.value))">
-                    <option value="0" ${q.correctAnswer === 0 ? 'selected' : ''}>A</option><option value="1" ${q.correctAnswer === 1 ? 'selected' : ''}>B</option>
-                    <option value="2" ${q.correctAnswer === 2 ? 'selected' : ''}>C</option><option value="3" ${q.correctAnswer === 3 ? 'selected' : ''}>D</option></select></div>
-                    <div class="form-group"><label>Points / Amanota</label><input type="number" value="${q.points}" onchange="updateQuestion(${index}, 'points', parseInt(this.value))"></div>
-                    <button class="btn btn-danger" onclick="removeQuestion(${index})">Remove Question</button></div>`;
+            questions.forEach((q, idx) => {
+                html += `<div class="question-card"><h4>Question ${idx+1}</h4>
+                    <input type="text" placeholder="Question text" style="width:100%; margin-bottom:10px;" onchange="updateQ(${idx}, 'text', this.value)" value="${escapeHtml(q.text)}">
+                    <p>Options:</p>`;
+                ['A', 'B', 'C', 'D'].forEach((letter, optIdx) => {
+                    html += `<input type="text" placeholder="Option ${letter}" style="width:100%; margin:5px 0;" onchange="updateQ(${idx}, 'opt', ${optIdx}, this.value)" value="${escapeHtml(q.options[optIdx])}">`;
+                });
+                html += `<select onchange="updateQ(${idx}, 'correct', parseInt(this.value))" style="width:100%; margin:10px 0;">
+                    <option value="0" ${q.correct===0?'selected':''}>Correct: A</option>
+                    <option value="1" ${q.correct===1?'selected':''}>Correct: B</option>
+                    <option value="2" ${q.correct===2?'selected':''}>Correct: C</option>
+                    <option value="3" ${q.correct===3?'selected':''}>Correct: D</option>
+                </select>
+                <input type="number" placeholder="Points" style="width:100%; margin:10px 0;" onchange="updateQ(${idx}, 'points', parseInt(this.value))" value="${q.points}">
+                <button class="btn btn-danger" onclick="removeQ(${idx})">Remove</button></div>`;
             });
             container.innerHTML = html;
         }
         
-        function updateQuestion(index, field, subIndex, value) {
-            if (field === 'options') questions[index].options[subIndex] = value;
-            else questions[index][field] = value;
+        function updateQ(idx, field, sub, val) {
+            if (field === 'opt') questions[idx].options[sub] = val;
+            else if (field === 'text') questions[idx].text = val;
+            else if (field === 'correct') questions[idx].correct = val;
+            else if (field === 'points') questions[idx].points = val;
         }
         
-        function removeQuestion(index) { questions.splice(index, 1); renderQuestions(); }
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        function removeQ(idx) { questions.splice(idx, 1); renderQuestions(); }
+        function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
         
-        async function saveQuiz() {
+        function saveQuiz() {
             const title = document.getElementById('quizTitle').value;
-            const description = document.getElementById('quizDesc').value;
-            const durationMinutes = parseInt(document.getElementById('duration').value);
+            const desc = document.getElementById('quizDesc').value;
+            const duration = parseInt(document.getElementById('duration').value);
             
-            if (!title) { alert('Please enter quiz title!'); return; }
-            if (!durationMinutes || durationMinutes < 1) { alert('Please enter valid duration (minutes)!'); return; }
-            if (questions.length === 0) { alert('Please add at least one question!'); return; }
+            if (!title) { alert('Enter quiz title!'); return; }
+            if (!duration) { alert('Enter duration!'); return; }
+            if (questions.length === 0) { alert('Add at least one question!'); return; }
             
-            for (let q of questions) {
-                if (!q.text) { alert('Please fill all question texts!'); return; }
-                for (let opt of q.options) { if (!opt) { alert('Please fill all options for each question!'); return; } }
-            }
-            
-            const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { alert('Please login first!'); window.location.href = 'index.html'; return; }
-            
-            const { error } = await supabase.from('quizzes').insert([{
-                title, description, duration_minutes: durationMinutes, teacher_id: session.user.id,
-                total_points: totalPoints, questions, is_active: true, created_at: new Date()
-            }]);
-            
-            if (error) alert('Error: ' + error.message);
-            else { alert('✅ Quiz created successfully! / Ikizamini cyakozwe neza!'); window.location.href = 'teacher.html'; }
+            const quizzes = JSON.parse(localStorage.getItem('quizzes') || '[]');
+            const newQuiz = {
+                id: Date.now().toString(),
+                title, description: desc, durationMinutes: duration,
+                questions: questions,
+                totalPoints: questions.reduce((s, q) => s + q.points, 0),
+                createdAt: new Date().toISOString()
+            };
+            quizzes.push(newQuiz);
+            localStorage.setItem('quizzes', JSON.stringify(quizzes));
+            alert('✅ Quiz created!');
+            window.location.href = 'teacher.html';
         }
         
         addQuestion();
-        async function checkAuth() { const { data: { session } } = await supabase.auth.getSession(); if (!session) window.location.href = 'index.html'; }
-        checkAuth();
     </script>
 </body>
 </html>

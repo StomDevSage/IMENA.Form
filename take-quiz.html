@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Quiz - IMENA</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
@@ -16,8 +15,8 @@
         .option { display: block; padding: 12px 15px; margin: 10px 0; background: #f0f0f0; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
         .option:hover { background: #e0e0e0; }
         .option.selected { background: #667eea; color: white; }
-        .submit-btn { background: #4CAF50; color: white; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 20px; }
-        .submit-btn:hover { background: #45a049; }
+        .submit-btn { background: #4CAF50; color: white; padding: 15px 30px; font-size: 18px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 20px; transition: transform 0.2s; }
+        .submit-btn:hover { transform: translateY(-2px); background: #45a049; }
         .loading { text-align: center; padding: 60px; font-size: 18px; color: #666; }
         .warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
     </style>
@@ -27,44 +26,55 @@
     <div class="container" id="quizContainer"><div class="loading">Loading quiz...</div></div>
 
     <script>
-        const SUPABASE_URL = 'https://yakusekcvidtvgcbbeap.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_s0CWHnbcqVTVHScSM4dMGQ_GYliBfEu';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Get data from sessionStorage
+        const quizId = sessionStorage.getItem('currentQuizId');
+        const studentName = sessionStorage.getItem('currentStudentName') || 'Student';
         
-        let quizData = null, userAnswers = {}, timerInterval = null, timeLeft = 0, studentId = null, studentName = '';
-        const urlParams = new URLSearchParams(window.location.search);
-        const quizId = urlParams.get('quizId');
-        
-        if (!quizId) { alert('No quiz ID provided.'); window.location.href = 'student.html'; }
-        
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { window.location.href = 'index.html'; return; }
-            studentId = session.user.id;
-            const { data: profile } = await supabase.from('profiles').select('name').eq('id', studentId).single();
-            if (profile) studentName = profile.name;
-            
-            const { data: existing } = await supabase.from('attempts').select('id').eq('student_id', studentId).eq('quiz_id', quizId);
-            if (existing && existing.length > 0) { alert('You have already taken this quiz!'); window.location.href = 'student.html'; return; }
-            await loadQuiz();
+        if (!quizId) {
+            alert('No quiz selected! Please get a quiz link from your teacher.');
+            window.location.href = 'student.html';
         }
         
-        async function loadQuiz() {
-            const { data: quiz } = await supabase.from('quizzes').select('*').eq('id', quizId).single();
-            if (!quiz) { alert('Quiz not found!'); window.location.href = 'student.html'; return; }
-            quizData = quiz;
-            timeLeft = quiz.duration_minutes * 60;
-            startTimer();
-            displayQuiz();
+        let quizData = null;
+        let userAnswers = {};
+        let timerInterval = null;
+        let timeLeft = 0;
+        
+        // Load quiz from localStorage
+        const quizzes = JSON.parse(localStorage.getItem('quizzes') || '[]');
+        quizData = quizzes.find(q => q.id === quizId);
+        
+        if (!quizData) {
+            alert('Quiz not found! The quiz may have been deleted.');
+            window.location.href = 'student.html';
         }
+        
+        // Check if student already took this quiz
+        const attempts = JSON.parse(localStorage.getItem('attempts') || '[]');
+        const existingAttempt = attempts.find(a => a.quizId === quizId && a.studentName === studentName);
+        
+        if (existingAttempt) {
+            alert('You have already taken this quiz! / Wakoresha iki kizamini kare!');
+            window.location.href = 'student.html';
+        }
+        
+        // Start the quiz
+        timeLeft = quizData.durationMinutes * 60;
+        startTimer();
+        displayQuiz();
         
         function startTimer() {
             const timerElement = document.getElementById('timer');
             timerInterval = setInterval(() => {
-                if (timeLeft <= 0) { clearInterval(timerInterval); submitQuiz(); }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+                
                 const minutes = Math.floor(timeLeft / 60);
                 const seconds = timeLeft % 60;
                 timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
                 if (timeLeft === 60) {
                     const warning = document.createElement('div');
                     warning.className = 'warning';
@@ -72,57 +82,139 @@
                     document.getElementById('quizContainer').insertBefore(warning, document.getElementById('quizContainer').firstChild);
                     setTimeout(() => warning.remove(), 5000);
                 }
+                
                 timeLeft--;
             }, 1000);
         }
         
         function displayQuiz() {
             const container = document.getElementById('quizContainer');
-            let html = `<div class="quiz-header"><h1>${escapeHtml(quizData.title)}</h1><p>${escapeHtml(quizData.description || '')}</p><p><strong>Total Points:</strong> ${quizData.total_points} | <strong>Questions:</strong> ${quizData.questions.length}</p></div>`;
+            
+            let html = `
+                <div class="quiz-header">
+                    <h1>${escapeHtml(quizData.title)}</h1>
+                    <p>${escapeHtml(quizData.description || '')}</p>
+                    <p><strong>Student:</strong> ${escapeHtml(studentName)}</p>
+                    <p><strong>Total Points:</strong> ${quizData.totalPoints} | <strong>Questions:</strong> ${quizData.questions.length}</p>
+                </div>
+            `;
+            
             quizData.questions.forEach((question, index) => {
-                html += `<div class="question-card" data-qid="${question.id}"><div class="question-text">${index+1}. ${escapeHtml(question.text)} <span style="float:right; color:#666;">${question.points} pts</span></div>
-                    <div class="options">${question.options.map((opt, optIndex) => `<div class="option" onclick="selectOption('${question.id}', '${escapeHtml(opt)}', this)">${String.fromCharCode(65+optIndex)}. ${escapeHtml(opt)}</div>`).join('')}</div></div>`;
+                html += `
+                    <div class="question-card" data-qid="${question.id}">
+                        <div class="question-text">
+                            ${index + 1}. ${escapeHtml(question.text)}
+                            <span style="float: right; color: #666;">${question.points} pts</span>
+                        </div>
+                        <div class="options">
+                            ${question.options.map((opt, optIndex) => `
+                                <div class="option" onclick="selectOption('${question.id}', '${escapeHtml(opt)}', this)">
+                                    ${String.fromCharCode(65 + optIndex)}. ${escapeHtml(opt)}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
             });
+            
             html += `<button class="submit-btn" onclick="submitQuiz()">📝 Submit Quiz / Tanga Ibisubizo</button>`;
             container.innerHTML = html;
         }
         
         function selectOption(questionId, answer, element) {
             const parentCard = element.closest('.question-card');
-            parentCard.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            parentCard.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
             element.classList.add('selected');
             userAnswers[questionId] = answer;
         }
         
-        async function submitQuiz() {
+        function submitQuiz() {
             const totalQuestions = quizData.questions.length;
             const answeredCount = Object.keys(userAnswers).length;
-            if (answeredCount < totalQuestions && !confirm(`You have answered ${answeredCount} out of ${totalQuestions} questions. Submit anyway?`)) return;
+            
+            if (answeredCount < totalQuestions) {
+                const confirmSubmit = confirm(`You have answered ${answeredCount} out of ${totalQuestions} questions. Submit anyway?`);
+                if (!confirmSubmit) return;
+            }
             
             clearInterval(timerInterval);
+            
+            // Calculate score
             let totalScore = 0;
             const answersArray = [];
+            
             for (let question of quizData.questions) {
                 const userAnswer = userAnswers[question.id] || '';
-                const isCorrect = userAnswer === question.options[question.correctAnswer];
+                const isCorrect = userAnswer === question.options[question.correct];
                 const pointsEarned = isCorrect ? question.points : 0;
                 totalScore += pointsEarned;
-                answersArray.push({ questionId: question.id, selectedAnswer: userAnswer, isCorrect, pointsEarned });
+                
+                answersArray.push({
+                    questionId: question.id,
+                    questionText: question.text,
+                    selectedAnswer: userAnswer,
+                    isCorrect: isCorrect,
+                    pointsEarned: pointsEarned
+                });
             }
-            const percentage = Math.round((totalScore / quizData.total_points) * 100);
-            const timeSpent = (quizData.duration_minutes * 60) - timeLeft;
             
-            const { error } = await supabase.from('attempts').insert([{
-                quiz_id: quizId, student_id: studentId, student_name: studentName, answers: answersArray,
-                total_score: totalScore, total_possible: quizData.total_points, percentage, time_spent_seconds: timeSpent, submitted_at: new Date()
-            }]);
+            const percentage = Math.round((totalScore / quizData.totalPoints) * 100);
+            const timeSpent = (quizData.durationMinutes * 60) - timeLeft;
             
-            if (error) alert('Error: ' + error.message);
-            else document.getElementById('quizContainer').innerHTML = `<div class="quiz-header" style="text-align:center;"><h1>✅ Quiz Submitted!</h1><div style="font-size:48px; margin:20px;">${percentage}%</div><p><strong>Your Score:</strong> ${totalScore}/${quizData.total_points}</p><button onclick="window.location.href='student.html'" class="submit-btn" style="background:#667eea;">View All Results →</button></div>`;
+            // Save to localStorage
+            const attempts = JSON.parse(localStorage.getItem('attempts') || '[]');
+            const newAttempt = {
+                id: Date.now().toString(),
+                quizId: quizData.id,
+                quizTitle: quizData.title,
+                studentName: studentName,
+                score: totalScore,
+                totalPoints: quizData.totalPoints,
+                percentage: percentage,
+                answers: answersArray,
+                timeSpentSeconds: timeSpent,
+                submittedAt: new Date().toISOString()
+            };
+            
+            attempts.push(newAttempt);
+            localStorage.setItem('attempts', JSON.stringify(attempts));
+            
+            // Clear session storage
+            sessionStorage.removeItem('currentQuizId');
+            sessionStorage.removeItem('currentStudentName');
+            
+            // Show results
+            showResults(totalScore, quizData.totalPoints, percentage);
         }
         
-        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        checkAuth();
+        function showResults(score, total, percentage) {
+            let scoreMessage = '';
+            if (percentage >= 80) scoreMessage = '🏆 Excellent! Urukiko rwiza!';
+            else if (percentage >= 60) scoreMessage = '👍 Good job! Ukoze neza!';
+            else if (percentage >= 40) scoreMessage = '📚 Keep practicing! Komeza wiga!';
+            else scoreMessage = '💪 Try again! Gerageza ubundi!';
+            
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="quiz-header" style="text-align: center;">
+                    <h1>✅ Quiz Submitted!</h1>
+                    <div style="font-size: 64px; margin: 20px; font-weight: bold; color: ${percentage >= 60 ? '#4CAF50' : '#ff9800'}">${percentage}%</div>
+                    <p><strong>Your Score:</strong> ${score}/${total}</p>
+                    <p style="margin: 10px 0;">${scoreMessage}</p>
+                    <button onclick="window.location.href='student.html'" class="submit-btn" style="background: #667eea; margin-top: 20px;">
+                        View All Results →
+                    </button>
+                </div>
+            `;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
 </body>
 </html>

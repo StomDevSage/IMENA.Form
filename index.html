@@ -93,6 +93,11 @@
             transform: translateY(-2px);
         }
         
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .toggle {
             text-align: center;
             margin-top: 20px;
@@ -123,6 +128,12 @@
             background: #efe;
             color: #3c3;
             border: 1px solid #cfc;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
         }
     </style>
 </head>
@@ -178,7 +189,7 @@
                     <option value="student">👨‍🎓 Student</option>
                 </select>
             </div>
-            <button onclick="handleSignup()">📝 Create Account</button>
+            <button id="signupBtn" onclick="handleSignup()">📝 Create Account</button>
             <div class="toggle" onclick="showLogin()">← Back to Login</div>
         </div>
         
@@ -186,30 +197,32 @@
     </div>
 
     <script>
-        // Supabase configuration - YOUR ACTUAL KEYS
-        const SUPABASE_URL = 'https://yakusekcvidtvgcbbeap.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_s0CWHnbcqVTVHScSM4dMGQ_GYliBfEu';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Create supabase client
+        const _SUPABASE_URL = 'https://yakusekcvidtvgcbbeap.supabase.co';
+        const _SUPABASE_ANON_KEY = 'sb_publishable_s0CWHnbcqVTVHScSM4dMGQ_GYliBfEu';
+        const _supabase = supabase.createClient(_SUPABASE_URL, _SUPABASE_ANON_KEY);
         
         function showMessage(msg, type) {
             const msgDiv = document.getElementById('message');
-            msgDiv.innerHTML = `<div class="message ${type}">${msg}</div>`;
-            setTimeout(() => msgDiv.innerHTML = '', 5000);
+            msgDiv.innerHTML = '<div class="message ' + type + '">' + msg + '</div>';
+            setTimeout(function() {
+                msgDiv.innerHTML = '';
+            }, 5000);
         }
         
-        function showSignup() {
+        window.showSignup = function() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('signupForm').style.display = 'block';
             document.getElementById('message').innerHTML = '';
         }
         
-        function showLogin() {
+        window.showLogin = function() {
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('signupForm').style.display = 'none';
             document.getElementById('message').innerHTML = '';
         }
         
-        async function handleSignup() {
+        window.handleSignup = async function() {
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const password = document.getElementById('signupPassword').value;
@@ -226,16 +239,38 @@
                 return;
             }
             
+            // Disable button to prevent multiple clicks
+            const signupBtn = document.getElementById('signupBtn');
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating account...';
+            
             try {
-                const { data: authData, error: authError } = await supabase.auth.signUp({
+                // Step 1: Sign up with Supabase Auth
+                const { data: authData, error: authError } = await _supabase.auth.signUp({
                     email: email,
-                    password: password
+                    password: password,
+                    options: {
+                        data: {
+                            name: name,
+                            role: role
+                        }
+                    }
                 });
                 
-                if (authError) throw authError;
+                if (authError) {
+                    if (authError.message.includes('rate_limit')) {
+                        showMessage('Please wait a few minutes before trying again. Too many attempts.', 'error');
+                    } else {
+                        showMessage('Signup error: ' + authError.message, 'error');
+                    }
+                    signupBtn.disabled = false;
+                    signupBtn.textContent = '📝 Create Account';
+                    return;
+                }
                 
                 if (authData.user) {
-                    const { error: profileError } = await supabase
+                    // Step 2: Create profile in profiles table
+                    const { error: profileError } = await _supabase
                         .from('profiles')
                         .insert([{
                             id: authData.user.id,
@@ -244,20 +279,33 @@
                             school: school || null
                         }]);
                     
-                    if (profileError) throw profileError;
+                    if (profileError) {
+                        console.error('Profile error:', profileError);
+                        // Profile might already exist, continue anyway
+                    }
                     
-                    showMessage('✅ Account created successfully! Please login.', 'success');
-                    setTimeout(() => {
-                        showLogin();
+                    showMessage('✅ Account created successfully! Please check your email to confirm your account (if required), then login.', 'success');
+                    
+                    // Clear form
+                    document.getElementById('signupName').value = '';
+                    document.getElementById('signupEmail').value = '';
+                    document.getElementById('signupPassword').value = '';
+                    document.getElementById('signupSchool').value = '';
+                    
+                    setTimeout(function() {
+                        window.showLogin();
                         document.getElementById('loginEmail').value = email;
-                    }, 2000);
+                    }, 3000);
                 }
             } catch (error) {
                 showMessage('❌ Error: ' + error.message, 'error');
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.textContent = '📝 Create Account';
             }
         }
         
-        async function handleLogin() {
+        window.handleLogin = async function() {
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
             const selectedRole = document.getElementById('loginRole').value;
@@ -268,52 +316,80 @@
             }
             
             try {
-                const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                // Sign in
+                const { data: authData, error: authError } = await _supabase.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
                 
-                if (authError) throw authError;
+                if (authError) {
+                    if (authError.message.includes('Email not confirmed')) {
+                        showMessage('Please confirm your email address before logging in. Check your inbox!', 'info');
+                    } else {
+                        showMessage('Login failed: ' + authError.message, 'error');
+                    }
+                    return;
+                }
                 
-                const { data: profile, error: profileError } = await supabase
+                if (!authData.user) {
+                    showMessage('Login failed: User not found', 'error');
+                    return;
+                }
+                
+                // Get user profile
+                const { data: profile, error: profileError } = await _supabase
                     .from('profiles')
                     .select('*')
                     .eq('id', authData.user.id)
                     .single();
                 
-                if (profileError) throw profileError;
-                
-                if (profile.role !== selectedRole) {
-                    await supabase.auth.signOut();
-                    showMessage(`You registered as ${profile.role}. Please select correct role.`, 'error');
+                if (profileError) {
+                    showMessage('Error getting profile: ' + profileError.message, 'error');
                     return;
                 }
                 
+                // Check role matches
+                if (profile.role !== selectedRole) {
+                    await _supabase.auth.signOut();
+                    showMessage('You registered as ' + profile.role + '. Please select correct role.', 'error');
+                    return;
+                }
+                
+                // Store user info
                 localStorage.setItem('userId', authData.user.id);
                 localStorage.setItem('userName', profile.name);
                 localStorage.setItem('userRole', profile.role);
                 
                 showMessage('✅ Login successful! Redirecting...', 'success');
                 
-                setTimeout(() => {
-                    window.location.href = profile.role === 'teacher' ? 'teacher.html' : 'student.html';
+                setTimeout(function() {
+                    if (profile.role === 'teacher') {
+                        window.location.href = 'teacher.html';
+                    } else {
+                        window.location.href = 'student.html';
+                    }
                 }, 1000);
             } catch (error) {
                 showMessage('❌ Login failed: ' + error.message, 'error');
             }
         }
         
+        // Check if already logged in
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await _supabase.auth.getSession();
             if (session) {
-                const { data: profile } = await supabase
+                const { data: profile } = await _supabase
                     .from('profiles')
                     .select('role')
                     .eq('id', session.user.id)
                     .single();
                 
                 if (profile) {
-                    window.location.href = profile.role === 'teacher' ? 'teacher.html' : 'student.html';
+                    if (profile.role === 'teacher') {
+                        window.location.href = 'teacher.html';
+                    } else {
+                        window.location.href = 'student.html';
+                    }
                 }
             }
         }

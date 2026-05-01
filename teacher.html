@@ -4,175 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard - IMENA</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .stat-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .stat-number { font-size: 42px; font-weight: bold; color: #667eea; }
-        .create-btn { background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 30px; transition: transform 0.2s; }
-        .create-btn:hover { transform: translateY(-2px); background: #45a049; }
-        .quiz-card { background: white; padding: 25px; margin: 20px 0; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: all 0.3s; }
-        .quiz-card:hover { box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .create-btn { background: #4CAF50; color: white; padding: 15px 30px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 30px; }
+        .quiz-card { background: white; padding: 25px; margin: 20px 0; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .quiz-title { font-size: 22px; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin: 5px; transition: all 0.2s; }
+        .quiz-code { font-family: monospace; font-size: 16px; background: #f0f0f0; padding: 5px 10px; border-radius: 5px; display: inline-block; margin: 10px 0; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin: 5px; }
         .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5a67d8; }
         .btn-success { background: #4CAF50; color: white; }
-        .btn-success:hover { background: #45a049; }
-        .logout-btn { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
-        .logout-btn:hover { background: rgba(255,255,255,0.3); }
+        .btn-info { background: #17a2b8; color: white; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow: auto; }
-        .modal-content { background: white; margin: 50px auto; padding: 30px; max-width: 900px; border-radius: 20px; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-content { background: white; margin: 50px auto; padding: 30px; max-width: 900px; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #667eea; color: white; }
         .excellent { background: #d4edda; }
         .good { background: #fff3cd; }
         .poor { background: #f8d7da; }
-        .loading { text-align: center; padding: 40px; color: #666; }
+        .code-box { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; }
+        .code-number { font-size: 32px; font-weight: bold; font-family: monospace; letter-spacing: 2px; color: #667eea; }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <div style="font-size: 24px; font-weight: bold;">🇷🇼 IMENA Quiz</div>
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <span>👨‍🏫 <span id="teacherName">Teacher</span></span>
-            <div class="logout-btn" onclick="logout()">🚪 Logout</div>
-        </div>
+        <div style="font-size: 24px; font-weight: bold;">🇷🇼 IMENA Quiz - Teacher Mode</div>
+        <button class="btn" style="background: rgba(255,255,255,0.2);" onclick="window.location.href='index.html'">🏠 Home</button>
     </div>
     
     <div class="container">
         <div class="stats-grid">
-            <div class="stat-card"><div class="stat-number" id="totalQuizzes">0</div><div>📝 Quizzes Created</div></div>
-            <div class="stat-card"><div class="stat-number" id="totalStudents">0</div><div>👨‍🎓 Students</div></div>
-            <div class="stat-card"><div class="stat-number" id="avgScore">0%</div><div>📊 Average Score</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalQuizzes">0</div><div>📝 Quizzes</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalAttempts">0</div><div>📊 Total Attempts</div></div>
+            <div class="stat-card"><div class="stat-number" id="avgScore">0%</div><div>📈 Average Score</div></div>
         </div>
         
-        <button class="create-btn" onclick="window.location.href='create-quiz.html'">➕ Create New Quiz / Kora Ikizamini</button>
+        <button class="create-btn" onclick="window.location.href='create-quiz.html'">➕ Create New Quiz</button>
         
-        <h2 style="margin-bottom: 20px;">📚 My Quizzes / Ibizamini Byanjye</h2>
-        <div id="quizzesList"><div class="loading">Loading your quizzes...</div></div>
+        <h2 style="margin-bottom: 20px;">📚 My Quizzes</h2>
+        <div id="quizzesList"></div>
     </div>
     
     <div id="resultsModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">Student Results</h2>
             <div id="resultsContent"></div>
-            <button class="btn btn-primary" onclick="closeModal()" style="margin-top: 20px;">Close / Gaha</button>
+            <button class="btn btn-primary" onclick="closeModal()" style="margin-top: 20px;">Close</button>
+        </div>
+    </div>
+
+    <div id="codeModal" class="modal">
+        <div class="modal-content" style="text-align: center;">
+            <h2>🔑 Quiz Code / Kode y'ikizamini</h2>
+            <div class="code-box">
+                <p style="color: #666; margin-bottom: 10px;">Share this code with your students:</p>
+                <div class="code-number" id="quizCodeDisplay"></div>
+                <p style="color: #666; margin-top: 10px;">Students enter this code on the Student page</p>
+                <button class="btn btn-success" onclick="copyCode()" style="margin-top: 15px;">📋 Copy Code</button>
+            </div>
+            <button class="btn btn-primary" onclick="closeCodeModal()" style="margin-top: 20px;">Close</button>
         </div>
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://yakusekcvidtvgcbbeap.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_s0CWHnbcqVTVHScSM4dMGQ_GYliBfEu';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let currentTeacherId = null;
-        
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) { window.location.href = 'index.html'; return; }
-            currentTeacherId = session.user.id;
+        function loadQuizzes() {
+            const quizzes = JSON.parse(localStorage.getItem('quizzes') || '[]');
+            const attempts = JSON.parse(localStorage.getItem('attempts') || '[]');
             
-            const { data: profile } = await supabase.from('profiles').select('name').eq('id', currentTeacherId).single();
-            if (profile) document.getElementById('teacherName').innerText = profile.name;
+            document.getElementById('totalQuizzes').innerText = quizzes.length;
+            document.getElementById('totalAttempts').innerText = attempts.length;
             
-            await loadDashboard();
-        }
-        
-        async function loadDashboard() {
-            await loadStats();
-            await loadQuizzes();
-        }
-        
-        async function loadStats() {
-            const { data: quizzes } = await supabase.from('quizzes').select('id').eq('teacher_id', currentTeacherId);
-            const totalQuizzes = quizzes ? quizzes.length : 0;
-            document.getElementById('totalQuizzes').innerText = totalQuizzes;
-            if (totalQuizzes === 0) return;
-            
-            const quizIds = quizzes.map(q => q.id);
-            const { data: attempts } = await supabase.from('attempts').select('student_id, percentage').in('quiz_id', quizIds);
-            
-            if (attempts && attempts.length > 0) {
-                const uniqueStudents = new Set(attempts.map(a => a.student_id));
-                document.getElementById('totalStudents').innerText = uniqueStudents.size;
-                const avgPercent = attempts.reduce((sum, a) => sum + a.percentage, 0) / attempts.length;
-                document.getElementById('avgScore').innerText = `${Math.round(avgPercent)}%`;
+            if (attempts.length > 0) {
+                const avg = attempts.reduce((sum, a) => sum + a.percentage, 0) / attempts.length;
+                document.getElementById('avgScore').innerText = Math.round(avg) + '%';
             }
-        }
-        
-        async function loadQuizzes() {
-            const { data: quizzes } = await supabase.from('quizzes').select('*').eq('teacher_id', currentTeacherId).order('created_at', { ascending: false });
+            
             const container = document.getElementById('quizzesList');
             
-            if (!quizzes || quizzes.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:60px; background:white; border-radius:15px;"><p>📝 No quizzes yet. Create your first quiz!</p><p style="color:#666; margin-top:10px;">Nta kizamini kigihari. Kora ikizamini cya mbere!</p></div>';
+            if (quizzes.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:60px; background:white; border-radius:15px;"><p>📝 No quizzes yet. Create your first quiz!</p></div>';
                 return;
             }
             
             let html = '';
-            for (let quiz of quizzes) {
-                const { data: attempts } = await supabase.from('attempts').select('percentage').eq('quiz_id', quiz.id);
-                const studentCount = attempts ? attempts.length : 0;
-                let avgScore = 0;
-                if (attempts && attempts.length > 0) avgScore = attempts.reduce((sum, a) => sum + a.percentage, 0) / attempts.length;
-                const date = new Date(quiz.created_at).toLocaleDateString('en-RW');
+            quizzes.forEach((quiz, index) => {
+                const quizAttempts = attempts.filter(a => a.quizId === quiz.id);
+                const studentCount = quizAttempts.length;
+                const avgScore = quizAttempts.length > 0 ? quizAttempts.reduce((sum, a) => sum + a.percentage, 0) / quizAttempts.length : 0;
                 
                 html += `
                     <div class="quiz-card">
                         <div class="quiz-title">📝 ${escapeHtml(quiz.title)}</div>
-                        <div style="margin: 10px 0; color: #666;">⏱️ ${quiz.duration_minutes} minutes | 👨‍🎓 ${studentCount} students | 📊 Average: ${Math.round(avgScore)}% | 📅 ${date}</div>
+                        <div style="margin: 10px 0; color: #666;">⏱️ ${quiz.durationMinutes} min | 👨‍🎓 ${studentCount} students | 📊 Avg: ${Math.round(avgScore)}%</div>
+                        <div class="quiz-code">🔑 Quiz Code: ${quiz.id}</div>
                         <div>
+                            <button class="btn btn-info" onclick="showCode('${quiz.id}')">🔑 Get Quiz Code</button>
                             <button class="btn btn-primary" onclick="viewResults('${quiz.id}', '${escapeHtml(quiz.title)}')">📊 View Results</button>
-                            <button class="btn btn-success" onclick="getQuizLink('${quiz.id}')">🔗 Get Shareable Link</button>
                         </div>
                     </div>
                 `;
-            }
+            });
             container.innerHTML = html;
         }
         
-        async function viewResults(quizId, quizTitle) {
-            const { data: attempts } = await supabase.from('attempts').select('*').eq('quiz_id', quizId).order('percentage', { ascending: false });
-            document.getElementById('modalTitle').innerHTML = `📊 ${quizTitle} - Results / Ibisubizo`;
+        function showCode(quizId) {
+            document.getElementById('quizCodeDisplay').innerText = quizId;
+            document.getElementById('codeModal').style.display = 'block';
+        }
+        
+        function copyCode() {
+            const code = document.getElementById('quizCodeDisplay').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Quiz code copied! Share with your students.');
+        }
+        
+        function closeCodeModal() {
+            document.getElementById('codeModal').style.display = 'none';
+        }
+        
+        function viewResults(quizId, quizTitle) {
+            const attempts = JSON.parse(localStorage.getItem('attempts') || '[]');
+            const quizAttempts = attempts.filter(a => a.quizId === quizId);
             
-            if (!attempts || attempts.length === 0) {
-                document.getElementById('resultsContent').innerHTML = '<p>No students have taken this quiz yet.<br>Nta mwarimu wigeze akora iki kizamini.</p>';
+            document.getElementById('modalTitle').innerHTML = `📊 ${quizTitle} - Results`;
+            
+            if (quizAttempts.length === 0) {
+                document.getElementById('resultsContent').innerHTML = '<p>No students have taken this quiz yet.</p>';
                 document.getElementById('resultsModal').style.display = 'block';
                 return;
             }
             
-            let html = '<div style="overflow-x: auto;"><table><thead><tr><th>Student</th><th>Score</th><th>Percentage</th><th>Time</th><th>Date</th></tr></thead><tbody>';
-            for (let attempt of attempts) {
+            let html = '<div style="overflow-x: auto;"><table><thead><tr><th>Student</th><th>Score</th><th>Percentage</th><th>Date</th></tr></thead><tbody>';
+            quizAttempts.forEach(attempt => {
                 let rowClass = attempt.percentage >= 70 ? 'excellent' : (attempt.percentage >= 50 ? 'good' : 'poor');
-                const date = new Date(attempt.submitted_at).toLocaleString('en-RW');
-                const minutes = Math.floor(attempt.time_spent_seconds / 60);
-                const seconds = attempt.time_spent_seconds % 60;
-                html += `<tr class="${rowClass}"><td><strong>${escapeHtml(attempt.student_name)}</strong></td><td>${attempt.total_score}/${attempt.total_possible}</td><td><strong>${attempt.percentage}%</strong></td><td>${minutes}m ${seconds}s</td><td>${date}</td></tr>`;
-            }
-            html += '</tbody></table></div><button onclick="exportToCSV()" class="btn btn-success" style="margin-top:20px;">📥 Export to CSV</button>';
+                const date = new Date(attempt.submittedAt).toLocaleString();
+                html += `<tr class="${rowClass}"><td>${escapeHtml(attempt.studentName)}</td><td>${attempt.score}/${attempt.totalPoints}</td><td><strong>${attempt.percentage}%</strong></td><td>${date}</td></tr>`;
+            });
+            html += '</tbody></table></div>';
             document.getElementById('resultsContent').innerHTML = html;
             document.getElementById('resultsModal').style.display = 'block';
         }
         
-        function getQuizLink(quizId) {
-            const link = `${window.location.origin}/take-quiz.html?quizId=${quizId}`;
-            prompt('Share this link with your students / IZINA RY\'IKIZAMINI:', link);
-        }
-        
         function closeModal() { document.getElementById('resultsModal').style.display = 'none'; }
-        function exportToCSV() { alert('CSV export will be added soon!'); }
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
         
-        async function logout() { await supabase.auth.signOut(); localStorage.clear(); window.location.href = 'index.html'; }
-        checkAuth();
+        loadQuizzes();
     </script>
 </body>
 </html>
