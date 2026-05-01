@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz - IMENA</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .timer-bar {
+            background: #dc3545;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        .quiz-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question-card {
+            background: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .option {
+            display: block;
+            padding: 12px 15px;
+            margin: 10px 0;
+            background: #f0f0f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background: #e0e0e0;
+        }
+        
+        .option.selected {
+            background: #667eea;
+            color: white;
+        }
+        
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background: #45a049;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-bar">
+        ⏱️ Time Remaining: <span id="timer">--:--</span>
+    </div>
+    
+    <div class="container" id="quizContainer">
+        <div class="loading">Loading quiz...</div>
+    </div>
+
+    <script src="supabase-config.js"></script>
+    <script>
+        let quizData = null;
+        let userAnswers = {};
+        let timerInterval = null;
+        let timeLeft = 0;
+        let studentId = null;
+        let studentName = '';
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('quizId');
+        
+        if (!quizId) {
+            alert('No quiz ID provided. Please use the link from your teacher.');
+            window.location.href = 'student.html';
+        }
+        
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            studentId = session.user.id;
+            
+            // Get student name
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('name')
+                .eq('id', studentId)
+                .single();
+            
+            if (profile) {
+                studentName = profile.name;
+            }
+            
+            // Check if already took this quiz
+            const { data: existing } = await supabase
+                .from('attempts')
+                .select('id')
+                .eq('student_id', studentId)
+                .eq('quiz_id', quizId);
+            
+            if (existing && existing.length > 0) {
+                alert('You have already taken this quiz!');
+                window.location.href = 'student.html';
+                return;
+            }
+            
+            await loadQuiz();
+        }
+        
+        async function loadQuiz() {
+            const { data: quiz, error } = await supabase
+                .from('quizzes')
+                .select('*')
+                .eq('id', quizId)
+                .single();
+            
+            if (error || !quiz) {
+                alert('Quiz not found!');
+                window.location.href = 'student.html';
+                return;
+            }
+            
+            quizData = quiz;
+            
+            // Start timer
+            timeLeft = quiz.duration_minutes * 60;
+            startTimer();
+            
+            // Display quiz
+            displayQuiz();
+        }
+        
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+                
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Warning when 1 minute left
+                if (timeLeft === 60) {
+                    const warning = document.createElement('div');
+                    warning.className = 'warning';
+                    warning.innerHTML = '⚠️ 1 minute remaining! / Isaha isigaye! ⚠️';
+                    document.getElementById('quizContainer').insertBefore(warning, document.getElementById('quizContainer').firstChild);
+                    setTimeout(() => warning.remove(), 5000);
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+        
+        function displayQuiz() {
+            const container = document.getElementById('quizContainer');
+            
+            let html = `
+                <div class="quiz-header">
+                    <h1>${escapeHtml(quizData.title)}</h1>
+                    <p>${escapeHtml(quizData.description || '')}</p>
+                    <p><strong>Total Points:</strong> ${quizData.total_points}</p>
+                    <p><strong>Questions:</strong> ${quizData.questions.length}</p>
+                </div>
+            `;
+            
+            quizData.questions.forEach((question, index) => {
+                html += `
+                    <div class="question-card" data-qid="${question.id}">
+                        <div class="question-text">
+                            ${index + 1}. ${escapeHtml(question.text)}
+                            <span style="float: right; color: #666;">${question.points} pts</span>
+                        </div>
+                        <div class="options">
+                            ${question.options.map((opt, optIndex) => `
+                                <div class="option" onclick="selectOption('${question.id}', '${escapeHtml(opt)}', this)">
+                                    ${String.fromCharCode(65 + optIndex)}. ${escapeHtml(opt)}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `<button class="submit-btn" onclick="submitQuiz()">📝 Submit Quiz / Tanga Ibisubizo</button>`;
+            container.innerHTML = html;
+        }
+        
+        function selectOption(questionId, answer, element) {
+            // Remove selected class from other options in this question
+            const parentCard = element.closest('.question-card');
+            parentCard.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Store answer
+            userAnswers[questionId] = answer;
+        }
+        
+        async function submitQuiz() {
+            // Check if all questions answered
+            const totalQuestions = quizData.questions.length;
+            const answeredCount = Object.keys(userAnswers).length;
+            
+            if (answeredCount < totalQuestions) {
+                const confirmSubmit = confirm(`You have answered ${answeredCount} out of ${totalQuestions} questions. Are you sure you want to submit?`);
+                if (!confirmSubmit) return;
+            }
+            
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let totalScore = 0;
+            const answersArray = [];
+            
+            for (let question of quizData.questions) {
+                const userAnswer = userAnswers[question.id] || '';
+                const isCorrect = userAnswer === question.options[question.correctAnswer];
+                const pointsEarned = isCorrect ? question.points : 0;
+                totalScore += pointsEarned;
+                
+                answersArray.push({
+                    questionId: question.id,
+                    selectedAnswer: userAnswer,
+                    isCorrect: isCorrect,
+                    pointsEarned: pointsEarned
+                });
+            }
+            
+            const percentage = Math.round((totalScore / quizData.total_points) * 100);
+            const timeSpent = (quizData.duration_minutes * 60) - timeLeft;
+            
+            // Save to database
+            const attemptData = {
+                quiz_id: quizId,
+                student_id: studentId,
+                student_name: studentName,
+                answers: answersArray,
+                total_score: totalScore,
+                total_possible: quizData.total_points,
+                percentage: percentage,
+                time_spent_seconds: timeSpent,
+                submitted_at: new Date()
+            };
+            
+            const { error } = await supabase
+                .from('attempts')
+                .insert([attemptData]);
+            
+            if (error) {
+                alert('Error submitting quiz: ' + error.message);
+                return;
+            }
+            
+            // Show results
+            showResults(totalScore, quizData.total_points, percentage, answersArray);
+        }
+        
+        function showResults(score, total, percentage, answers) {
+            let resultHtml = `
+                <div class="quiz-header" style="text-align: center;">
+                    <h1>✅ Quiz Submitted!</h1>
+                    <div style="font-size: 48px; margin: 20px;">${percentage}%</div>
+                    <p><strong>Your Score:</strong> ${score}/${total}</p>
+                    <button onclick="window.location.href='student.html'" class="submit-btn" style="background: #667eea;">
+                        View All Results →
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('quizContainer').innerHTML = resultHtml;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        checkAuth();
+    </script>
+</body>
+</html>
