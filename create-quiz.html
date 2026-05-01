@@ -156,4 +156,171 @@
             <div class="form-group">
                 <label>📝 Description / Ibisobanuro (Optional)</label>
                 <textarea id="quizDesc" rows="3" placeholder="Describe what this quiz covers..."></textarea>
-           
+            </div>
+            <div class="form-group">
+                <label>⏱️ Duration (minutes) / Igihe (iminota)</label>
+                <input type="number" id="duration" placeholder="30" min="1">
+            </div>
+        </div>
+        
+        <div class="form-card">
+            <h3>Questions / Ibibazo</h3>
+            <div id="questionsContainer"></div>
+            <button class="btn-primary" onclick="addQuestion()">+ Add Question</button>
+        </div>
+        
+        <button class="btn-success" onclick="saveQuiz()">💾 Save Quiz / Bika Ikizamini</button>
+    </div>
+
+    <script src="supabase-config.js"></script>
+    <script>
+        let questions = [];
+        let questionCounter = 0;
+        
+        function addQuestion() {
+            questions.push({
+                id: questionCounter++,
+                text: '',
+                options: ['', '', '', ''],
+                correctAnswer: 0,
+                points: 5
+            });
+            renderQuestions();
+        }
+        
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            let html = '';
+            
+            questions.forEach((q, index) => {
+                html += `
+                    <div class="question-card">
+                        <h4>Question ${index + 1}</h4>
+                        <div class="form-group">
+                            <input type="text" placeholder="Question text / Ikibazo" 
+                                onchange="updateQuestion(${index}, 'text', this.value)"
+                                value="${escapeHtml(q.text)}">
+                        </div>
+                        <p><strong>Options / Amahitamo:</strong></p>
+                        ${['A', 'B', 'C', 'D'].map((letter, optIndex) => `
+                            <div class="option-row">
+                                <span class="option-letter">${letter}:</span>
+                                <input type="text" placeholder="Option ${letter}" style="flex:1"
+                                    onchange="updateQuestion(${index}, 'options', ${optIndex}, this.value)"
+                                    value="${escapeHtml(q.options[optIndex] || '')}">
+                            </div>
+                        `).join('')}
+                        <div class="form-group">
+                            <label>Correct Answer / Igisubizo Nyacyo</label>
+                            <select onchange="updateQuestion(${index}, 'correctAnswer', parseInt(this.value))">
+                                <option value="0" ${q.correctAnswer === 0 ? 'selected' : ''}>A</option>
+                                <option value="1" ${q.correctAnswer === 1 ? 'selected' : ''}>B</option>
+                                <option value="2" ${q.correctAnswer === 2 ? 'selected' : ''}>C</option>
+                                <option value="3" ${q.correctAnswer === 3 ? 'selected' : ''}>D</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Points / Amanota</label>
+                            <input type="number" value="${q.points}" 
+                                onchange="updateQuestion(${index}, 'points', parseInt(this.value))">
+                        </div>
+                        <button class="btn-danger" onclick="removeQuestion(${index})">Remove Question</button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function updateQuestion(index, field, subIndex, value) {
+            if (field === 'options') {
+                questions[index].options[subIndex] = value;
+            } else {
+                questions[index][field] = value;
+            }
+        }
+        
+        function removeQuestion(index) {
+            questions.splice(index, 1);
+            renderQuestions();
+        }
+        
+        async function saveQuiz() {
+            const title = document.getElementById('quizTitle').value;
+            const description = document.getElementById('quizDesc').value;
+            const durationMinutes = parseInt(document.getElementById('duration').value);
+            
+            if (!title) {
+                alert('Please enter quiz title!');
+                return;
+            }
+            if (!durationMinutes || durationMinutes < 1) {
+                alert('Please enter valid duration (minutes)!');
+                return;
+            }
+            if (questions.length === 0) {
+                alert('Please add at least one question!');
+                return;
+            }
+            
+            // Validate all questions
+            for (let q of questions) {
+                if (!q.text) {
+                    alert('Please fill all question texts!');
+                    return;
+                }
+                for (let opt of q.options) {
+                    if (!opt) {
+                        alert('Please fill all options for each question!');
+                        return;
+                    }
+                }
+            }
+            
+            const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
+            const teacherId = (await supabase.auth.getSession()).data.session.user.id;
+            
+            const quizData = {
+                title: title,
+                description: description,
+                duration_minutes: durationMinutes,
+                teacher_id: teacherId,
+                total_points: totalPoints,
+                questions: questions,
+                is_active: true,
+                created_at: new Date()
+            };
+            
+            const { data, error } = await supabase
+                .from('quizzes')
+                .insert([quizData])
+                .select();
+            
+            if (error) {
+                alert('Error: ' + error.message);
+            } else {
+                alert('✅ Quiz created successfully! / Ikizamini cyakozwe neza!');
+                window.location.href = 'teacher.html';
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Add initial question
+        addQuestion();
+        
+        // Check auth
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+            }
+        }
+        checkAuth();
+    </script>
+</body>
+</html>
