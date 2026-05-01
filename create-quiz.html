@@ -72,34 +72,17 @@
             border-left: 4px solid #667eea;
         }
         
-        .option-row {
-            display: flex;
-            gap: 10px;
-            margin: 10px 0;
-            align-items: center;
-        }
-        
-        .option-letter {
-            font-weight: bold;
-            width: 30px;
-        }
-        
-        button {
+        .btn {
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.2s;
         }
         
         .btn-primary {
             background: #667eea;
             color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #5a67d8;
         }
         
         .btn-success {
@@ -113,17 +96,6 @@
         .btn-danger {
             background: #dc3545;
             color: white;
-        }
-        
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
         }
         
         .back-link {
@@ -166,7 +138,7 @@
         <div class="form-card">
             <h3>Questions / Ibibazo</h3>
             <div id="questionsContainer"></div>
-            <button class="btn-primary" onclick="addQuestion()">+ Add Question</button>
+            <button class="btn btn-primary" onclick="addQuestion()">+ Add Question</button>
         </div>
         
         <button class="btn-success" onclick="saveQuiz()">💾 Save Quiz / Bika Ikizamini</button>
@@ -203,9 +175,9 @@
                         </div>
                         <p><strong>Options / Amahitamo:</strong></p>
                         ${['A', 'B', 'C', 'D'].map((letter, optIndex) => `
-                            <div class="option-row">
-                                <span class="option-letter">${letter}:</span>
-                                <input type="text" placeholder="Option ${letter}" style="flex:1"
+                            <div style="margin: 10px 0;">
+                                <span style="display: inline-block; width: 30px; font-weight: bold;">${letter}:</span>
+                                <input type="text" placeholder="Option ${letter}" style="width: 90%"
                                     onchange="updateQuestion(${index}, 'options', ${optIndex}, this.value)"
                                     value="${escapeHtml(q.options[optIndex] || '')}">
                             </div>
@@ -224,7 +196,7 @@
                             <input type="number" value="${q.points}" 
                                 onchange="updateQuestion(${index}, 'points', parseInt(this.value))">
                         </div>
-                        <button class="btn-danger" onclick="removeQuestion(${index})">Remove Question</button>
+                        <button class="btn btn-danger" onclick="removeQuestion(${index})">Remove Question</button>
                     </div>
                 `;
             });
@@ -243,6 +215,13 @@
         function removeQuestion(index) {
             questions.splice(index, 1);
             renderQuestions();
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         async function saveQuiz() {
@@ -278,13 +257,21 @@
             }
             
             const totalPoints = questions.reduce((sum, q) => sum + q.points, 0);
-            const teacherId = (await supabase.auth.getSession()).data.session.user.id;
+            
+            // Get current user
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                alert('Please login first!');
+                window.location.href = 'index.html';
+                return;
+            }
             
             const quizData = {
                 title: title,
                 description: description,
                 duration_minutes: durationMinutes,
-                teacher_id: teacherId,
+                teacher_id: session.user.id,
                 total_points: totalPoints,
                 questions: questions,
                 is_active: true,
@@ -298,16 +285,11 @@
             
             if (error) {
                 alert('Error: ' + error.message);
+                console.error(error);
             } else {
                 alert('✅ Quiz created successfully! / Ikizamini cyakozwe neza!');
                 window.location.href = 'teacher.html';
             }
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
         
         // Add initial question
