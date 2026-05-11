@@ -1,199 +1,744 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AfriQuiz Pro | Secure Assessment Platform for African Schools</title>
-  <!-- Tailwind + Fonts -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AfriQuiz Pro</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <!-- Lucide Icons -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- html2pdf -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Inter', sans-serif; user-select: none; -webkit-user-select: none; }
-    body { background: #0a0c15; }
-    .premium-gradient { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #8B5CF6 100%); }
-    .glass-card-dark { background: rgba(18, 22, 35, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
-    .btn-premium { background: linear-gradient(105deg, #1e3c72, #2a5298); transition: all 0.3s ease; }
-    .btn-premium:hover { transform: translateY(-2px); box-shadow: 0 20px 30px -12px rgba(30,60,114,0.5); }
-    .stat-card { background: linear-gradient(135deg, rgba(30,60,114,0.15), rgba(139,92,246,0.08)); border: 1px solid rgba(139,92,246,0.2); }
-    .quiz-option { transition: all 0.2s ease; cursor: pointer; }
-    .quiz-option.selected { background: linear-gradient(135deg, rgba(30,60,114,0.3), rgba(139,92,246,0.3)); border-color: #8B5CF6; box-shadow: 0 0 0 2px rgba(139,92,246,0.3); }
-    .toast-premium { animation: slideInRight 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1); }
-    @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
-    .fade-in-up { animation: fadeInUp 0.4s ease-out; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .sidebar-item { transition: all 0.2s; cursor: pointer; }
-    .sidebar-item.active { background: linear-gradient(135deg, rgba(30,60,114,0.3), rgba(139,92,246,0.2)); border-left: 3px solid #8B5CF6; color: white; }
-    .warning-blur { filter: blur(4px); pointer-events: none; }
-    #cheatingOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 10000; display: none; align-items: center; justify-content: center; flex-direction: column; }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #1a1d2e; }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #1e3c72, #8B5CF6); border-radius: 10px; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    th { background: rgba(139,92,246,0.1); font-weight: 600; }
-    .sort-btn { cursor: pointer; transition: all 0.2s; }
-    .sort-btn:hover { color: #8B5CF6; }
-  </style>
-</head>
-<body class="text-white antialiased" oncontextmenu="return false" onkeydown="blockDevTools(event)">
-
-<div id="app" class="min-h-screen relative">
-  <!-- Cheating Prevention Overlay -->
-  <div id="cheatingOverlay">
-    <i data-lucide="shield-alert" class="w-16 h-16 text-red-500 mb-4"></i>
-    <h2 class="text-2xl font-bold text-white mb-2">⚠️ Academic Integrity Alert</h2>
-    <p class="text-gray-300 text-center max-w-md">Screenshots, copying, or switching tabs is not allowed during assessments. Quiz has been auto-submitted.</p>
-    <button onclick="forceSubmitQuiz()" class="mt-6 btn-premium px-6 py-3 rounded-xl font-bold">View Results</button>
-  </div>
-
-  <div id="toastContainer" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2"></div>
-
-  <!-- LANDING PAGE -->
-  <div id="pageLanding" class="fade-in-up">
-    <div class="relative min-h-screen overflow-hidden">
-      <div class="absolute inset-0 premium-gradient opacity-20"></div>
-      <nav class="relative z-20 flex justify-between items-center px-6 md:px-12 py-6">
-        <div class="flex items-center gap-2"><div class="w-10 h-10 premium-gradient rounded-xl flex items-center justify-center"><i data-lucide="crown" class="w-6 h-6"></i></div><span class="text-xl font-bold">AfriQuiz<span class="text-purple-400">Pro</span></span></div>
-        <div class="flex gap-3"><button onclick="showPage('teacher')" class="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 transition">Teacher Hub</button><button onclick="showPage('student')" class="px-5 py-2 rounded-full btn-premium text-white font-semibold shadow-lg">Take Quiz →</button></div>
-      </nav>
-      <div class="relative z-20 flex flex-col items-center justify-center px-4 py-20 text-center"><h1 class="text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-purple-300 to-blue-300 bg-clip-text text-transparent">Secure Assessment<br>For African Excellence</h1><p class="text-gray-300 mt-6 max-w-2xl">Anti-cheat proctoring | Auto-submit timer | Manual grading | Real-time analytics</p><div class="flex gap-4 mt-10"><button onclick="showPage('teacher')" class="btn-premium px-8 py-4 rounded-xl font-bold">Start Creating</button><button onclick="showPage('student')" class="px-8 py-4 rounded-xl border border-white/30 hover:bg-white/10 transition">Join Quiz</button></div></div>
-    </div>
-  </div>
-
-  <!-- TEACHER DASHBOARD -->
-  <div id="pageTeacher" class="hidden min-h-screen bg-[#0a0c15]">
-    <div class="flex h-screen">
-      <aside class="hidden md:flex w-72 flex-col glass-card-dark m-4 rounded-2xl h-[calc(100vh-2rem)]">
-        <div class="p-6 border-b border-white/10"><div class="flex items-center gap-3"><div class="w-10 h-10 premium-gradient rounded-xl flex items-center justify-center"><i data-lucide="graduation-cap"></i></div><span class="font-bold text-xl">AfriQuiz<span class="text-purple-400">Pro</span></span></div></div>
-        <nav class="flex-1 p-4 space-y-2">
-          <button onclick="showTeacherTab('dashboard')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300" data-tab="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</button>
-          <button onclick="showTeacherTab('create')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300" data-tab="create"><i data-lucide="plus-circle"></i> Create Quiz</button>
-          <button onclick="showTeacherTab('responses')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300" data-tab="responses"><i data-lucide="clipboard-list"></i> Responses & Grading</button>
-          <button onclick="showTeacherTab('analytics')" class="sidebar-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300" data-tab="analytics"><i data-lucide="bar-chart-3"></i> Analytics</button>
-        </nav>
-        <button onclick="showPage('landing')" class="m-4 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition"><i data-lucide="log-out"></i> Exit</button>
-      </aside>
-      <main class="flex-1 overflow-y-auto p-6 md:p-8">
-        <div id="teacherDashboard" class="fade-in-up"><div class="flex justify-between items-center mb-8"><div><h1 class="text-3xl font-bold">Dashboard</h1><p class="text-gray-400">Manage quizzes & track performance</p></div><button onclick="showTeacherTab('create')" class="btn-premium px-5 py-2 rounded-xl">+ New Quiz</button></div><div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10"><div class="stat-card rounded-2xl p-6"><p class="text-gray-400 text-sm">Total Quizzes</p><p class="text-4xl font-bold mt-2" id="statTotalQuizzes">0</p></div><div class="stat-card rounded-2xl p-6"><p class="text-gray-400 text-sm">Total Responses</p><p class="text-4xl font-bold mt-2" id="statTotalResponses">0</p></div><div class="stat-card rounded-2xl p-6"><p class="text-gray-400 text-sm">Pending Grading</p><p class="text-4xl font-bold mt-2" id="statPendingGrading">0</p></div><div class="stat-card rounded-2xl p-6"><p class="text-gray-400 text-sm">Avg Score</p><p class="text-4xl font-bold mt-2" id="statAvgScore">0%</p></div></div><div id="teacherQuizList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5"></div></div>
-
-        <!-- Create Quiz -->
-        <div id="teacherCreate" class="hidden fade-in-up max-w-4xl mx-auto"><h1 class="text-3xl font-bold mb-6">Create Assessment</h1><form id="createQuizForm" class="space-y-6"><div class="glass-card-dark rounded-2xl p-6 space-y-4"><input type="text" id="quizTitle" placeholder="Quiz Title" class="w-full bg-black/40 border border-white/15 rounded-xl p-4 text-white text-xl font-bold"><input type="text" id="quizSubject" placeholder="Subject" class="w-full bg-black/40 border border-white/15 rounded-xl p-3"><textarea id="quizDesc" rows="3" placeholder="Instructions" class="w-full bg-black/40 border border-white/15 rounded-xl p-3"></textarea><div class="flex gap-4"><div class="flex-1"><label class="text-xs">Passing Score (%)</label><input type="number" id="quizPassing" value="70" class="w-full bg-black/40 border rounded-xl p-2"></div><div class="flex-1"><label class="text-xs">Time Limit (minutes)</label><input type="number" id="quizTimeLimit" placeholder="No limit" class="w-full bg-black/40 border rounded-xl p-2"></div></div></div><div class="space-y-4"><div class="flex justify-between"><h3 class="font-bold">Questions</h3><div class="flex gap-2"><select id="questionTypeSelect" class="bg-[#1a1d2e] border rounded-xl px-3 py-2 text-sm"><option value="">Add Question</option><option value="multiple">Multiple Choice</option><option value="truefalse">True/False</option><option value="short">Short Answer (Manual Grade)</option><option value="paragraph">Paragraph (Manual Grade)</option></select><button type="button" onclick="addQuestion()" class="btn-premium px-4 py-2 rounded-xl text-sm">Add</button></div></div><div id="questionsContainer" class="space-y-4"></div></div><button type="submit" class="w-full btn-premium text-white font-bold py-4 rounded-xl">Publish Quiz</button></form></div>
-
-        <!-- Responses & Grading Table with Sorting -->
-        <div id="teacherResponses" class="hidden fade-in-up"><h1 class="text-3xl font-bold mb-4">Student Responses & Manual Grading</h1><div class="flex gap-3 mb-6 flex-wrap"><button onclick="sortResponses('score-desc')" class="px-4 py-2 bg-white/10 rounded-lg text-sm">🏆 Best First</button><button onclick="sortResponses('score-asc')" class="px-4 py-2 bg-white/10 rounded-lg text-sm">📉 Failures First</button><button onclick="sortResponses('name-asc')" class="px-4 py-2 bg-white/10 rounded-lg text-sm">A → Z (Name)</button><button onclick="sortResponses('name-desc')" class="px-4 py-2 bg-white/10 rounded-lg text-sm">Z → A (Name)</button><button onclick="sortResponses('date-desc')" class="px-4 py-2 bg-white/10 rounded-lg text-sm">📅 Newest First</button></div><div class="glass-card-dark rounded-2xl overflow-x-auto"><table class="w-full"><thead><tr><th class="sort-btn" onclick="sortResponses('name-asc')">Student</th><th>Class</th><th>SDMS Code</th><th>Quiz</th><th>Score</th><th>Status</th><th>Open-ended</th><th>Action</th></tr></thead><tbody id="responsesTableBody"></tbody></table></div></div>
-
-        <!-- Analytics -->
-        <div id="teacherAnalytics" class="hidden fade-in-up"><h1 class="text-3xl font-bold mb-6">Analytics</h1><div class="grid lg:grid-cols-2 gap-6"><div class="glass-card-dark rounded-2xl p-6"><canvas id="scoreChart"></canvas></div><div class="glass-card-dark rounded-2xl p-6"><div id="analyticsSummary"></div><button onclick="exportAnalyticsPDF()" class="mt-4 w-full py-3 bg-white/10 rounded-xl">Export PDF</button><button onclick="exportToCSV()" class="mt-2 w-full py-3 bg-white/5 rounded-xl">Export CSV</button></div></div></div>
-      </main>
-    </div>
-  </div>
-
-  <!-- STUDENT PORTAL with Identity Verification -->
-  <div id="pageStudent" class="hidden min-h-screen bg-[#0a0c15] p-6">
-    <div class="max-w-3xl mx-auto pt-8">
-      <div class="text-center mb-8"><i data-lucide="shield-check" class="text-purple-400 w-12 h-12 mx-auto"></i><h1 class="text-3xl font-bold mt-2">Student Assessment Portal</h1><p class="text-gray-400">Verify your identity before starting</p></div>
-      
-      <!-- Student Identity Form -->
-      <div id="studentIdentityForm" class="glass-card-dark rounded-2xl p-8 mb-6">
-        <h2 class="text-xl font-bold mb-4">📋 Identity Verification</h2>
-        <form id="identityForm" class="space-y-4">
-          <input type="text" id="studentFullName" placeholder="Full Name (as per school records)" required class="w-full bg-black/40 border border-white/15 rounded-xl p-4">
-          <input type="text" id="studentClass" placeholder="Class / Grade (e.g., Form 3A, Grade 8)" required class="w-full bg-black/40 border border-white/15 rounded-xl p-4">
-          <input type="text" id="studentSDMS" placeholder="SDMS Code (e.g., SDMS-2024-001)" required class="w-full bg-black/40 border border-white/15 rounded-xl p-4">
-          <button type="submit" class="w-full btn-premium py-4 rounded-xl font-bold">Verify & Continue →</button>
-        </form>
-      </div>
-
-      <div id="studentJoin" class="hidden"><div class="glass-card-dark rounded-2xl p-8 mb-6"><h2 class="text-2xl font-bold">🔑 Enter Quiz Code</h2><form id="studentJoinForm" class="mt-5 flex gap-3 flex-col sm:flex-row"><input type="text" id="joinCode" placeholder="6-digit code" maxlength="6" class="flex-1 bg-black/40 border rounded-xl p-4 uppercase"><button type="submit" class="btn-premium px-8 py-4 rounded-xl font-bold">Start Quiz</button></form></div><div id="availableQuizzesList" class="space-y-3"></div></div>
-
-      <!-- Quiz Taking Interface with Timer -->
-      <div id="studentQuizInterface" class="hidden"><div class="glass-card-dark rounded-2xl p-8"><div class="flex justify-between items-center mb-4"><h2 id="activeQuizTitle" class="text-2xl font-bold"></h2><div class="flex gap-4"><span id="quizProgressBadge" class="bg-white/10 px-4 py-1 rounded-full text-sm"></span><span id="timerDisplay" class="bg-red-500/20 text-red-400 px-4 py-1 rounded-full font-mono font-bold"></span></div></div><div class="h-2 bg-white/10 rounded-full mb-6"><div id="progressFill" class="h-full premium-gradient w-0 transition-all"></div></div><div id="questionArea"></div><div class="flex justify-between gap-3 mt-8"><button id="prevBtn" onclick="prevStudentQuestion()" class="hidden px-6 py-3 rounded-xl border border-white/20 hover:bg-white/5">← Previous</button><button id="nextBtn" onclick="nextStudentQuestion()" class="ml-auto btn-premium px-8 py-3 rounded-xl font-bold">Next</button></div></div></div>
-
-      <div id="studentResults" class="hidden text-center glass-card-dark rounded-2xl p-12"><i data-lucide="award" class="text-purple-400 w-20 h-20 mx-auto mb-4"></i><h2 class="text-3xl font-bold">Assessment Complete</h2><p id="finalScore" class="text-6xl font-bold text-purple-400 my-4"></p><p id="finalMessage" class="text-gray-300 mb-6"></p><button onclick="resetStudentPortal()" class="btn-premium px-8 py-3 rounded-xl font-bold">Back to Portal</button></div>
-    </div>
-  </div>
-</div>
-
-<script>
-  // Data Stores
-  let quizzes = [];
-  let submissions = []; // { studentName, class, sdmsCode, quizId, quizTitle, answers: [{questionText, userAnswer, pointsEarned, maxPoints, needsGrading}], totalScore, totalPossible, percentage, date }
-  let currentQuiz = null, currentQ = 0, studentAnswersRaw = [], currentStudent = null, timerInterval = null, timeRemainingSeconds = 0;
-  let scoreChartInstance = null;
-
-  // Anti-cheat: disable screenshot, copy, paste, devtools
-  function blockDevTools(e) {
-    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) || (e.ctrlKey && e.key === 'u')) {
-      e.preventDefault(); showToast("Developer tools disabled during quiz", "error"); return false;
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;family=DM+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Space Mono', 'monospace'],
+            body: ['DM Sans', 'sans-serif']
+          }
+        }
+      }
     }
-  }
-  document.addEventListener('keydown', blockDevTools);
-  document.addEventListener('copy', (e) => { if (currentQuiz) { e.preventDefault(); showToast("Copying is disabled", "error"); } });
-  document.addEventListener('cut', (e) => { if (currentQuiz) e.preventDefault(); });
-  document.addEventListener('paste', (e) => { if (currentQuiz) e.preventDefault(); });
-  document.addEventListener('contextmenu', (e) => { if (currentQuiz) e.preventDefault(); });
-  // Tab visibility & screenshot detection
-  let cheatingDetected = false;
-  document.addEventListener('visibilitychange', () => { if (currentQuiz && document.hidden && !cheatingDetected) { cheatingDetected = true; showCheatingAlert(); } });
-  function showCheatingAlert() { if (timerInterval) clearInterval(timerInterval); document.getElementById('cheatingOverlay').style.display = 'flex'; lucide.createIcons(); if (currentQuiz) forceSubmitQuiz(); }
-  function forceSubmitQuiz() { if (currentQuiz && studentAnswersRaw) submitStudentQuiz(true); }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-root { height: 100%; overflow-y: auto; }
+    .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+    .glass-light { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); }
+    .gradient-text { background: linear-gradient(135deg, #06b6d4, #8b5cf6, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .btn-primary { background: linear-gradient(135deg, #06b6d4, #8b5cf6); transition: all 0.2s; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(6,182,212,0.3); }
+    .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); transition: all 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .quiz-option { transition: all 0.15s; }
+    .quiz-option:hover { background: rgba(6,182,212,0.15); border-color: rgba(6,182,212,0.5); }
+    .quiz-option.selected { background: rgba(6,182,212,0.2); border-color: #06b6d4; }
+    .toast { position: fixed; bottom: 24px; right: 24px; z-index: 9999; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .progress-ring { transition: stroke-dashoffset 0.5s ease; }
+    input:focus, textarea:focus, select:focus { outline: none; box-shadow: 0 0 0 2px rgba(6,182,212,0.5); }
+    .sidebar-link { transition: all 0.15s; }
+    .sidebar-link:hover, .sidebar-link.active { background: rgba(6,182,212,0.15); color: #06b6d4; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-slate-950 text-slate-100 font-body">
+  <div class="app-root" id="app"><!-- Landing Page -->
+   <div id="page-landing" class="fade-in">
+    <nav class="glass sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
+     <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg btn-primary flex items-center justify-center"><i data-lucide="brain" class="w-5 h-5 text-white"></i>
+      </div><span class="font-heading font-bold text-lg" id="nav-title">AfriQuiz Pro</span>
+     </div>
+     <div class="flex gap-2"><button onclick="showPage('teacher-login')" class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium">Teacher</button> <button onclick="showPage('student-verify')" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium text-white">Student</button>
+     </div>
+    </nav>
+    <main class="max-w-5xl mx-auto px-4 py-16 text-center">
+     <div class="mb-4 inline-block px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+      🌍 Built for African Schools
+     </div>
+     <h1 class="font-heading text-4xl md:text-6xl font-bold mb-4" id="hero-title"><span class="gradient-text" id="hero-title-text">AfriQuiz Pro</span></h1>
+     <p class="text-slate-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto" id="hero-tagline-text">Smart Assessments for African Schools</p>
+     <div class="flex flex-wrap justify-center gap-3 mb-16"><button onclick="showPage('teacher-login')" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> Teacher Portal</button> <button onclick="showPage('student-verify')" class="btn-secondary px-6 py-3 rounded-xl font-semibold flex items-center gap-2"><i data-lucide="graduation-cap" class="w-5 h-5"></i> Student Portal</button>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="glass rounded-2xl p-6 text-left">
+       <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-3">
+        <i data-lucide="wifi-off" class="w-5 h-5 text-cyan-400"></i>
+       </div>
+       <h3 class="font-semibold mb-1">Offline-First</h3>
+       <p class="text-sm text-slate-400">Works on 2G/3G networks. All data stored locally.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 text-left">
+       <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-3">
+        <i data-lucide="shield-check" class="w-5 h-5 text-purple-400"></i>
+       </div>
+       <h3 class="font-semibold mb-1">Anti-Cheat</h3>
+       <p class="text-sm text-slate-400">Tab detection, copy prevention, fullscreen mode.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 text-left">
+       <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center mb-3">
+        <i data-lucide="bar-chart-3" class="w-5 h-5 text-amber-400"></i>
+       </div>
+       <h3 class="font-semibold mb-1">Analytics</h3>
+       <p class="text-sm text-slate-400">Track performance, export CSV, AI feedback.</p>
+      </div>
+     </div>
+    </main>
+   </div><!-- Teacher Login -->
+   <div id="page-teacher-login" class="hidden fade-in h-full flex items-center justify-center px-4">
+    <div class="glass rounded-2xl p-8 w-full max-w-sm"><button onclick="showPage('landing')" class="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+     <h2 class="font-heading text-2xl font-bold mb-6">Teacher Portal</h2>
+     <form id="teacher-login-form" onsubmit="handleTeacherLogin(event)"><label for="teacher-name" class="text-sm text-slate-400 block mb-1">Your Name</label> <input id="teacher-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-4 text-white placeholder-slate-500" placeholder="e.g. Mrs. Okafor"> <label for="teacher-pass" class="text-sm text-slate-400 block mb-1">Access Code</label> <input id="teacher-pass" type="password" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-6 text-white placeholder-slate-500" placeholder="Enter code (use: teacher)"> <button type="submit" class="w-full btn-primary py-3 rounded-xl text-white font-semibold">Enter Dashboard</button>
+     </form>
+    </div>
+   </div><!-- Student Verify -->
+   <div id="page-student-verify" class="hidden fade-in h-full flex items-center justify-center px-4">
+    <div class="glass rounded-2xl p-8 w-full max-w-sm"><button onclick="showPage('landing')" class="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+     <h2 class="font-heading text-2xl font-bold mb-2">Student Verification</h2>
+     <p class="text-slate-400 text-sm mb-6">Verify your identity to access quizzes</p>
+     <form id="student-verify-form" onsubmit="handleStudentVerify(event)"><label for="stu-name" class="text-sm text-slate-400 block mb-1">Full Name</label> <input id="stu-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-3 text-white placeholder-slate-500" placeholder="Amina Mohammed"> <label for="stu-class" class="text-sm text-slate-400 block mb-1">Class</label> <input id="stu-class" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-3 text-white placeholder-slate-500" placeholder="JSS 3A"> <label for="stu-sdms" class="text-sm text-slate-400 block mb-1">SDMS Code</label> <input id="stu-sdms" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-6 text-white placeholder-slate-500" placeholder="STU-2024-001"> <button type="submit" class="w-full btn-primary py-3 rounded-xl text-white font-semibold">Verify &amp; Continue</button>
+     </form>
+    </div>
+   </div><!-- Teacher Dashboard -->
+   <div id="page-teacher-dashboard" class="hidden fade-in flex h-full"><!-- Sidebar -->
+    <aside class="glass w-56 shrink-0 p-4 flex-col hidden md:flex" id="sidebar">
+     <div class="flex items-center gap-2 mb-6">
+      <div class="w-7 h-7 rounded-lg btn-primary flex items-center justify-center">
+       <i data-lucide="brain" class="w-4 h-4 text-white"></i>
+      </div><span class="font-heading text-sm font-bold">AfriQuiz</span>
+     </div>
+     <nav class="flex flex-col gap-1 flex-1"><button onclick="showTeacherTab('quizzes')" class="sidebar-link active text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2" data-tab="quizzes"><i data-lucide="file-text" class="w-4 h-4"></i> My Quizzes</button> <button onclick="showTeacherTab('create')" class="sidebar-link text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2" data-tab="create"><i data-lucide="plus-circle" class="w-4 h-4"></i> Create Quiz</button> <button onclick="showTeacherTab('submissions')" class="sidebar-link text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2" data-tab="submissions"><i data-lucide="users" class="w-4 h-4"></i> Submissions</button> <button onclick="showTeacherTab('analytics')" class="sidebar-link text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2" data-tab="analytics"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> Analytics</button>
+     </nav><button onclick="logoutTeacher()" class="sidebar-link text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-red-400"><i data-lucide="log-out" class="w-4 h-4"></i> Logout</button>
+    </aside><!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-6"><!-- Mobile nav -->
+     <div class="md:hidden flex items-center justify-between mb-4"><span class="font-heading font-bold">AfriQuiz</span>
+      <div class="flex gap-2"><button onclick="showTeacherTab('quizzes')" class="p-2 rounded-lg btn-secondary"><i data-lucide="file-text" class="w-4 h-4"></i></button> <button onclick="showTeacherTab('create')" class="p-2 rounded-lg btn-secondary"><i data-lucide="plus-circle" class="w-4 h-4"></i></button> <button onclick="showTeacherTab('submissions')" class="p-2 rounded-lg btn-secondary"><i data-lucide="users" class="w-4 h-4"></i></button> <button onclick="showTeacherTab('analytics')" class="p-2 rounded-lg btn-secondary"><i data-lucide="bar-chart-3" class="w-4 h-4"></i></button>
+      </div>
+     </div>
+     <div id="teacher-welcome" class="mb-6">
+      <h1 class="text-2xl font-bold">Welcome back, <span id="teacher-display-name">Teacher</span></h1>
+      <p class="text-slate-400 text-sm">Manage your quizzes and track student progress</p>
+     </div><!-- Tab: My Quizzes -->
+     <div id="tab-quizzes" class="fade-in">
+      <div id="quizzes-list" class="grid gap-4"></div>
+      <div id="quizzes-empty" class="text-center py-12 text-slate-500"><i data-lucide="file-text" class="w-12 h-12 mx-auto mb-3 opacity-40"></i>
+       <p>No quizzes yet. Create your first quiz!</p>
+      </div>
+     </div><!-- Tab: Create Quiz -->
+     <div id="tab-create" class="hidden fade-in">
+      <div class="glass rounded-2xl p-6 max-w-2xl">
+       <h2 class="font-heading text-xl font-bold mb-4">Create New Quiz</h2>
+       <form id="create-quiz-form" onsubmit="handleCreateQuiz(event)">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+         <div><label for="q-title" class="text-sm text-slate-400 block mb-1">Quiz Title</label> <input id="q-title" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500" placeholder="e.g. Biology Test 1">
+         </div>
+         <div><label for="q-subject" class="text-sm text-slate-400 block mb-1">Subject</label> <input id="q-subject" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500" placeholder="e.g. Biology">
+         </div>
+         <div><label for="q-pass" class="text-sm text-slate-400 block mb-1">Passing Mark (%)</label> <input id="q-pass" type="number" min="0" max="100" value="50" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+         </div>
+         <div><label for="q-time" class="text-sm text-slate-400 block mb-1">Time Limit (mins, 0=unlimited)</label> <input id="q-time" type="number" min="0" value="30" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white">
+         </div>
+        </div>
+        <div id="questions-container" class="space-y-4 mb-4"></div>
+        <div class="flex flex-wrap gap-2 mb-4"><button type="button" onclick="addQuestion('multiple')" class="btn-secondary px-3 py-2 rounded-lg text-sm flex items-center gap-1"><i data-lucide="list" class="w-4 h-4"></i> + MCQ</button> <button type="button" onclick="addQuestion('truefalse')" class="btn-secondary px-3 py-2 rounded-lg text-sm flex items-center gap-1"><i data-lucide="check-circle" class="w-4 h-4"></i> + True/False</button> <button type="button" onclick="addQuestion('short')" class="btn-secondary px-3 py-2 rounded-lg text-sm flex items-center gap-1"><i data-lucide="type" class="w-4 h-4"></i> + Short Answer</button>
+        </div><button type="submit" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold">Create Quiz</button>
+       </form>
+      </div>
+     </div><!-- Tab: Submissions -->
+     <div id="tab-submissions" class="hidden fade-in">
+      <div class="glass rounded-2xl overflow-hidden">
+       <div class="p-4 border-b border-slate-700/50 flex items-center justify-between">
+        <h2 class="font-semibold">Student Submissions</h2><button onclick="exportCSV()" class="btn-secondary px-3 py-1.5 rounded-lg text-xs flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Export CSV</button>
+       </div>
+       <div id="submissions-table" class="overflow-x-auto">
+        <table class="w-full text-sm">
+         <thead class="text-slate-400 text-left border-b border-slate-700/50">
+          <tr>
+           <th class="px-4 py-3">Student</th>
+           <th class="px-4 py-3">Class</th>
+           <th class="px-4 py-3">Quiz</th>
+           <th class="px-4 py-3">Score</th>
+           <th class="px-4 py-3">Status</th>
+          </tr>
+         </thead>
+         <tbody id="submissions-body"></tbody>
+        </table>
+       </div>
+       <div id="submissions-empty" class="p-8 text-center text-slate-500">
+        No submissions yet
+       </div>
+      </div>
+     </div><!-- Tab: Analytics -->
+     <div id="tab-analytics" class="hidden fade-in">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+       <div class="glass rounded-xl p-5">
+        <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Total Quizzes</p>
+        <p class="text-3xl font-bold" id="stat-quizzes">0</p>
+       </div>
+       <div class="glass rounded-xl p-5">
+        <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Total Submissions</p>
+        <p class="text-3xl font-bold" id="stat-submissions">0</p>
+       </div>
+       <div class="glass rounded-xl p-5">
+        <p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Avg Score</p>
+        <p class="text-3xl font-bold" id="stat-avg">0%</p>
+       </div>
+      </div>
+      <div class="glass rounded-xl p-5">
+       <h3 class="font-semibold mb-4">Score Distribution</h3>
+       <div id="chart-container" class="flex items-end gap-2 h-40"></div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Student Portal -->
+   <div id="page-student-portal" class="hidden fade-in h-full flex flex-col">
+    <nav class="glass px-4 py-3 flex items-center justify-between shrink-0">
+     <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-lg btn-primary flex items-center justify-center">
+       <i data-lucide="brain" class="w-4 h-4 text-white"></i>
+      </div><span class="font-heading text-sm font-bold">AfriQuiz</span>
+     </div>
+     <div class="flex items-center gap-3"><span class="text-sm text-slate-400" id="student-name-display"></span> <button onclick="logoutStudent()" class="btn-secondary px-3 py-1.5 rounded-lg text-xs">Logout</button>
+     </div>
+    </nav>
+    <div class="flex-1 overflow-y-auto p-4 md:p-6">
+     <div id="student-home" class="max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold mb-2">Welcome, <span id="student-greeting"></span></h2>
+      <p class="text-slate-400 text-sm mb-6">Enter a quiz code or browse available quizzes</p>
+      <div class="glass rounded-2xl p-6 mb-6">
+       <form onsubmit="joinQuizByCode(event)" class="flex gap-2"><input id="quiz-code-input" type="text" maxlength="6" required class="flex-1 bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 uppercase tracking-widest font-heading" placeholder="QUIZ CODE"> <button type="submit" class="btn-primary px-5 py-3 rounded-lg text-white font-semibold">Join</button>
+       </form>
+      </div>
+      <h3 class="font-semibold mb-3">Available Quizzes</h3>
+      <div id="student-quiz-list" class="space-y-3"></div>
+      <div id="student-quiz-empty" class="text-center py-8 text-slate-500">
+       No quizzes available yet
+      </div>
+      <h3 class="font-semibold mb-3 mt-8">My Results</h3>
+      <div id="student-results" class="space-y-3"></div>
+      <div id="student-results-empty" class="text-center py-8 text-slate-500">
+       No results yet
+      </div>
+     </div>
+    </div>
+   </div><!-- Quiz Taking Page -->
+   <div id="page-quiz-taking" class="hidden fade-in h-full flex flex-col">
+    <div class="glass px-4 py-3 flex items-center justify-between shrink-0">
+     <div>
+      <p class="font-heading text-sm font-bold" id="taking-title">Quiz</p>
+      <p class="text-xs text-slate-400" id="taking-progress">Question 1 of 5</p>
+     </div>
+     <div class="flex items-center gap-3">
+      <div id="taking-timer" class="font-heading text-sm text-cyan-400 flex items-center gap-1">
+       <i data-lucide="clock" class="w-4 h-4"></i><span id="timer-display">30:00</span>
+      </div>
+      <div id="violation-badge" class="hidden px-2 py-1 rounded bg-red-500/20 text-red-400 text-xs">
+       ⚠️ <span id="violation-count">0</span>
+      </div>
+     </div>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center">
+     <div class="w-full max-w-xl">
+      <div id="question-display" class="glass rounded-2xl p-6"></div>
+      <div class="flex justify-between mt-4"><button id="btn-prev" onclick="prevQuestion()" class="btn-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-1 hidden"><i data-lucide="arrow-left" class="w-4 h-4"></i> Prev</button> <button id="btn-next" onclick="nextQuestion()" class="btn-primary px-4 py-2 rounded-lg text-sm text-white flex items-center gap-1 ml-auto">Next <i data-lucide="arrow-right" class="w-4 h-4"></i></button> <button id="btn-submit-quiz" onclick="submitQuiz()" class="btn-primary px-5 py-2 rounded-lg text-sm text-white font-semibold hidden">Submit Quiz</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Quiz Result Page -->
+   <div id="page-quiz-result" class="hidden fade-in h-full flex items-center justify-center px-4">
+    <div class="glass rounded-2xl p-8 w-full max-w-md text-center">
+     <div id="result-icon" class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center"></div>
+     <h2 class="font-heading text-2xl font-bold mb-1" id="result-title">Quiz Complete!</h2>
+     <p class="text-slate-400 text-sm mb-4" id="result-quiz-name"></p>
+     <div class="text-5xl font-bold mb-2" id="result-score">
+      85%
+     </div>
+     <p class="text-sm mb-6" id="result-status"></p>
+     <div class="glass-light rounded-xl p-4 text-left text-sm mb-6" id="result-feedback"></div><button onclick="showPage('student-portal');loadStudentHome()" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold w-full">Back to Dashboard</button>
+    </div>
+   </div>
+  </div><!-- Toast Container -->
+  <div id="toast-container"></div>
+  <script>
+// === STATE ===
+let currentTeacher = null;
+let currentStudent = null;
+let currentQuiz = null;
+let currentQuestionIdx = 0;
+let studentAnswers = [];
+let timerInterval = null;
+let timeRemaining = 0;
+let violations = 0;
+let questionsBeingCreated = [];
 
-  function showToast(msg, type = 'success') { const container = document.getElementById('toastContainer'); const toast = document.createElement('div'); toast.className = `toast-premium flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold ${type === 'success' ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gradient-to-r from-red-500 to-rose-600'}`; toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-triangle'}" class="w-4 h-4"></i> ${msg}`; container.appendChild(toast); lucide.createIcons(); setTimeout(() => toast.remove(), 3500); }
+// === STORAGE ===
+function getQuizzes() { return JSON.parse(localStorage.getItem('afriquiz_quizzes') || '[]'); }
+function saveQuizzes(q) { localStorage.setItem('afriquiz_quizzes', JSON.stringify(q)); }
+function getSubmissions() { return JSON.parse(localStorage.getItem('afriquiz_submissions') || '[]'); }
+function saveSubmissions(s) { localStorage.setItem('afriquiz_submissions', JSON.stringify(s)); }
 
-  function showPage(page) { document.getElementById('pageLanding').classList.add('hidden'); document.getElementById('pageTeacher').classList.add('hidden'); document.getElementById('pageStudent').classList.add('hidden'); document.getElementById(`page${page.charAt(0).toUpperCase() + page.slice(1)}`).classList.remove('hidden'); if (page === 'teacher') { renderTeacherDashboard(); showTeacherTab('dashboard'); updateAnalyticsCharts(); } if (page === 'student') resetStudentPortal(); lucide.createIcons(); }
+// === NAVIGATION ===
+function showPage(page) {
+  document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
+  const el = document.getElementById('page-' + page);
+  if (el) { el.classList.remove('hidden'); el.classList.add('fade-in'); }
+}
 
-  function showTeacherTab(tab) { ['teacherDashboard', 'teacherCreate', 'teacherResponses', 'teacherAnalytics'].forEach(id => document.getElementById(id).classList.add('hidden')); document.getElementById(`teacher${tab.charAt(0).toUpperCase() + tab.slice(1)}`).classList.remove('hidden'); if (tab === 'responses') renderResponsesTable(); if (tab === 'analytics') updateAnalyticsCharts(); lucide.createIcons(); }
+function showTeacherTab(tab) {
+  ['quizzes','create','submissions','analytics'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.classList.add('hidden');
+  });
+  const target = document.getElementById('tab-' + tab);
+  if (target) { target.classList.remove('hidden'); target.classList.add('fade-in'); }
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+  if (tab === 'quizzes') renderTeacherQuizzes();
+  if (tab === 'submissions') renderSubmissions();
+  if (tab === 'analytics') renderAnalytics();
+}
 
-  function renderTeacherDashboard() { document.getElementById('statTotalQuizzes').innerText = quizzes.length; document.getElementById('statTotalResponses').innerText = submissions.length; const pendingGrading = submissions.filter(s => s.needsGradingCount > 0).length; document.getElementById('statPendingGrading').innerText = pendingGrading; const avg = submissions.length ? (submissions.reduce((a, b) => a + b.percentage, 0) / submissions.length).toFixed(0) : 0; document.getElementById('statAvgScore').innerText = avg + '%'; const container = document.getElementById('teacherQuizList'); if (!quizzes.length) container.innerHTML = '<div class="glass-card-dark rounded-2xl p-8 text-center col-span-full">No quizzes yet</div>'; else container.innerHTML = quizzes.map(q => `<div class="glass-card-dark rounded-2xl p-5"><div class="flex justify-between"><div><span class="text-xs bg-purple-500/20 px-2 py-1 rounded-full">${q.subject}</span><h4 class="font-bold text-lg mt-2">${q.title}</h4><p class="text-gray-400 text-sm">Code: ${q.code}</p></div><button onclick="copyCode('${q.code}')" class="text-sm bg-white/10 px-3 py-1 rounded-full">📋 Copy</button></div></div>`).join(''); lucide.createIcons(); }
-
-  function copyCode(code) { navigator.clipboard.writeText(code); showToast(`Code ${code} copied`, 'success'); }
-
-  // Create Quiz Helpers
-  function addQuestion() { const type = document.getElementById('questionTypeSelect').value; if (!type) return; const container = document.getElementById('questionsContainer'); const card = document.createElement('div'); card.className = 'question-card glass-card-dark rounded-xl p-5 space-y-3'; card.dataset.type = type; card.innerHTML = `<div class="flex justify-between"><span class="text-xs bg-purple-500/30 px-2 py-1 rounded-full">${type}</span><button type="button" onclick="this.closest('.question-card').remove()" class="text-red-400">✖</button></div><input type="text" placeholder="Question text" class="w-full bg-black/40 border rounded-lg p-3 text-white" data-question-text required><div class="options-container space-y-2"></div><input type="number" placeholder="Points" class="w-32 bg-black/40 border rounded-lg p-2 text-sm" data-points value="1">`; const optsDiv = card.querySelector('.options-container'); if (type === 'multiple') { for (let i = 0; i < 4; i++) optsDiv.innerHTML += `<input type="text" placeholder="Option ${String.fromCharCode(65 + i)}" class="w-full bg-black/40 border rounded-lg p-2 text-sm" data-opt="${i}">`; optsDiv.innerHTML += `<select class="mt-2 bg-black/40 border rounded-lg p-2 text-sm" data-correct><option value="0">Correct: A</option><option value="1">Correct: B</option><option value="2">Correct: C</option><option value="3">Correct: D</option></select>`; } else if (type === 'truefalse') { optsDiv.innerHTML = `<select class="bg-black/40 border rounded-lg p-2 text-sm" data-correct><option value="0">True</option><option value="1">False</option></select>`; } container.appendChild(card); lucide.createIcons(); }
-
-  document.getElementById('createQuizForm')?.addEventListener('submit', (e) => { e.preventDefault(); const title = document.getElementById('quizTitle').value.trim(); const subject = document.getElementById('quizSubject').value.trim(); if (!title || !subject) return showToast('Title & subject required', 'error'); const questionCards = document.querySelectorAll('.question-card'); if (!questionCards.length) return showToast('Add questions', 'error'); const questions = []; questionCards.forEach(card => { const qText = card.querySelector('[data-question-text]').value.trim(); if (!qText) return; const type = card.dataset.type; let options = [], correct = 0; if (type === 'multiple') { card.querySelectorAll('[data-opt]').forEach(inp => { if (inp.value.trim()) options.push(inp.value.trim()); }); correct = parseInt(card.querySelector('[data-correct]').value); } else if (type === 'truefalse') { options = ['True', 'False']; correct = parseInt(card.querySelector('[data-correct]').value); } const points = parseInt(card.querySelector('[data-points]').value) || 1; questions.push({ type, text: qText, options, correct, points, needsManualGrading: (type === 'short' || type === 'paragraph') }); }); if (!questions.length) return; const code = subject.slice(0, 3).toUpperCase() + Math.floor(100 + Math.random() * 900); const newQuiz = { id: 'Q' + Date.now(), title, subject, code, description: document.getElementById('quizDesc').value, passingMark: parseInt(document.getElementById('quizPassing').value) || 70, timeLimit: parseInt(document.getElementById('quizTimeLimit').value) || null, questions }; quizzes.push(newQuiz); showToast(`Quiz "${title}" created! Code: ${code}`, 'success'); document.getElementById('createQuizForm').reset(); document.getElementById('questionsContainer').innerHTML = ''; showTeacherTab('dashboard'); renderTeacherDashboard(); });
-
-  // Student Identity
-  document.getElementById('identityForm')?.addEventListener('submit', (e) => { e.preventDefault(); const name = document.getElementById('studentFullName').value.trim(); const cls = document.getElementById('studentClass').value.trim(); const sdms = document.getElementById('studentSDMS').value.trim(); if (!name || !cls || !sdms) return showToast('All fields required', 'error'); currentStudent = { name, class: cls, sdmsCode: sdms }; document.getElementById('studentIdentityForm').classList.add('hidden'); document.getElementById('studentJoin').classList.remove('hidden'); renderAvailableQuizzes(); showToast('Identity verified! Enter quiz code', 'success'); });
-
-  function renderAvailableQuizzes() { const container = document.getElementById('availableQuizzesList'); if (!quizzes.length) container.innerHTML = '<div class="glass-card-dark rounded-xl p-8 text-center">No quizzes</div>'; else container.innerHTML = quizzes.map(q => `<div class="glass-card-dark rounded-xl p-5 flex justify-between"><div><p class="font-bold">${q.title}</p><p class="text-sm text-gray-400">${q.subject}</p></div><button onclick="startQuizWithCode('${q.code}')" class="btn-premium px-5 py-2 rounded-xl">Take</button></div>`).join(''); lucide.createIcons(); }
-
-  function startQuizWithCode(code) { document.getElementById('joinCode').value = code; document.getElementById('studentJoinForm').dispatchEvent(new Event('submit')); }
-
-  document.getElementById('studentJoinForm')?.addEventListener('submit', (e) => { e.preventDefault(); const code = document.getElementById('joinCode').value.trim().toUpperCase(); const quiz = quizzes.find(q => q.code === code); if (!quiz) return showToast('Invalid code', 'error'); startStudentQuiz(quiz.id); });
-
-  function startStudentQuiz(quizId) { currentQuiz = quizzes.find(q => q.id === quizId); currentQ = 0; studentAnswersRaw = new Array(currentQuiz.questions.length).fill(''); cheatingDetected = false; document.getElementById('studentJoin').classList.add('hidden'); document.getElementById('studentQuizInterface').classList.remove('hidden'); if (currentQuiz.timeLimit) { timeRemainingSeconds = currentQuiz.timeLimit * 60; startTimer(); } renderStudentQuestion(); }
-
-  function startTimer() { if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(() => { if (timeRemainingSeconds <= 0) { clearInterval(timerInterval); showToast("Time's up! Auto-submitting...", "error"); submitStudentQuiz(true); } else { timeRemainingSeconds--; const mins = Math.floor(timeRemainingSeconds / 60); const secs = timeRemainingSeconds % 60; document.getElementById('timerDisplay').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; if (timeRemainingSeconds <= 60) document.getElementById('timerDisplay').classList.add('text-red-400', 'animate-pulse'); } }, 1000); }
-
-  function renderStudentQuestion() { const q = currentQuiz.questions[currentQuestionIndex]; document.getElementById('activeQuizTitle').innerText = currentQuiz.title; document.getElementById('quizProgressBadge').innerText = `${currentQuestionIndex + 1}/${currentQuiz.questions.length}`; document.getElementById('progressFill').style.width = `${((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100}%`; document.getElementById('prevBtn').classList.toggle('hidden', currentQuestionIndex === 0); const isLast = currentQuestionIndex === currentQuiz.questions.length - 1; document.getElementById('nextBtn').innerText = isLast ? 'Submit Quiz' : 'Next →'; let html = `<p class="text-xl font-bold mb-6">${q.text} ${q.needsManualGrading ? '<span class="text-xs text-yellow-400 ml-2">(Teacher will grade)</span>' : ''}</p>`; if (q.type === 'multiple') { html += `<div class="space-y-3">${q.options.map((opt, idx) => `<button onclick="selectAnswer('${idx}')" class="quiz-option w-full text-left p-4 rounded-xl border border-white/15 ${studentAnswersRaw[currentQuestionIndex] === idx.toString() ? 'selected' : ''}">${opt}</button>`).join('')}</div>`; } else if (q.type === 'truefalse') { html += `<div class="flex gap-4">${q.options.map((opt, idx) => `<button onclick="selectAnswer('${idx}')" class="quiz-option flex-1 p-4 rounded-xl border ${studentAnswersRaw[currentQuestionIndex] === idx.toString() ? 'selected' : 'border-white/15'}">${opt}</button>`).join('')}</div>`; } else { html += `<textarea rows="4" class="w-full bg-black/40 border border-white/20 rounded-xl p-4" id="textAnswer">${studentAnswersRaw[currentQuestionIndex] || ''}</textarea>`; setTimeout(() => { const ta = document.getElementById('textAnswer'); if (ta) ta.addEventListener('input', (e) => studentAnswersRaw[currentQuestionIndex] = e.target.value); }, 100); } document.getElementById('questionArea').innerHTML = html; lucide.createIcons(); }
-
-  function selectAnswer(val) { studentAnswersRaw[currentQuestionIndex] = val.toString(); renderStudentQuestion(); }
-  function nextStudentQuestion() { if (currentQuestionIndex < currentQuiz.questions.length - 1) { currentQuestionIndex++; renderStudentQuestion(); } else submitStudentQuiz(false); }
-  function prevStudentQuestion() { if (currentQuestionIndex > 0) { currentQuestionIndex--; renderStudentQuestion(); } }
-
-  function submitStudentQuiz(isForced = false) { if (timerInterval) clearInterval(timerInterval); const detailedAnswers = []; let totalPossible = 0, autoEarned = 0; let needsGradingCount = 0; currentQuiz.questions.forEach((q, idx) => { const userAns = studentAnswersRaw[idx] || ""; totalPossible += q.points; let earned = 0, needsGrading = false; if (q.needsManualGrading) { needsGrading = true; needsGradingCount++; earned = 0; } else if (q.type === 'multiple' || q.type === 'truefalse') { if (parseInt(userAns) === q.correct) earned = q.points; } detailedAnswers.push({ questionText: q.text, userAnswer: userAns, pointsEarned: earned, maxPoints: q.points, needsGrading, correctAnswer: q.correct, options: q.options }); autoEarned += earned; }); const percentage = totalPossible ? Math.round((autoEarned / totalPossible) * 100) : 0; const submission = { id: Date.now(), studentName: currentStudent.name, studentClass: currentStudent.class, sdmsCode: currentStudent.sdmsCode, quizId: currentQuiz.id, quizTitle: currentQuiz.title, answers: detailedAnswers, totalScore: autoEarned, totalPossible, percentage, needsGradingCount, date: new Date().toLocaleString() }; submissions.push(submission); document.getElementById('studentQuizInterface').classList.add('hidden'); document.getElementById('studentResults').classList.remove('hidden'); document.getElementById('finalScore').innerHTML = percentage + '%'; document.getElementById('finalMessage').innerHTML = `${autoEarned}/${totalPossible} auto-graded points. ${needsGradingCount} open-ended answers pending teacher review.`; renderTeacherDashboard(); updateAnalyticsCharts(); renderResponsesTable(); }
-
-  function renderResponsesTable() { const tbody = document.getElementById('responsesTableBody'); if (!submissions.length) { tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-400">No submissions</td></tr>'; return; } tbody.innerHTML = submissions.map(s => `<tr><td>${s.studentName}</td><td>${s.studentClass}</td><td>${s.sdmsCode}</td><td>${s.quizTitle}</td><td>${s.percentage}% (${s.totalScore}/${s.totalPossible})</td><td><span class="px-2 py-1 rounded-full text-xs ${s.percentage >= 70 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${s.percentage >= 70 ? 'Pass' : 'Fail'}</span></td><td>${s.needsGradingCount} pending</td><td><button onclick="openGradingModal('${s.id}')" class="text-purple-400 text-sm">✏️ Grade</button></td></tr>`).join(''); }
-
-  function openGradingModal(subId) { const sub = submissions.find(s => s.id == subId); if (!sub) return; let modalHtml = `<div class="fixed inset-0 bg-black/80 z-[10000] flex items-center justify-center p-4" id="gradingModal"><div class="glass-card-dark rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6"><h2 class="text-2xl font-bold mb-4">Grade Open-Ended: ${sub.studentName}</h2>`; sub.answers.forEach((ans, idx) => { if (ans.needsGrading) { modalHtml += `<div class="border-b border-white/10 py-4"><p class="font-bold">Q: ${ans.questionText}</p><p class="text-gray-300 mt-2">Student Answer: <span class="text-yellow-300">"${ans.userAnswer || '(empty)'}"</span></p><div class="flex gap-3 mt-3"><input type="number" id="grade_${idx}" placeholder="Points (0-${ans.maxPoints})" class="bg-black/40 border rounded-lg p-2 w-24"><button onclick="saveGrade('${sub.id}', ${idx}, ${ans.maxPoints})" class="btn-premium px-4 py-2 rounded-lg text-sm">Save</button></div></div>`; } }); modalHtml += `<div class="mt-6"><button onclick="closeGradingModal()" class="px-6 py-2 bg-white/10 rounded-xl">Close</button></div></div></div>`; document.body.insertAdjacentHTML('beforeend', modalHtml); lucide.createIcons(); }
-  window.saveGrade = (subId, qIdx, maxPoints) => { const input = document.getElementById(`grade_${qIdx}`); const points = parseInt(input.value); if (isNaN(points) || points < 0 || points > maxPoints) return showToast(`Points must be 0-${maxPoints}`, 'error'); const sub = submissions.find(s => s.id == subId); if (sub) { sub.answers[qIdx].pointsEarned = points; sub.answers[qIdx].needsGrading = false; sub.needsGradingCount--; let newTotal = sub.answers.reduce((sum, a) => sum + a.pointsEarned, 0); sub.totalScore = newTotal; sub.percentage = Math.round((newTotal / sub.totalPossible) * 100); showToast('Grade saved!', 'success'); renderResponsesTable(); renderTeacherDashboard(); closeGradingModal(); } }; window.closeGradingModal = () => { document.getElementById('gradingModal')?.remove(); };
-
-  function sortResponses(criteria) { const sorted = [...submissions]; if (criteria === 'score-desc') sorted.sort((a,b) => b.percentage - a.percentage); else if (criteria === 'score-asc') sorted.sort((a,b) => a.percentage - b.percentage); else if (criteria === 'name-asc') sorted.sort((a,b) => a.studentName.localeCompare(b.studentName)); else if (criteria === 'name-desc') sorted.sort((a,b) => b.studentName.localeCompare(a.studentName)); else if (criteria === 'date-desc') sorted.sort((a,b) => new Date(b.date) - new Date(a.date)); submissions = sorted; renderResponsesTable(); }
-
-  function updateAnalyticsCharts() { if (!submissions.length) return; const scores = submissions.map(s => s.percentage); const ctx = document.getElementById('scoreChart')?.getContext('2d'); if (scoreChartInstance) scoreChartInstance.destroy(); if (ctx) scoreChartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['0-49%', '50-69%', '70-89%', '90-100%'], datasets: [{ label: 'Students', data: [scores.filter(s => s < 50).length, scores.filter(s => s >= 50 && s < 70).length, scores.filter(s => s >= 70 && s < 90).length, scores.filter(s => s >= 90).length], backgroundColor: '#8B5CF6' }] }, options: { responsive: true } }); const avg = (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(0); document.getElementById('analyticsSummary').innerHTML = `<div class="space-y-3"><div class="flex justify-between"><span>Average Score</span><span class="font-bold text-purple-400">${avg}%</span></div><div class="flex justify-between"><span>Highest</span><span class="font-bold text-green-400">${Math.max(...scores)}%</span></div><div class="flex justify-between"><span>Lowest</span><span class="font-bold text-red-400">${Math.min(...scores)}%</span></div><div class="flex justify-between"><span>Pass Rate</span><span class="font-bold text-blue-400">${Math.round((scores.filter(s=>s>=70).length/scores.length)*100)}%</span></div></div>`; }
-
-  function exportToCSV() { let csv = "Student,Class,SDMS Code,Quiz,Score (%),Date\n"; submissions.forEach(s => { csv += `${s.studentName},${s.studentClass},${s.sdmsCode},${s.quizTitle},${s.percentage},${s.date}\n`; }); const blob = new Blob([csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'quiz_results.csv'; a.click(); showToast('CSV exported', 'success'); }
-  function exportAnalyticsPDF() { const element = document.getElementById('teacherAnalytics'); html2pdf().from(element).set({ margin: 1, filename: 'analytics_report.pdf' }).save(); showToast('PDF generated', 'success'); }
-  function resetStudentPortal() { document.getElementById('studentIdentityForm').classList.remove('hidden'); document.getElementById('studentJoin').classList.add('hidden'); document.getElementById('studentQuizInterface').classList.add('hidden'); document.getElementById('studentResults').classList.add('hidden'); document.getElementById('identityForm').reset(); currentQuiz = null; if (timerInterval) clearInterval(timerInterval); document.getElementById('cheatingOverlay').style.display = 'none'; }
-
+// === TOAST ===
+function toast(msg, type='success') {
+  const div = document.createElement('div');
+  div.className = `toast glass rounded-xl px-4 py-3 text-sm flex items-center gap-2 ${type==='error'?'border-red-500/50':'border-cyan-500/50'}`;
+  div.innerHTML = `<i data-lucide="${type==='error'?'x-circle':'check-circle'}" class="w-4 h-4 ${type==='error'?'text-red-400':'text-cyan-400'}"></i>${msg}`;
+  document.getElementById('toast-container').appendChild(div);
   lucide.createIcons();
+  setTimeout(() => div.remove(), 3000);
+}
+
+// === TEACHER ===
+function handleTeacherLogin(e) {
+  e.preventDefault();
+  const name = document.getElementById('teacher-name').value.trim();
+  const pass = document.getElementById('teacher-pass').value;
+  if (pass !== 'teacher') { toast('Invalid access code. Use: teacher', 'error'); return; }
+  currentTeacher = name;
+  document.getElementById('teacher-display-name').textContent = name;
+  showPage('teacher-dashboard');
+  showTeacherTab('quizzes');
+  toast('Welcome, ' + name);
+}
+
+function logoutTeacher() { currentTeacher = null; showPage('landing'); }
+
+function generateCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function renderTeacherQuizzes() {
+  const quizzes = getQuizzes();
+  const list = document.getElementById('quizzes-list');
+  const empty = document.getElementById('quizzes-empty');
+  if (quizzes.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  list.innerHTML = quizzes.map(q => `
+    <div class="glass rounded-xl p-4">
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <h3 class="font-semibold">${q.title}</h3>
+          <p class="text-xs text-slate-400">${q.subject} • ${q.questions.length} questions • Pass: ${q.passingMark}%</p>
+        </div>
+        <button onclick="copyCode('${q.code}')" class="btn-secondary px-2 py-1 rounded text-xs font-heading tracking-wider flex items-center gap-1"><i data-lucide="copy" class="w-3 h-3"></i> ${q.code}</button>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <button onclick="deleteQuiz('${q.id}')" class="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> Delete</button>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function copyCode(code) { navigator.clipboard?.writeText(code); toast('Code copied: ' + code); }
+
+function deleteQuiz(id) {
+  const quizzes = getQuizzes().filter(q => q.id !== id);
+  saveQuizzes(quizzes);
+  renderTeacherQuizzes();
+  toast('Quiz deleted');
+}
+
+// === CREATE QUIZ ===
+function addQuestion(type) {
+  const idx = questionsBeingCreated.length;
+  questionsBeingCreated.push({ type, text: '', options: ['','','',''], correct: 0, points: 1 });
+  renderQuestionForm(idx, type);
+}
+
+function renderQuestionForm(idx, type) {
+  const container = document.getElementById('questions-container');
+  const div = document.createElement('div');
+  div.className = 'glass-light rounded-xl p-4';
+  div.id = 'q-form-' + idx;
+  let optionsHTML = '';
+  if (type === 'multiple') {
+    optionsHTML = `
+      <div class="grid grid-cols-1 gap-2 mb-2">
+        ${[0,1,2,3].map(i => `<input type="text" placeholder="Option ${i+1}" class="bg-slate-800/50 border border-slate-700 rounded px-3 py-2 text-sm text-white" data-qidx="${idx}" data-oidx="${i}">`).join('')}
+      </div>
+      <label class="text-xs text-slate-400">Correct Answer (1-4)</label>
+      <input type="number" min="1" max="4" value="1" class="bg-slate-800/50 border border-slate-700 rounded px-3 py-2 text-sm text-white w-20 ml-2" data-qidx="${idx}" data-field="correct">
+    `;
+  } else if (type === 'truefalse') {
+    optionsHTML = `<label class="text-xs text-slate-400">Correct Answer</label>
+      <select class="bg-slate-800/50 border border-slate-700 rounded px-3 py-2 text-sm text-white ml-2" data-qidx="${idx}" data-field="correct-tf">
+        <option value="0">True</option><option value="1">False</option>
+      </select>`;
+  } else {
+    optionsHTML = `<label class="text-xs text-slate-400">Expected Answer</label>
+      <input type="text" placeholder="Expected answer" class="bg-slate-800/50 border border-slate-700 rounded px-3 py-2 text-sm text-white w-full mt-1" data-qidx="${idx}" data-field="correct-short">`;
+  }
+  div.innerHTML = `
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs font-medium text-cyan-400 uppercase">${type === 'multiple' ? 'MCQ' : type === 'truefalse' ? 'True/False' : 'Short Answer'} #${idx+1}</span>
+      <button type="button" onclick="removeQuestion(${idx})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <input type="text" placeholder="Question text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white mb-3 placeholder-slate-500" data-qidx="${idx}" data-field="text">
+    ${optionsHTML}
+    <div class="mt-2"><label class="text-xs text-slate-400">Points</label>
+      <input type="number" min="1" value="1" class="bg-slate-800/50 border border-slate-700 rounded px-3 py-2 text-sm text-white w-16 ml-2" data-qidx="${idx}" data-field="points">
+    </div>
+  `;
+  container.appendChild(div);
+  lucide.createIcons();
+}
+
+function removeQuestion(idx) {
+  questionsBeingCreated.splice(idx, 1);
+  document.getElementById('questions-container').innerHTML = '';
+  questionsBeingCreated.forEach((q, i) => renderQuestionForm(i, q.type));
+}
+
+function handleCreateQuiz(e) {
+  e.preventDefault();
+  if (questionsBeingCreated.length === 0) { toast('Add at least one question', 'error'); return; }
+  const questions = questionsBeingCreated.map((q, idx) => {
+    const text = document.querySelector(`[data-qidx="${idx}"][data-field="text"]`)?.value || '';
+    const points = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="points"]`)?.value || '1');
+    let options = [], correct;
+    if (q.type === 'multiple') {
+      options = [0,1,2,3].map(i => document.querySelector(`[data-qidx="${idx}"][data-oidx="${i}"]`)?.value || '');
+      correct = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="correct"]`)?.value || '1') - 1;
+    } else if (q.type === 'truefalse') {
+      options = ['True', 'False'];
+      correct = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="correct-tf"]`)?.value || '0');
+    } else {
+      correct = document.querySelector(`[data-qidx="${idx}"][data-field="correct-short"]`)?.value || '';
+    }
+    return { type: q.type, text, options, correct, points };
+  });
+  const quiz = {
+    id: Date.now().toString(36),
+    title: document.getElementById('q-title').value,
+    subject: document.getElementById('q-subject').value,
+    code: generateCode(),
+    passingMark: parseInt(document.getElementById('q-pass').value),
+    timeLimit: parseInt(document.getElementById('q-time').value),
+    questions
+  };
+  const quizzes = getQuizzes();
+  quizzes.push(quiz);
+  saveQuizzes(quizzes);
+  questionsBeingCreated = [];
+  document.getElementById('questions-container').innerHTML = '';
+  document.getElementById('create-quiz-form').reset();
+  toast('Quiz created! Code: ' + quiz.code);
+  showTeacherTab('quizzes');
+}
+
+// === SUBMISSIONS ===
+function renderSubmissions() {
+  const subs = getSubmissions();
+  const body = document.getElementById('submissions-body');
+  const empty = document.getElementById('submissions-empty');
+  if (subs.length === 0) { body.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  body.innerHTML = subs.map(s => `
+    <tr class="border-b border-slate-800/50">
+      <td class="px-4 py-3">${s.studentName}</td>
+      <td class="px-4 py-3 text-slate-400">${s.studentClass}</td>
+      <td class="px-4 py-3">${s.quizTitle}</td>
+      <td class="px-4 py-3 font-semibold">${s.percentage}%</td>
+      <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-xs ${s.percentage >= (getQuizzes().find(q=>q.id===s.quizId)?.passingMark||50) ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">${s.percentage >= (getQuizzes().find(q=>q.id===s.quizId)?.passingMark||50) ? 'Pass' : 'Fail'}</span></td>
+    </tr>
+  `).join('');
+}
+
+function exportCSV() {
+  const subs = getSubmissions();
+  if (!subs.length) { toast('No data to export', 'error'); return; }
+  let csv = 'Name,Class,SDMS Code,Quiz,Score %,Date\n';
+  subs.forEach(s => { csv += `"${s.studentName}","${s.studentClass}","${s.sdmsCode}","${s.quizTitle}",${s.percentage},"${s.date}"\n`; });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'afriquiz_submissions.csv';
+  a.click();
+  toast('CSV exported');
+}
+
+// === ANALYTICS ===
+function renderAnalytics() {
+  const quizzes = getQuizzes();
+  const subs = getSubmissions();
+  document.getElementById('stat-quizzes').textContent = quizzes.length;
+  document.getElementById('stat-submissions').textContent = subs.length;
+  const avg = subs.length ? Math.round(subs.reduce((a,s) => a+s.percentage, 0)/subs.length) : 0;
+  document.getElementById('stat-avg').textContent = avg + '%';
+  // Simple bar chart
+  const ranges = ['0-20','21-40','41-60','61-80','81-100'];
+  const counts = [0,0,0,0,0];
+  subs.forEach(s => { const i = Math.min(4, Math.floor(s.percentage/20)); counts[i]++; });
+  const max = Math.max(...counts, 1);
+  document.getElementById('chart-container').innerHTML = ranges.map((r,i) => `
+    <div class="flex-1 flex flex-col items-center gap-1">
+      <div class="w-full rounded-t bg-gradient-to-t from-cyan-500 to-purple-500 transition-all" style="height:${(counts[i]/max)*100}%"></div>
+      <span class="text-xs text-slate-400">${r}</span>
+      <span class="text-xs font-semibold">${counts[i]}</span>
+    </div>
+  `).join('');
+}
+
+// === STUDENT ===
+function handleStudentVerify(e) {
+  e.preventDefault();
+  currentStudent = {
+    name: document.getElementById('stu-name').value.trim(),
+    class: document.getElementById('stu-class').value.trim(),
+    sdms: document.getElementById('stu-sdms').value.trim()
+  };
+  document.getElementById('student-name-display').textContent = currentStudent.name;
+  document.getElementById('student-greeting').textContent = currentStudent.name.split(' ')[0];
+  showPage('student-portal');
+  loadStudentHome();
+  toast('Welcome, ' + currentStudent.name);
+}
+
+function logoutStudent() { currentStudent = null; showPage('landing'); }
+
+function loadStudentHome() {
+  const quizzes = getQuizzes();
+  const list = document.getElementById('student-quiz-list');
+  const empty = document.getElementById('student-quiz-empty');
+  if (quizzes.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); }
+  else {
+    empty.classList.add('hidden');
+    list.innerHTML = quizzes.map(q => `
+      <div class="glass rounded-xl p-4 flex items-center justify-between">
+        <div>
+          <h4 class="font-semibold text-sm">${q.title}</h4>
+          <p class="text-xs text-slate-400">${q.subject} • ${q.questions.length} Qs${q.timeLimit ? ' • '+q.timeLimit+' min' : ''}</p>
+        </div>
+        <button onclick="startQuiz('${q.id}')" class="btn-primary px-3 py-2 rounded-lg text-xs text-white font-medium">Start</button>
+      </div>
+    `).join('');
+  }
+  // Results
+  const subs = getSubmissions().filter(s => s.sdmsCode === currentStudent?.sdms);
+  const resList = document.getElementById('student-results');
+  const resEmpty = document.getElementById('student-results-empty');
+  if (subs.length === 0) { resList.innerHTML = ''; resEmpty.classList.remove('hidden'); }
+  else {
+    resEmpty.classList.add('hidden');
+    resList.innerHTML = subs.map(s => {
+      const quiz = getQuizzes().find(q => q.id === s.quizId);
+      const pass = s.percentage >= (quiz?.passingMark || 50);
+      return `<div class="glass-light rounded-xl p-4 flex items-center justify-between">
+        <div><p class="font-semibold text-sm">${s.quizTitle}</p><p class="text-xs text-slate-400">${s.date}</p></div>
+        <div class="text-right"><p class="font-bold ${pass?'text-green-400':'text-red-400'}">${s.percentage}%</p><p class="text-xs ${pass?'text-green-400':'text-red-400'}">${pass?'Passed':'Failed'}</p></div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function joinQuizByCode(e) {
+  e.preventDefault();
+  const code = document.getElementById('quiz-code-input').value.trim().toUpperCase();
+  const quiz = getQuizzes().find(q => q.code === code);
+  if (!quiz) { toast('Quiz not found. Check the code.', 'error'); return; }
+  startQuiz(quiz.id);
+}
+
+// === QUIZ TAKING ===
+function startQuiz(quizId) {
+  const quiz = getQuizzes().find(q => q.id === quizId);
+  if (!quiz) return;
+  currentQuiz = quiz;
+  currentQuestionIdx = 0;
+  studentAnswers = new Array(quiz.questions.length).fill(null);
+  violations = 0;
+  document.getElementById('taking-title').textContent = quiz.title;
+  document.getElementById('violation-badge').classList.add('hidden');
+  showPage('quiz-taking');
+  renderQuestion();
+  if (quiz.timeLimit > 0) startTimer(quiz.timeLimit * 60);
+  else document.getElementById('taking-timer').classList.add('hidden');
+  // Anti-cheat
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  document.addEventListener('contextmenu', preventContext);
+  document.addEventListener('copy', preventCopy);
+  try { document.documentElement.requestFullscreen?.(); } catch(e){}
+}
+
+function onVisibilityChange() {
+  if (document.hidden && currentQuiz) {
+    violations++;
+    document.getElementById('violation-badge').classList.remove('hidden');
+    document.getElementById('violation-count').textContent = violations;
+    toast('⚠️ Tab switch detected! Violation #' + violations, 'error');
+  }
+}
+function preventContext(e) { if(currentQuiz) e.preventDefault(); }
+function preventCopy(e) { if(currentQuiz) e.preventDefault(); }
+
+function startTimer(seconds) {
+  timeRemaining = seconds;
+  document.getElementById('taking-timer').classList.remove('hidden');
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeRemaining--;
+    updateTimerDisplay();
+    if (timeRemaining <= 0) { clearInterval(timerInterval); submitQuiz(); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeRemaining/60);
+  const s = timeRemaining % 60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  if (timeRemaining < 60) document.getElementById('timer-display').classList.add('text-red-400');
+}
+
+function renderQuestion() {
+  const q = currentQuiz.questions[currentQuestionIdx];
+  const total = currentQuiz.questions.length;
+  document.getElementById('taking-progress').textContent = `Question ${currentQuestionIdx+1} of ${total}`;
+  let html = `<p class="text-lg font-semibold mb-4">${q.text}</p>`;
+  if (q.type === 'multiple' || q.type === 'truefalse') {
+    html += q.options.map((opt, i) => `
+      <button onclick="selectOption(${i})" class="quiz-option w-full text-left px-4 py-3 rounded-xl border border-slate-700 mb-2 text-sm ${studentAnswers[currentQuestionIdx]===i?'selected':''}">
+        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 text-xs mr-3 font-semibold">${String.fromCharCode(65+i)}</span>${opt}
+      </button>
+    `).join('');
+  } else {
+    html += `<textarea class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white h-24 text-sm" placeholder="Type your answer..." oninput="studentAnswers[currentQuestionIdx]=this.value">${studentAnswers[currentQuestionIdx]||''}</textarea>`;
+  }
+  document.getElementById('question-display').innerHTML = html;
+  document.getElementById('btn-prev').classList.toggle('hidden', currentQuestionIdx === 0);
+  document.getElementById('btn-next').classList.toggle('hidden', currentQuestionIdx === total - 1);
+  document.getElementById('btn-submit-quiz').classList.toggle('hidden', currentQuestionIdx !== total - 1);
+}
+
+function selectOption(i) { studentAnswers[currentQuestionIdx] = i; renderQuestion(); }
+function nextQuestion() { if (currentQuestionIdx < currentQuiz.questions.length-1) { currentQuestionIdx++; renderQuestion(); } }
+function prevQuestion() { if (currentQuestionIdx > 0) { currentQuestionIdx--; renderQuestion(); } }
+
+function submitQuiz() {
+  clearInterval(timerInterval);
+  document.removeEventListener('visibilitychange', onVisibilityChange);
+  document.removeEventListener('contextmenu', preventContext);
+  document.removeEventListener('copy', preventCopy);
+  if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+
+  let earned = 0, total = 0;
+  currentQuiz.questions.forEach((q, i) => {
+    total += q.points;
+    if (q.type === 'short') {
+      if (studentAnswers[i] && studentAnswers[i].toLowerCase().trim() === String(q.correct).toLowerCase().trim()) earned += q.points;
+    } else {
+      if (studentAnswers[i] === q.correct) earned += q.points;
+    }
+  });
+  const percentage = Math.round((earned/total)*100);
+  const passed = percentage >= currentQuiz.passingMark;
+
+  const submission = {
+    id: Date.now(),
+    studentName: currentStudent.name,
+    studentClass: currentStudent.class,
+    sdmsCode: currentStudent.sdms,
+    quizId: currentQuiz.id,
+    quizTitle: currentQuiz.title,
+    percentage,
+    date: new Date().toLocaleDateString()
+  };
+  const subs = getSubmissions();
+  subs.push(submission);
+  saveSubmissions(subs);
+
+  // Show result
+  document.getElementById('result-quiz-name').textContent = currentQuiz.title;
+  document.getElementById('result-score').textContent = percentage + '%';
+  document.getElementById('result-icon').className = `w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${passed?'bg-green-500/20':'bg-red-500/20'}`;
+  document.getElementById('result-icon').innerHTML = `<i data-lucide="${passed?'trophy':'alert-circle'}" class="w-10 h-10 ${passed?'text-green-400':'text-red-400'}"></i>`;
+  document.getElementById('result-status').innerHTML = `<span class="${passed?'text-green-400':'text-red-400'} font-semibold">${passed?'🎉 Congratulations! You Passed!':'Keep trying! You can do better.'}</span>`;
+  document.getElementById('result-feedback').innerHTML = generateFeedback(percentage, currentQuiz.subject);
+  showPage('quiz-result');
+  currentQuiz = null;
+  lucide.createIcons();
+}
+
+function generateFeedback(score, subject) {
+  if (score >= 80) return `<p class="text-cyan-400 font-semibold mb-1">🤖 AI Feedback</p><p class="text-slate-300">Excellent work in ${subject}! You've demonstrated strong mastery. Consider helping classmates who might be struggling.</p>`;
+  if (score >= 50) return `<p class="text-cyan-400 font-semibold mb-1">🤖 AI Feedback</p><p class="text-slate-300">Good effort in ${subject}! Focus on reviewing the topics you missed. Try re-reading your notes and attempting practice questions.</p>`;
+  return `<p class="text-cyan-400 font-semibold mb-1">🤖 AI Feedback</p><p class="text-slate-300">Don't give up on ${subject}! Consider asking your teacher for extra help, forming a study group, or breaking topics into smaller parts.</p>`;
+}
+
+// === ELEMENT SDK ===
+const defaultConfig = {
+  platform_title: 'AfriQuiz Pro',
+  hero_tagline: 'Smart Assessments for African Schools',
+  background_color: '#020617',
+  surface_color: '#0f172a',
+  text_color: '#f1f5f9',
+  primary_color: '#06b6d4',
+  accent_color: '#8b5cf6',
+  font_family: 'DM Sans',
+  font_size: 16
+};
+
+function applyConfig(config) {
+  const c = { ...defaultConfig, ...config };
+  document.getElementById('nav-title').textContent = c.platform_title;
+  document.getElementById('hero-title-text').textContent = c.platform_title;
+  document.getElementById('hero-tagline-text').textContent = c.hero_tagline;
+  document.body.style.backgroundColor = c.background_color;
+  document.body.style.color = c.text_color;
+  document.body.style.fontFamily = `${c.font_family}, DM Sans, sans-serif`;
+  document.body.style.fontSize = c.font_size + 'px';
+}
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => { applyConfig(config); },
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => { config.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); } },
+      { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } }
+    ],
+    borderables: [],
+    fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); } },
+    fontSizeable: { get: () => config.font_size || defaultConfig.font_size, set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); } }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['platform_title', config.platform_title || defaultConfig.platform_title],
+    ['hero_tagline', config.hero_tagline || defaultConfig.hero_tagline]
+  ])
+});
+
+// Init
+lucide.createIcons();
 </script>
-</body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f9e8512524073b6',t:'MTc3ODQ3NDU3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
