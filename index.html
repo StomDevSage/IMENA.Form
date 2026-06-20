@@ -3,13 +3,45 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AfriQuiz</title>
+
+    <!-- ===== SEO & Meta ===== -->
+    <title>AfriQuiz – Smart Assessments for African Schools</title>
+    <meta name="description" content="AfriQuiz is a smart, gamified assessment platform built for African schools. Create quizzes, track performance, and engage students with real-time analytics." />
+    <meta name="keywords" content="afriquiz, african schools, online quiz, assessment, gamification, education, learning, firebase" />
+    <meta name="author" content="AfriQuiz Team" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#06b6d4" />
+
+    <!-- ===== Open Graph (Facebook / LinkedIn) ===== -->
+    <meta property="og:title" content="AfriQuiz – Smart Assessments for African Schools" />
+    <meta property="og:description" content="Gamified, real-time quizzes with adaptive learning, analytics, and anti-cheat features – built for African classrooms." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://afriquiz-a2a4c.firebaseapp.com" />
+    <meta property="og:image" content="https://afriquiz-a2a4c.firebaseapp.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- ===== Twitter Card ===== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AfriQuiz – Smart Assessments for African Schools" />
+    <meta name="twitter:description" content="Gamified, real-time quizzes with adaptive learning, analytics, and anti-cheat features – built for African classrooms." />
+    <meta name="twitter:image" content="https://afriquiz-a2a4c.firebaseapp.com/og-image.png" />
+
+    <!-- ===== Favicon ===== -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+    <link rel="manifest" href="data:application/json,{'name':'AfriQuiz','short_name':'AfriQuiz','start_url':'/','display':'standalone','background_color':'#0f172a','theme_color':'#06b6d4','icons':[{'src':'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>','sizes':'192x192','type':'image/svg+xml'}]}" />
+
+    <!-- ===== Scripts ===== -->
     <script src="https://cdn.tailwindcss.com/3.4.17">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js">
     </script>
+
+    <!-- ===== Google Fonts ===== -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&display=swap" rel="stylesheet" />
 
+    <!-- ===== Firebase Import Map ===== -->
     <script type="importmap">
         {
             "imports": {
@@ -34,6 +66,8 @@
             margin: 0;
             font-family: 'Inter', sans-serif;
             transition: background 0.3s, color 0.3s;
+            background: #0f172a;
+            color: #f1f5f9;
         }
         .app-root {
             height: 100%;
@@ -45,6 +79,7 @@
             background: rgba(15, 23, 42, 0.72);
             backdrop-filter: blur(18px) saturate(1.2);
             border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .glass-light {
             background: rgba(30, 41, 59, 0.45);
@@ -395,6 +430,52 @@
             border-color: rgba(251, 191, 36, 0.15) !important;
         }
 
+        /* ── Ocean theme ── */
+        .theme-ocean body,
+        .theme-ocean .app-root {
+            background: #0c1a2b !important;
+            color: #e2f0fa !important;
+        }
+        .theme-ocean .glass {
+            background: rgba(12, 26, 43, 0.8) !important;
+            border-color: rgba(56, 189, 248, 0.15) !important;
+        }
+        .theme-ocean .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4) !important;
+        }
+        .theme-ocean .gradient-text {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9, #06b6d4) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+        .theme-ocean .sidebar-link.active {
+            background: rgba(56, 189, 248, 0.15) !important;
+            color: #38bdf8 !important;
+        }
+
+        /* ── Forest theme ── */
+        .theme-forest body,
+        .theme-forest .app-root {
+            background: #0a1a0f !important;
+            color: #e2f5e8 !important;
+        }
+        .theme-forest .glass {
+            background: rgba(10, 26, 15, 0.8) !important;
+            border-color: rgba(52, 211, 153, 0.15) !important;
+        }
+        .theme-forest .btn-primary {
+            background: linear-gradient(135deg, #10b981, #34d399) !important;
+        }
+        .theme-forest .gradient-text {
+            background: linear-gradient(135deg, #34d399, #10b981, #059669) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+        }
+        .theme-forest .sidebar-link.active {
+            background: rgba(52, 211, 153, 0.15) !important;
+            color: #34d399 !important;
+        }
+
         /* ── Fullscreen overlay for exam rules ── */
         .rules-overlay {
             position: fixed;
@@ -427,7 +508,65 @@
             font-size: 0.9rem;
         }
 
-        /* School logo upload preview */
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        .footer a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer a:hover {
+            color: #06b6d4;
+        }
+        .theme-light .footer {
+            border-color: rgba(0, 0, 0, 0.05);
+            color: rgba(0, 0, 0, 0.4);
+        }
+        .theme-light .footer a {
+            color: rgba(0, 0, 0, 0.5);
+        }
+        .theme-light .footer a:hover {
+            color: #06b6d4;
+        }
+        .theme-african .footer {
+            border-color: rgba(251, 191, 36, 0.1);
+            color: rgba(253, 246, 238, 0.4);
+        }
+        .theme-african .footer a {
+            color: rgba(253, 246, 238, 0.6);
+        }
+        .theme-african .footer a:hover {
+            color: #fbbf24;
+        }
+        .theme-ocean .footer {
+            border-color: rgba(56, 189, 248, 0.1);
+            color: rgba(226, 240, 250, 0.4);
+        }
+        .theme-ocean .footer a {
+            color: rgba(226, 240, 250, 0.6);
+        }
+        .theme-ocean .footer a:hover {
+            color: #38bdf8;
+        }
+        .theme-forest .footer {
+            border-color: rgba(52, 211, 153, 0.1);
+            color: rgba(226, 245, 232, 0.4);
+        }
+        .theme-forest .footer a {
+            color: rgba(226, 245, 232, 0.6);
+        }
+        .theme-forest .footer a:hover {
+            color: #34d399;
+        }
+
+        /* ── Logo preview ── */
         .logo-preview {
             width: 56px;
             height: 56px;
@@ -500,13 +639,31 @@
         .theme-african .fitb-input:focus {
             border-color: #fbbf24;
         }
+
+        /* Proctoring badge */
+        .proctoring-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .proctoring-badge.active {
+            background: rgba(34, 197, 94, 0.15);
+            color: #34d399;
+            border-color: rgba(34, 197, 94, 0.2);
+        }
     </style>
 </head>
 <body>
     <div class="app-root" id="app">
 
         <!-- ====== LANDING ====== -->
-        <div id="page-landing" class="fade-in">
+        <div id="page-landing" class="fade-in min-h-screen flex flex-col">
             <nav class="glass sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="w-9 h-9 rounded-xl btn-primary flex items-center justify-center shadow-lg">
@@ -524,7 +681,7 @@
                     </button>
                 </div>
             </nav>
-            <main class="max-w-6xl mx-auto px-4 py-16 text-center">
+            <main class="max-w-6xl mx-auto px-4 py-16 text-center flex-1">
                 <div class="mb-4 inline-block px-4 py-1.5 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                     🌍 Built for African Schools &amp; Beyond
                 </div>
@@ -576,6 +733,11 @@
                     <span>🌍 10+ languages</span>
                 </div>
             </main>
+
+            <!-- Footer -->
+            <div class="footer">
+                Developed by <a href="https://stomdevsage.github.io/IMENAHub/" target="_blank">iMENA Hub</a> — Empowering African Education
+            </div>
         </div>
 
         <!-- ====== TEACHER LOGIN ====== -->
@@ -835,7 +997,6 @@
                         <p class="text-slate-400 text-sm mb-6">Change colours, fonts, and add your school logo</p>
 
                         <div class="space-y-5">
-                            <!-- Logo -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">School Logo</label>
                                 <div class="flex items-center gap-4">
@@ -846,7 +1007,6 @@
                                 <p class="text-xs text-slate-500 mt-1">PNG, JPG, SVG recommended (max 2MB)</p>
                             </div>
 
-                            <!-- Theme -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Theme</label>
                                 <div class="flex flex-wrap gap-2">
@@ -858,7 +1018,6 @@
                                 </div>
                             </div>
 
-                            <!-- Font -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Font Family</label>
                                 <select id="font-select" onchange="applyFont(this.value)" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none">
@@ -869,7 +1028,6 @@
                                 </select>
                             </div>
 
-                            <!-- Primary Color -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Primary Color</label>
                                 <div class="flex items-center gap-3">
@@ -879,7 +1037,6 @@
                                 </div>
                             </div>
 
-                            <!-- Brand Name -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Brand Name</label>
                                 <input id="brand-name-input" type="text" value="AfriQuiz Pro" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" onchange="updateBrandName(this.value)" />
@@ -997,6 +1154,7 @@
                     <div id="taking-timer" class="font-heading text-sm text-cyan-400 flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i><span id="timer-display">--:--</span></div>
                     <div id="violation-badge" class="hidden px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs flex items-center gap-1">⚠️ <span id="violation-count">0</span></div>
                     <div id="streak-display" class="hidden text-xs text-amber-400 flex items-center gap-1">🔥 <span id="streak-count">0</span></div>
+                    <div id="proctoring-badge" class="proctoring-badge active"><i data-lucide="shield-check" class="w-3 h-3"></i> Proctoring</div>
                 </div>
             </div>
             <div class="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center scrollable">
@@ -1140,7 +1298,6 @@
             const el = $('page-' + page);
             if (el) { el.classList.remove('hidden'); el.classList.add('fade-in'); }
             setTimeout(lucide.createIcons, 150);
-            // close rules overlay if open
             $('exam-rules-overlay').classList.add('hidden');
         };
 
@@ -1156,17 +1313,13 @@
             root.className = '';
             if (theme === 'light') root.classList.add('theme-light');
             else if (theme === 'african') root.classList.add('theme-african');
-            else if (theme === 'ocean') { root.style.setProperty('--bg', '#0c1a2b'); root.style.setProperty('--text', '#e2f0fa'); }
-            else if (theme === 'forest') { root.style.setProperty('--bg', '#0a1a0f'); root.style.setProperty('--text', '#e2f5e8'); }
-            else { root.classList.add('theme-dark'); }
+            else if (theme === 'ocean') root.classList.add('theme-ocean');
+            else if (theme === 'forest') root.classList.add('theme-forest');
             // update select
             const sel = $('profile-theme');
             if (sel) sel.value = theme;
-            // update primary
             applyPrimaryColor(localStorage.getItem('afriquiz-primary') || '#06b6d4');
-            // update font
             applyFont(localStorage.getItem('afriquiz-font') || 'inter');
-            // update brand
             updateBrandName(localStorage.getItem('afriquiz-brand') || 'AfriQuiz Pro');
             toast('Theme updated');
         }
@@ -1188,9 +1341,7 @@
 
         function applyPrimaryColor(color) {
             localStorage.setItem('afriquiz-primary', color);
-            const root = document.documentElement;
-            root.style.setProperty('--primary', color);
-            // update gradient buttons
+            document.documentElement.style.setProperty('--primary', color);
             const btns = document.querySelectorAll('.btn-primary');
             btns.forEach(b => {
                 b.style.background = `linear-gradient(135deg, ${color}, ${adjustColor(color, -20)})`;
@@ -1254,9 +1405,7 @@
             toast('Logo removed');
         };
 
-        window.saveCustomization = function() {
-            toast('Customization saved!');
-        };
+        window.saveCustomization = function() { toast('Customization saved!'); };
 
         // ─── TEACHER AUTH ────────────────────────────────────────────
         async function processTeacherSignIn(user) {
@@ -1682,7 +1831,6 @@
 
         window.exportCSV = function() {
             toast('📥 CSV export ready — download will start');
-            // simulate download
             const link = document.createElement('a');
             link.href = 'data:text/csv;charset=utf-8,Student,Class,Quiz,Score,Status\nJohn Doe,JSS3A,Math Test,85,Pass';
             link.download = 'submissions_export.csv';
@@ -1702,7 +1850,6 @@
                 if (snap.empty) { list.innerHTML = '';
                     empty.classList.remove('hidden'); return; }
                 empty.classList.add('hidden');
-                // Group by student
                 const groups = {};
                 snap.docs.forEach(doc => {
                     const s = doc.data();
@@ -1713,7 +1860,6 @@
                 });
                 list.innerHTML = Object.values(groups).map(g => {
                     const avg = Math.round(g.quizzes.reduce((a, q) => a + q.score, 0) / g.quizzes.length);
-                    const passed = g.quizzes.filter(q => q.passed).length;
                     return `<div class="glass-light rounded-xl p-4 hover:shadow-lg transition">
                 <div class="flex justify-between items-start flex-wrap gap-2">
                   <div><h4 class="font-semibold">${g.name}</h4><p class="text-xs text-slate-400">${g.class||''} • ${g.quizzes.length} quizzes • Avg ${avg}%</p></div>
@@ -1738,7 +1884,6 @@
                 const atRisk = subs.filter(s => s.percentage < 40).length;
                 $('stat-atrisk').textContent = atRisk;
 
-                // chart
                 const ranges = ['0-20', '21-40', '41-60', '61-80', '81-100'];
                 const counts = [0, 0, 0, 0, 0];
                 subs.forEach(s => { const i = Math.min(4, Math.floor(s.percentage / 20));
@@ -1746,13 +1891,12 @@
                 const max = Math.max(...counts, 1);
                 $('chart-container').innerHTML = ranges.map((r, i) =>
                     `<div class="flex-1 flex flex-col items-center gap-1">
-                <div class="w-full rounded-t-lg chart-bar" style="height:${(counts[i]/max)*100}%;background:linear-gradient(180deg, var(--primary,#06b6d4), ${adjustColor(localStorage.getItem('afriquiz-primary')||'#06b6d4', -40)})"></div>
+                <div class="w-full rounded-t-lg chart-bar" style="height:${(counts[i]/max)*100}%;background:linear-gradient(180deg, ${localStorage.getItem('afriquiz-primary')||'#06b6d4'}, ${adjustColor(localStorage.getItem('afriquiz-primary')||'#06b6d4', -40)})"></div>
                 <span class="text-xs text-slate-400">${r}</span>
                 <span class="text-xs font-semibold">${counts[i]}</span>
               </div>`
                 ).join('');
 
-                // item analysis
                 const itemMisses = {};
                 subs.forEach(s => {
                     if (s.details) {
@@ -1823,20 +1967,14 @@
 
         window.exportBankCSV = function() {
             toast('📥 Bank export as CSV');
-            // simulate
             const link = document.createElement('a');
             link.href = 'data:text/csv;charset=utf-8,Question,Subject,Type\n"What is 2+2?","Math","multiple"';
             link.download = 'question_bank.csv';
             link.click();
         };
 
-        window.exportBankJSON = function() {
-            toast('📥 Bank export as JSON');
-        };
-
-        window.printBank = function() {
-            window.print();
-        };
+        window.exportBankJSON = function() { toast('📥 Bank export as JSON'); };
+        window.printBank = function() { window.print(); };
 
         // ─── COMMUNITY ──────────────────────────────────────────────
         async function loadCommunityQuizzes() {
@@ -1968,7 +2106,6 @@
             if (!snap.exists()) { toast('Quiz not found', 'error'); return; }
             const quiz = { id: snap.id, ...snap.data() };
 
-            // Check if rules are enabled
             const showRules = localStorage.getItem('show-rules') !== 'false';
             if (showRules) {
                 pendingQuizId = quizId;
@@ -1976,7 +2113,6 @@
                 return;
             }
 
-            // Start directly
             beginQuiz(quiz);
         };
 
@@ -2050,7 +2186,6 @@
             if (quiz.timeLimit > 0) startTimer(quiz.timeLimit * 60);
             else $('taking-timer').classList.add('hidden');
 
-            // Proctoring
             if (quiz.proctoring !== false) {
                 document.addEventListener('visibilitychange', onVisibilityChange);
                 document.addEventListener('contextmenu', preventContext);
@@ -2101,7 +2236,7 @@
         function renderQuestion() {
             const q = currentQuiz.questions[currentQuestionIdx];
             const total = currentQuiz.questions.length;
-            $('taking-progress').textContent = `Q${currentQuestionIdx+1} of ${total}`;
+            $('taking-progress').textContent = `Q${currentQuestionIdx+1}/${total}`;
 
             let html = `<div class="mb-5"><span class="text-xs text-slate-400">Question ${currentQuestionIdx+1}/${total}</span>
             <p class="text-xl font-semibold mt-1">${q.text}</p>
@@ -2161,7 +2296,6 @@
                 const currentOrder = ans || items.map((_, i) => i);
                 html += `<p class="text-sm text-slate-400 mb-2">Drag to reorder or select order below:</p>
               <div class="space-y-1.5">`;
-                // simple select-based ordering
                 html +=
                     `<div class="flex flex-wrap gap-2">${items.map((item, i) => `<span class="px-3 py-1.5 bg-slate-800/50 rounded-lg text-sm border border-slate-700">${i+1}. ${item}</span>`).join('')}</div>`;
                 html += `<div class="mt-2 grid grid-cols-2 gap-1">`;
@@ -2174,7 +2308,6 @@
 
             document.getElementById('question-display').innerHTML = html;
 
-            // Buttons
             $('btn-prev').classList.toggle('hidden', currentQuestionIdx === 0);
             $('btn-next').classList.toggle('hidden', currentQuestionIdx === total - 1);
             $('btn-submit-quiz').classList.toggle('hidden', currentQuestionIdx !== total - 1);
@@ -2242,7 +2375,6 @@
             document.removeEventListener('copy', preventCopy);
             try { if (document.exitFullscreen) document.exitFullscreen(); } catch (e) {}
 
-            // Gather answers
             let earned = 0,
                 total = 0;
             const details = [];
@@ -2259,9 +2391,7 @@
                 } else if (q.type === 'short') {
                     correct = ans && ans.toLowerCase().trim() === String(q.correct).toLowerCase().trim();
                 } else if (q.type === 'essay') {
-                    // Essay: mark as pending review, give partial if non-empty
                     correct = ans && ans.trim().length > 0;
-                    // In real system, teacher grades this
                 } else if (q.type === 'matching') {
                     const selected = ans || {};
                     const rights = q.correct || [];
@@ -2296,15 +2426,12 @@
                 });
             }
 
-            // Bonus: streak
             if (currentStreak >= 3) earned += Math.min(currentStreak, 10);
-            // Bonus: speed
             if (Date.now() - quizStartTime < 120000) earned += 2;
 
             const percentage = Math.round((earned / total) * 100);
             const passed = percentage >= currentQuiz.passingMark;
 
-            // Save submission
             await addDoc(collection(db, 'submissions'), {
                 studentId: currentStudent.uid,
                 studentName: currentStudent.name,
@@ -2320,7 +2447,6 @@
                 date: serverTimestamp()
             });
 
-            // Update student stats
             const userRef = doc(db, 'users', currentStudent.uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
@@ -2337,7 +2463,6 @@
                 await updateDoc(userRef, { points, streak, level, badges, quizzesTaken: increment(1) });
             }
 
-            // Show result
             $('result-quiz-name').textContent = currentQuiz.title;
             $('result-score').textContent = percentage + '%';
             const icon = $('result-icon');
@@ -2348,7 +2473,6 @@
                 `<span class="${passed?'text-green-400':'text-red-400'} font-semibold text-lg">${passed?'🎉 Passed!':'😅 Keep trying!'}</span>`;
             $('result-feedback').innerHTML = generateAIFeedback(percentage, currentQuiz.subject, details);
 
-            // Badges earned
             const badgesEarned = [];
             if (percentage >= 90) badgesEarned.push('🏆 Master');
             if (currentStreak >= 5) badgesEarned.push('🔥 Streak5');
@@ -2396,7 +2520,6 @@
                 feedback += `<p class="text-sm text-emerald-400 mt-1">✅ Strong in: ${strongAreas.map(d => d.question).join(', ')}</p>`;
             }
 
-            // Add adaptive recommendations
             const recs = {
                 'Math': 'Practice problem-solving daily',
                 'Science': 'Conduct hands-on experiments',
@@ -2494,13 +2617,11 @@
         });
 
         // ─── INIT ─────────────────────────────────────────────────────
-        // Apply saved customizations
         applyTheme(localStorage.getItem('afriquiz-theme') || 'dark');
         applyFont(localStorage.getItem('afriquiz-font') || 'inter');
         applyPrimaryColor(localStorage.getItem('afriquiz-primary') || '#06b6d4');
         updateBrandName(localStorage.getItem('afriquiz-brand') || 'AfriQuiz Pro');
 
-        // Restore voice and rules settings
         if (localStorage.getItem('voice-input') === 'false') {
             const vi = $('voice-input');
             if (vi) vi.checked = false;
@@ -2510,7 +2631,6 @@
             if (sr) sr.checked = false;
         }
 
-        // Load school logo
         const logo = localStorage.getItem('afriquiz-logo');
         if (logo) {
             const preview = $('school-logo-preview');
