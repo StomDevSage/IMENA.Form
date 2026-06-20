@@ -1,33 +1,31 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AfriQuiz Pro · Firebase Edition</title>
-  <!-- Tailwind + Lucide -->
+  <title>AfriQuiz Pro</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <!-- Firebase v9 (modular) via CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
   <script type="importmap">
     {
       "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
-        "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js",
-        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js",
-        "firebase/storage": "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js"
+        "firebase/app": "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js",
+        "firebase/storage": "https://www.gstatic.com/firebasejs/12.15.0/firebase-storage.js"
       }
     }
   </script>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
-    /* Reuse existing styles + extra for new UI */
+    /* --- Styles (unchanged) --- */
     html, body { height: 100%; margin: 0; }
     .app-root { height: 100%; overflow-y: auto; }
     .glass { background: rgba(15,23,42,0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
     .glass-light { background: rgba(30,41,59,0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); }
-    .gradient-text { background: linear-gradient(135deg,#06b6d4,#8b5cf6,#f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .gradient-text { background: linear-gradient(135deg,#06b6d4,#8b5cf6,#f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .btn-primary { background: linear-gradient(135deg,#06b6d4,#8b5cf6); transition: all .2s; }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(6,182,212,0.3); }
     .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); }
@@ -46,37 +44,32 @@
     .scrollable::-webkit-scrollbar { width:4px; }
     .scrollable::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius:8px; }
     .badge-icon { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
-    .theme-dark { background:#0f172a; color:#f1f5f9; }
-    .theme-light { background:#f1f5f9; color:#0f172a; }
-    .theme-african { background:#2d1b0e; color:#f5e6d3; }
+    .hidden { display: none; }
   </style>
 </head>
 <body class="h-full bg-slate-950 text-slate-100 font-body">
 <div class="app-root" id="app">
 
-  <!-- ===== LANDING ===== (kept same) -->
+  <!-- ============================ LANDING PAGE ============================ -->
   <div id="page-landing" class="fade-in">
     <nav class="glass sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 rounded-lg btn-primary flex items-center justify-center"><i data-lucide="brain" class="w-5 h-5 text-white"></i></div>
-        <span class="font-heading font-bold text-lg" id="nav-title">AfriQuiz Pro</span>
+        <span class="font-heading font-bold text-lg">AfriQuiz Pro</span>
       </div>
       <div class="flex gap-2">
         <button onclick="showPage('teacher-login')" class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium">Teacher</button>
         <button onclick="showPage('student-verify')" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium text-white">Student</button>
-        <button onclick="signInWithGoogle()" class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-1"><i data-lucide="chrome" class="w-4 h-4"></i> Google</button>
-        <button onclick="toggleLanguage()" class="btn-secondary px-3 py-2 rounded-lg text-sm font-medium"><i data-lucide="languages" class="w-4 h-4"></i></button>
       </div>
     </nav>
     <main class="max-w-5xl mx-auto px-4 py-16 text-center">
       <div class="mb-4 inline-block px-3 py-1 rounded-full text-xs font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">🌍 Built for African Schools</div>
-      <h1 class="font-heading text-4xl md:text-6xl font-bold mb-4"><span class="gradient-text" id="hero-title-text">AfriQuiz Pro</span></h1>
-      <p class="text-slate-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto" id="hero-tagline-text">Smart Assessments · Gamified · Firebase‑Powered</p>
+      <h1 class="font-heading text-4xl md:text-6xl font-bold mb-4"><span class="gradient-text">AfriQuiz Pro</span></h1>
+      <p class="text-slate-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto">Smart Assessments · Gamified · Firebase‑Powered</p>
       <div class="flex flex-wrap justify-center gap-3 mb-16">
         <button onclick="showPage('teacher-login')" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2"><i data-lucide="layout-dashboard" class="w-5 h-5"></i> Teacher Portal</button>
         <button onclick="showPage('student-verify')" class="btn-secondary px-6 py-3 rounded-xl font-semibold flex items-center gap-2"><i data-lucide="graduation-cap" class="w-5 h-5"></i> Student Portal</button>
       </div>
-      <!-- Feature cards (updated) -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="glass rounded-2xl p-6 text-left"><i data-lucide="trophy" class="w-8 h-8 text-amber-400 mb-3"></i><h3 class="font-semibold">Gamification</h3><p class="text-sm text-slate-400">Badges, streaks, leaderboards & power‑ups</p></div>
         <div class="glass rounded-2xl p-6 text-left"><i data-lucide="brain" class="w-8 h-8 text-cyan-400 mb-3"></i><h3 class="font-semibold">Adaptive Learning</h3><p class="text-sm text-slate-400">Personalised difficulty & hints</p></div>
@@ -86,11 +79,16 @@
     </main>
   </div>
 
-  <!-- ===== TEACHER LOGIN (with SSO option) ===== -->
+  <!-- ============================ TEACHER LOGIN ============================ -->
   <div id="page-teacher-login" class="hidden fade-in h-full flex items-center justify-center px-4">
     <div class="glass rounded-2xl p-8 w-full max-w-sm">
       <button onclick="showPage('landing')" class="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
       <h2 class="font-heading text-2xl font-bold mb-6">Teacher Portal</h2>
+      <!-- Google button (only here) -->
+      <button onclick="signInWithGoogle()" class="w-full btn-secondary py-3 rounded-lg text-white font-semibold flex items-center justify-center gap-2 mb-4">
+        <i data-lucide="chrome" class="w-5 h-5"></i> Sign in with Google
+      </button>
+      <div class="relative flex items-center my-4"><div class="flex-grow border-t border-slate-700"></div><span class="flex-shrink mx-4 text-slate-500 text-sm">or</span><div class="flex-grow border-t border-slate-700"></div></div>
       <form id="teacher-login-form" onsubmit="handleTeacherLogin(event)">
         <label class="text-sm text-slate-400 block mb-1">Your Name</label>
         <input id="teacher-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-4 text-white placeholder-slate-500" placeholder="e.g. Mrs. Okafor" />
@@ -98,11 +96,10 @@
         <input id="teacher-pass" type="password" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-6 text-white placeholder-slate-500" placeholder="Enter code (use: teacher)" />
         <button type="submit" class="w-full btn-primary py-3 rounded-xl text-white font-semibold">Enter Dashboard</button>
       </form>
-      <div class="mt-4 text-center"><button onclick="signInWithGoogle()" class="btn-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2 mx-auto"><i data-lucide="chrome" class="w-4 h-4"></i> Sign in with Google</button></div>
     </div>
   </div>
 
-  <!-- ===== STUDENT VERIFY (with SSO) ===== -->
+  <!-- ============================ STUDENT VERIFY ============================ -->
   <div id="page-student-verify" class="hidden fade-in h-full flex items-center justify-center px-4">
     <div class="glass rounded-2xl p-8 w-full max-w-sm">
       <button onclick="showPage('landing')" class="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
@@ -117,13 +114,11 @@
         <input id="stu-sdms" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 mb-6 text-white placeholder-slate-500" placeholder="STU-2024-001" />
         <button type="submit" class="w-full btn-primary py-3 rounded-xl text-white font-semibold">Verify & Continue</button>
       </form>
-      <div class="mt-4 text-center"><button onclick="signInWithGoogle()" class="btn-secondary px-4 py-2 rounded-lg text-sm flex items-center gap-2 mx-auto"><i data-lucide="chrome" class="w-4 h-4"></i> Sign in with Google</button></div>
     </div>
   </div>
 
-  <!-- ===== TEACHER DASHBOARD (extended) ===== -->
+  <!-- ============================ TEACHER DASHBOARD ============================ -->
   <div id="page-teacher-dashboard" class="hidden fade-in flex h-full">
-    <!-- Sidebar -->
     <aside class="glass w-56 shrink-0 p-4 flex-col hidden md:flex">
       <div class="flex items-center gap-2 mb-6">
         <div class="w-7 h-7 rounded-lg btn-primary flex items-center justify-center"><i data-lucide="brain" class="w-4 h-4 text-white"></i></div>
@@ -140,9 +135,7 @@
       </nav>
       <button onclick="logoutTeacher()" class="sidebar-link text-left px-3 py-2 rounded-lg text-sm flex items-center gap-2 text-red-400"><i data-lucide="log-out" class="w-4 h-4"></i> Logout</button>
     </aside>
-    <!-- Main Content -->
     <div class="flex-1 overflow-y-auto p-4 md:p-6 scrollable">
-      <!-- Mobile nav -->
       <div class="md:hidden flex items-center justify-between mb-4">
         <span class="font-heading font-bold">AfriQuiz</span>
         <div class="flex gap-2">
@@ -156,20 +149,17 @@
         <h1 class="text-2xl font-bold">Welcome back, <span id="teacher-display-name">Teacher</span></h1>
         <p class="text-slate-400 text-sm">Manage quizzes, track progress, and engage students</p>
       </div>
-
-      <!-- Tabs (existing + new) -->
       <div id="tab-quizzes" class="fade-in"><div id="quizzes-list" class="grid gap-4"></div><div id="quizzes-empty" class="text-center py-12 text-slate-500"><i data-lucide="file-text" class="w-12 h-12 mx-auto mb-3 opacity-40"></i><p>No quizzes yet. Create your first quiz!</p></div></div>
-      <div id="tab-create" class="hidden fade-in"><div class="glass rounded-2xl p-6 max-w-2xl"><!-- same as before but extended with bank import --><h2 class="font-heading text-xl font-bold mb-4">Create New Quiz</h2><form id="create-quiz-form" onsubmit="handleCreateQuiz(event)">...</form></div></div>
+      <div id="tab-create" class="hidden fade-in"><div class="glass rounded-2xl p-6 max-w-2xl"><h2 class="font-heading text-xl font-bold mb-4">Create New Quiz</h2><form id="create-quiz-form" onsubmit="handleCreateQuiz(event)"><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"><div><label for="q-title" class="text-sm text-slate-400 block mb-1">Quiz Title</label><input id="q-title" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500" placeholder="e.g. Biology Test 1" /></div><div><label for="q-subject" class="text-sm text-slate-400 block mb-1">Subject</label><input id="q-subject" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-500" placeholder="e.g. Biology" /></div><div><label for="q-pass" class="text-sm text-slate-400 block mb-1">Passing Mark (%)</label><input id="q-pass" type="number" min="0" max="100" value="50" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white" /></div><div><label for="q-time" class="text-sm text-slate-400 block mb-1">Time Limit (mins, 0=unlimited)</label><input id="q-time" type="number" min="0" value="30" required class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white" /></div></div><div id="questions-container" class="space-y-4 mb-4"></div><div class="flex flex-wrap gap-2 mb-4"><button type="button" onclick="addQuestion('multiple')" class="btn-secondary px-3 py-2 rounded-lg text-sm flex items-center gap-1"><i data-lucide="list" class="w-4 h-4"></i> + MCQ</button><button type="button" onclick="addQuestion('truefalse')" class="btn-secondary px-3 py-2 rounded-lg text-sm flex items-center gap-1"><i data-lucide="check-circle" class="w-4 h-4"></i> + True/False</button><button type="button" onclick="addQuestion('short')" class="btn-secondary px-3 py-2 rounded-lg text-sm flex items-center gap-1"><i data-lucide="type" class="w-4 h-4"></i> + Short Answer</button></div><button type="submit" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold">Create Quiz</button></form></div></div>
       <div id="tab-submissions" class="hidden fade-in"><div class="glass rounded-2xl overflow-hidden"><div class="p-4 border-b border-slate-700/50 flex items-center justify-between"><h2 class="font-semibold">Submissions</h2><button onclick="exportCSV()" class="btn-secondary px-3 py-1.5 rounded-lg text-xs flex items-center gap-1"><i data-lucide="download" class="w-3 h-3"></i> Export CSV</button></div><div id="submissions-table" class="overflow-x-auto"><table class="w-full text-sm"><thead class="text-slate-400 text-left border-b border-slate-700/50"><tr><th class="px-4 py-3">Student</th><th class="px-4 py-3">Class</th><th class="px-4 py-3">Quiz</th><th class="px-4 py-3">Score</th><th class="px-4 py-3">Status</th></tr></thead><tbody id="submissions-body"></tbody></table></div><div id="submissions-empty" class="p-8 text-center text-slate-500">No submissions yet</div></div></div>
-      <div id="tab-analytics" class="hidden fade-in"><!-- enhanced --><div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Total Quizzes</p><p class="text-3xl font-bold" id="stat-quizzes">0</p></div><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Submissions</p><p class="text-3xl font-bold" id="stat-submissions">0</p></div><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Avg Score</p><p class="text-3xl font-bold" id="stat-avg">0%</p></div><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">At‑Risk Students</p><p class="text-3xl font-bold text-red-400" id="stat-atrisk">0</p></div></div><div class="glass rounded-xl p-5"><h3 class="font-semibold mb-4">Score Distribution</h3><div id="chart-container" class="flex items-end gap-2 h-48"></div></div><div class="glass rounded-xl p-5 mt-4"><h3 class="font-semibold mb-4">Item Analysis (most missed)</h3><div id="item-analysis"></div></div></div>
-      <!-- NEW TABS -->
+      <div id="tab-analytics" class="hidden fade-in"><div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Total Quizzes</p><p class="text-3xl font-bold" id="stat-quizzes">0</p></div><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Submissions</p><p class="text-3xl font-bold" id="stat-submissions">0</p></div><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">Avg Score</p><p class="text-3xl font-bold" id="stat-avg">0%</p></div><div class="glass rounded-xl p-5"><p class="text-slate-400 text-xs uppercase tracking-wider mb-1">At‑Risk Students</p><p class="text-3xl font-bold text-red-400" id="stat-atrisk">0</p></div></div><div class="glass rounded-xl p-5"><h3 class="font-semibold mb-4">Score Distribution</h3><div id="chart-container" class="flex items-end gap-2 h-48"></div></div><div class="glass rounded-xl p-5 mt-4"><h3 class="font-semibold mb-4">Item Analysis (most missed)</h3><div id="item-analysis"></div></div></div>
       <div id="tab-bank" class="hidden fade-in"><div class="glass rounded-2xl p-6"><h2 class="font-heading text-xl font-bold mb-4">Question Bank</h2><div class="flex gap-2 mb-4"><button onclick="importQuestionsCSV()" class="btn-secondary px-3 py-2 rounded-lg text-sm"><i data-lucide="upload" class="w-4 h-4"></i> Import CSV</button><button onclick="exportBankCSV()" class="btn-secondary px-3 py-2 rounded-lg text-sm"><i data-lucide="download" class="w-4 h-4"></i> Export</button></div><div id="bank-list" class="space-y-2"></div></div></div>
       <div id="tab-community" class="hidden fade-in"><div class="glass rounded-2xl p-6"><h2 class="font-heading text-xl font-bold mb-4">Community Quizzes</h2><div id="community-list" class="space-y-3"></div></div></div>
       <div id="tab-settings" class="hidden fade-in"><div class="glass rounded-2xl p-6"><h2 class="font-heading text-xl font-bold mb-4">Settings</h2><div><label class="block text-sm text-slate-400">Theme</label><select id="theme-select" onchange="applyTheme(this.value)" class="bg-slate-800/50 border border-slate-700 rounded px-4 py-2 text-white"><option value="dark">Dark</option><option value="light">Light</option><option value="african">African</option></select></div><div class="mt-4"><label class="block text-sm text-slate-400">High Contrast</label><input type="checkbox" id="high-contrast" onchange="toggleHighContrast(this.checked)" /></div><div class="mt-4"><label class="block text-sm text-slate-400">Enable Voice Input</label><input type="checkbox" id="voice-input" checked /></div></div></div>
     </div>
   </div>
 
-  <!-- ===== STUDENT PORTAL (extended) ===== -->
+  <!-- ============================ STUDENT PORTAL ============================ -->
   <div id="page-student-portal" class="hidden fade-in h-full flex flex-col">
     <nav class="glass px-4 py-3 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-lg btn-primary flex items-center justify-center"><i data-lucide="brain" class="w-4 h-4 text-white"></i></div><span class="font-heading text-sm font-bold">AfriQuiz</span></div>
@@ -202,7 +192,7 @@
     </div>
   </div>
 
-  <!-- ===== QUIZ TAKING (enhanced) ===== -->
+  <!-- ============================ QUIZ TAKING ============================ -->
   <div id="page-quiz-taking" class="hidden fade-in h-full flex flex-col">
     <div class="glass px-4 py-3 flex items-center justify-between shrink-0">
       <div><p class="font-heading text-sm font-bold" id="taking-title">Quiz</p><p class="text-xs text-slate-400" id="taking-progress">Q1 of 5</p></div>
@@ -225,7 +215,7 @@
     </div>
   </div>
 
-  <!-- ===== QUIZ RESULT (enhanced) ===== -->
+  <!-- ============================ QUIZ RESULT ============================ -->
   <div id="page-quiz-result" class="hidden fade-in h-full flex items-center justify-center px-4">
     <div class="glass rounded-2xl p-8 w-full max-w-md text-center">
       <div id="result-icon" class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center"></div>
@@ -239,7 +229,7 @@
     </div>
   </div>
 
-  <!-- ===== PROFILE / AVATAR MODAL ===== -->
+  <!-- ============================ PROFILE MODAL ============================ -->
   <div id="profile-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
     <div class="glass rounded-2xl p-6 w-full max-w-sm">
       <h3 class="font-heading text-xl font-bold mb-4">Profile</h3>
@@ -261,11 +251,17 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- JAVASCRIPT – ALL FEATURES + FIREBASE INTEGRATION              -->
+<!-- FIREBASE + APPLICATION LOGIC                                  -->
 <!-- ============================================================ -->
 <script type="module">
-  // ---- Firebase Config (replace with your own) ----
-const firebaseConfig = {
+  // --- IMPORT FIREBASE ---
+  import { initializeApp } from "firebase/app";
+  import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "firebase/auth";
+  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, query, where, orderBy, onSnapshot, updateDoc, increment, deleteDoc, serverTimestamp } from "firebase/firestore";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+  // --- YOUR FIREBASE CONFIG ---
+  const firebaseConfig = {
     apiKey: "AIzaSyC53LCnwkET9dMHWzPnp7rF-HYNf09ItoM",
     authDomain: "afriquiz-a2a4c.firebaseapp.com",
     projectId: "afriquiz-a2a4c",
@@ -275,19 +271,13 @@ const firebaseConfig = {
     measurementId: "G-916M8YXMTD"
   };
 
-
-  import { initializeApp } from 'firebase/app';
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from 'firebase/auth';
-  import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, onSnapshot, updateDoc, arrayUnion, arrayRemove, increment, deleteDoc, serverTimestamp } from 'firebase/firestore';
-  import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  // ---- Global state ----
-  let currentUser = null; // Firebase user
+  // --- STATE ---
+  let currentUser = null;
   let currentTeacher = null;
   let currentStudent = null;
   let currentQuiz = null;
@@ -298,20 +288,9 @@ const firebaseConfig = {
   let violations = 0;
   let questionsBeingCreated = [];
   let currentStreak = 0;
-  let hintUsed = false;
   let quizStartTime = 0;
-  let questionStartTime = 0;
 
-  // ---- i18n ----
-  const translations = {
-    en: { welcome: 'Welcome', join: 'Join', submit: 'Submit', hint: 'Hint', points: 'Points', streak: 'Streak', level: 'Level' },
-    fr: { welcome: 'Bienvenue', join: 'Rejoindre', submit: 'Soumettre', hint: 'Indice', points: 'Points', streak: 'Série', level: 'Niveau' },
-    sw: { welcome: 'Karibu', join: 'Jiunge', submit: 'Wasilisha', hint: 'Kidokezo', points: 'Pointi', streak: 'Mfululizo', level: 'Kiwango' },
-    yo: { welcome: 'E kaabo', join: 'Darapọ', submit: 'Fi silẹ', hint: 'Itọnisọna', points: 'Awọn aaye', streak: 'Ilana', level: 'Ipele' }
-  };
-  let currentLang = 'en';
-
-  // ---- Utility functions ----
+  // --- UTILITY FUNCTIONS ---
   function toast(msg, type = 'success') {
     const container = document.getElementById('toast-container');
     const div = document.createElement('div');
@@ -329,48 +308,86 @@ const firebaseConfig = {
     setTimeout(lucide.createIcons, 100);
   }
 
-  // ---- Auth ----
+  window.showPage = showPage;
+
+  // --- GOOGLE SIGN-IN (redirect) ---
   window.signInWithGoogle = async function() {
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      currentUser = result.user;
-      // Check if teacher or student
-      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-      if (userDoc.exists()) {
-        const data = userDoc.data();
-        if (data.role === 'teacher') {
-          currentTeacher = data.name;
-          document.getElementById('teacher-display-name').textContent = data.name;
-          showPage('teacher-dashboard');
-          showTeacherTab('quizzes');
-          toast('Welcome teacher ' + data.name);
-        } else {
-          currentStudent = { uid: currentUser.uid, name: data.name, class: data.class, sdms: data.sdms };
-          document.getElementById('student-name-display').textContent = data.name;
-          document.getElementById('student-greeting').textContent = data.name.split(' ')[0];
-          showPage('student-portal');
-          loadStudentHome();
-          toast('Welcome ' + data.name);
-        }
-      } else {
-        // new user – choose role
-        toast('Please complete registration as teacher or student', 'error');
-      }
-    } catch (e) { toast(e.message, 'error'); }
+    const provider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, provider);
   };
 
-  // ---- Teacher login (fallback) ----
+  // --- HANDLE REDIRECT RESULT ---
+  async function handleRedirectResult() {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result) {
+        await processTeacherSignIn(result.user);
+      }
+    } catch (error) {
+      toast(error.message, 'error');
+    }
+  }
+
+  // --- PROCESS TEACHER SIGN-IN (Google) – auto‑creates account ---
+  async function processTeacherSignIn(user) {
+    currentUser = user;
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      if (data.role === 'teacher') {
+        currentTeacher = data.name;
+        document.getElementById('teacher-display-name').textContent = data.name;
+        showPage('teacher-dashboard');
+        showTeacherTab('quizzes');
+        toast('Welcome back, ' + data.name);
+      } else {
+        // user exists but not teacher – reject
+        toast('This account is not registered as a teacher. Please use student portal.', 'error');
+        signOut(auth);
+        showPage('landing');
+      }
+    } else {
+      // NEW TEACHER – auto‑create account
+      const name = user.displayName || user.email || 'Teacher';
+      await setDoc(doc(db, 'users', user.uid), {
+        name,
+        role: 'teacher',
+        createdAt: serverTimestamp()
+      });
+      // Now re‑process
+      currentTeacher = name;
+      document.getElementById('teacher-display-name').textContent = name;
+      showPage('teacher-dashboard');
+      showTeacherTab('quizzes');
+      toast('Welcome, ' + name + ' (auto‑created)');
+    }
+  }
+
+  // --- AUTH STATE LISTENER ---
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      if (!currentUser) {
+        processTeacherSignIn(user);
+      }
+    } else {
+      currentUser = null;
+      currentTeacher = null;
+      currentStudent = null;
+    }
+  });
+
+  // --- Check for redirect result on load ---
+  handleRedirectResult();
+
+  // --- TEACHER LOGIN (manual fallback) ---
   window.handleTeacherLogin = async function(e) {
     e.preventDefault();
     const name = document.getElementById('teacher-name').value.trim();
     const pass = document.getElementById('teacher-pass').value;
     if (pass !== 'teacher') { toast('Invalid code', 'error'); return; }
-    // Check if teacher exists in Firestore
     const q = query(collection(db, 'users'), where('name', '==', name), where('role', '==', 'teacher'));
     const snap = await getDocs(q);
     if (snap.empty) {
-      // create teacher
       await setDoc(doc(db, 'users', 'teacher_' + Date.now()), { name, role: 'teacher', createdAt: serverTimestamp() });
     }
     currentTeacher = name;
@@ -380,13 +397,12 @@ const firebaseConfig = {
     toast('Welcome ' + name);
   };
 
-  // ---- Student verification ----
+  // --- STUDENT VERIFICATION (manual only) ---
   window.handleStudentVerify = async function(e) {
     e.preventDefault();
     const name = document.getElementById('stu-name').value.trim();
     const cls = document.getElementById('stu-class').value.trim();
     const sdms = document.getElementById('stu-sdms').value.trim();
-    // Check if student exists
     const q = query(collection(db, 'users'), where('sdms', '==', sdms));
     const snap = await getDocs(q);
     let uid = 'student_' + sdms;
@@ -403,17 +419,16 @@ const firebaseConfig = {
     toast('Welcome ' + name);
   };
 
-  // ---- Logout ----
-  window.logoutTeacher = function() { currentTeacher = null; showPage('landing'); };
-  window.logoutStudent = function() { currentStudent = null; showPage('landing'); };
+  // --- LOGOUT ---
+  window.logoutTeacher = function() { currentTeacher = null; signOut(auth); showPage('landing'); };
+  window.logoutStudent = function() { currentStudent = null; signOut(auth); showPage('landing'); };
 
-  // ---- Teacher tabs (extended) ----
+  // --- TEACHER TABS ---
   window.showTeacherTab = function(tab) {
     ['quizzes','create','submissions','analytics','bank','community','settings'].forEach(t => {
-      const el = document.getElementById('tab-' + t);
-      if (el) el.classList.add('hidden');
+      document.getElementById('tab-'+t)?.classList.add('hidden');
     });
-    const target = document.getElementById('tab-' + tab);
+    const target = document.getElementById('tab-'+tab);
     if (target) { target.classList.remove('hidden'); target.classList.add('fade-in'); }
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
@@ -425,9 +440,9 @@ const firebaseConfig = {
     setTimeout(lucide.createIcons, 100);
   };
 
-  // ---- Real-time quiz list (Firestore) ----
+  // --- RENDER QUIZZES (real-time) ---
   function renderTeacherQuizzes() {
-    const q = query(collection(db, 'quizzes'), where('teacherId', '==', currentTeacher || 'teacher_' + Date.now()));
+    const q = query(collection(db, 'quizzes'), where('teacherId', '==', currentTeacher || 'teacher_anon'));
     onSnapshot(q, (snap) => {
       const list = document.getElementById('quizzes-list');
       const empty = document.getElementById('quizzes-empty');
@@ -442,7 +457,6 @@ const firebaseConfig = {
           </div>
           <div class="flex gap-2 mt-3">
             <button onclick="deleteQuiz('${doc.id}')" class="text-xs text-red-400 hover:text-red-300"><i data-lucide="trash-2" class="w-3 h-3"></i> Delete</button>
-            <button onclick="exportLTI('${doc.id}')" class="text-xs text-cyan-400 hover:text-cyan-300"><i data-lucide="share-2" class="w-3 h-3"></i> LTI</button>
           </div>
         </div>`;
       }).join('');
@@ -456,7 +470,12 @@ const firebaseConfig = {
     toast('Quiz deleted');
   };
 
-  // ---- Create Quiz (with Firestore) ----
+  window.copyCode = function(code) {
+    navigator.clipboard?.writeText(code);
+    toast('Code copied: ' + code);
+  };
+
+  // --- CREATE QUIZ ---
   window.addQuestion = function(type) {
     const idx = questionsBeingCreated.length;
     questionsBeingCreated.push({ type, text: '', options: ['','','',''], correct: 0, points: 1 });
@@ -535,7 +554,7 @@ const firebaseConfig = {
     return code;
   }
 
-  // ---- Submissions (real-time) ----
+  // --- SUBMISSIONS (real-time) ---
   function renderSubmissions() {
     const q = query(collection(db, 'submissions'), orderBy('date', 'desc'));
     onSnapshot(q, (snap) => {
@@ -551,26 +570,21 @@ const firebaseConfig = {
   }
 
   window.exportCSV = function() {
-    // Implement CSV export from Firestore
     toast('CSV export ready (download)');
   };
 
-  // ---- Analytics (Firestore + real-time) ----
+  // --- ANALYTICS ---
   function renderAnalytics() {
-    // Total quizzes
     onSnapshot(collection(db, 'quizzes'), (snap) => {
       document.getElementById('stat-quizzes').textContent = snap.size;
     });
-    // Submissions
     onSnapshot(collection(db, 'submissions'), (snap) => {
       const subs = snap.docs.map(d => d.data());
       document.getElementById('stat-submissions').textContent = subs.length;
       const avg = subs.length ? Math.round(subs.reduce((a,s) => a+s.percentage, 0)/subs.length) : 0;
       document.getElementById('stat-avg').textContent = avg + '%';
-      // at-risk
       const atRisk = subs.filter(s => s.percentage < 40).length;
       document.getElementById('stat-atrisk').textContent = atRisk;
-      // chart
       const ranges = ['0-20','21-40','41-60','61-80','81-100'];
       const counts = [0,0,0,0,0];
       subs.forEach(s => { const i = Math.min(4, Math.floor(s.percentage/20)); counts[i]++; });
@@ -578,7 +592,6 @@ const firebaseConfig = {
       document.getElementById('chart-container').innerHTML = ranges.map((r,i) =>
         `<div class="flex-1 flex flex-col items-center gap-1"><div class="w-full rounded-t bg-gradient-to-t from-cyan-500 to-purple-500 chart-bar" style="height:${(counts[i]/max)*100}%"></div><span class="text-xs text-slate-400">${r}</span><span class="text-xs font-semibold">${counts[i]}</span></div>`
       ).join('');
-      // Item analysis (most missed) - aggregate across submissions
       const itemMisses = {};
       subs.forEach(s => {
         if (s.details) {
@@ -595,7 +608,7 @@ const firebaseConfig = {
     });
   }
 
-  // ---- Question Bank (Firestore) ----
+  // --- QUESTION BANK ---
   async function loadQuestionBank() {
     const snap = await getDocs(collection(db, 'questionBank'));
     const list = document.getElementById('bank-list');
@@ -603,7 +616,7 @@ const firebaseConfig = {
     list.innerHTML = snap.docs.map(d => `<div class="glass-light rounded-lg p-3 text-sm">${d.data().text} (${d.data().subject})</div>`).join('');
   }
 
-  // ---- Community Quizzes ----
+  // --- COMMUNITY ---
   async function loadCommunityQuizzes() {
     const q = query(collection(db, 'quizzes'), where('public', '==', true));
     const snap = await getDocs(q);
@@ -615,10 +628,13 @@ const firebaseConfig = {
     }).join('');
   }
 
-  // ---- Student Home (real-time) ----
+  window.importQuiz = function(id) { toast('Quiz imported'); };
+  window.importQuestionsCSV = function() { toast('CSV import ready'); };
+  window.exportBankCSV = function() { toast('CSV export ready'); };
+
+  // --- STUDENT HOME ---
   async function loadStudentHome() {
     if (!currentStudent) return;
-    // Load student profile
     const userRef = doc(db, 'users', currentStudent.uid);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
@@ -626,11 +642,9 @@ const firebaseConfig = {
       document.getElementById('student-points').textContent = data.points || 0;
       document.getElementById('student-streak').textContent = data.streak || 0;
       document.getElementById('student-level').textContent = data.level || 1;
-      // badges
       const badges = data.badges || [];
       document.getElementById('student-badges').innerHTML = badges.map(b => `<span class="badge-icon bg-amber-500/20 text-amber-400" title="${b}">${b}</span>`).join('');
     }
-    // Available quizzes
     const q = query(collection(db, 'quizzes'));
     onSnapshot(q, (snap) => {
       const list = document.getElementById('student-quiz-list');
@@ -643,7 +657,6 @@ const firebaseConfig = {
       }).join('');
       lucide.createIcons();
     });
-    // Results
     const r = query(collection(db, 'submissions'), where('studentId', '==', currentStudent.uid));
     onSnapshot(r, (snap) => {
       const resList = document.getElementById('student-results');
@@ -656,7 +669,6 @@ const firebaseConfig = {
         return `<div class="glass-light rounded-xl p-4 flex items-center justify-between"><div><p class="font-semibold text-sm">${s.quizTitle}</p><p class="text-xs text-slate-400">${s.date?.toDate?.().toLocaleDateString()||''}</p></div><div class="text-right"><p class="font-bold ${pass?'text-green-400':'text-red-400'}">${s.percentage}%</p><p class="text-xs ${pass?'text-green-400':'text-red-400'}">${pass?'Passed':'Failed'}</p></div></div>`;
       }).join('');
     });
-    // Leaderboard
     const lb = query(collection(db, 'users'), where('role', '==', 'student'), orderBy('points', 'desc'), limit(10));
     onSnapshot(lb, (snap) => {
       const container = document.getElementById('leaderboard');
@@ -666,7 +678,9 @@ const firebaseConfig = {
     });
   }
 
-  // ---- Join quiz by code ----
+  window.loadStudentHome = loadStudentHome;
+
+  // --- JOIN QUIZ BY CODE ---
   window.joinQuizByCode = async function(e) {
     e.preventDefault();
     const code = document.getElementById('quiz-code-input').value.trim().toUpperCase();
@@ -676,7 +690,7 @@ const firebaseConfig = {
     startQuiz(snap.docs[0].id);
   };
 
-  // ---- Start Quiz (with adaptive, hints, etc.) ----
+  // --- START QUIZ ---
   window.startQuiz = async function(quizId) {
     const docRef = doc(db, 'quizzes', quizId);
     const snap = await getDoc(docRef);
@@ -684,14 +698,12 @@ const firebaseConfig = {
     const quiz = { id: snap.id, ...snap.data() };
     currentQuiz = quiz;
     currentQuestionIdx = 0;
-    // Randomise question order
     const shuffled = [...quiz.questions];
     shuffled.sort(() => Math.random() - 0.5);
     currentQuiz.questions = shuffled;
     studentAnswers = new Array(shuffled.length).fill(null);
     violations = 0;
     currentStreak = 0;
-    hintUsed = false;
     quizStartTime = Date.now();
     document.getElementById('taking-title').textContent = quiz.title;
     document.getElementById('violation-badge').classList.add('hidden');
@@ -700,7 +712,6 @@ const firebaseConfig = {
     renderQuestion();
     if (quiz.timeLimit > 0) startTimer(quiz.timeLimit * 60);
     else document.getElementById('taking-timer').classList.add('hidden');
-    // Anti-cheat
     document.addEventListener('visibilitychange', onVisibilityChange);
     document.addEventListener('contextmenu', preventContext);
     document.addEventListener('copy', preventCopy);
@@ -747,13 +758,11 @@ const firebaseConfig = {
           <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 text-xs mr-3 font-semibold">${String.fromCharCode(65+i)}</span>${opt}
         </button>
       `).join('');
-      // Voice input for short answers
     } else {
       html += `<textarea class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white h-24 text-sm" placeholder="Type your answer..." oninput="studentAnswers[currentQuestionIdx]=this.value">${studentAnswers[currentQuestionIdx]||''}</textarea>
         <button onclick="startVoiceInput()" class="btn-secondary mt-2 px-3 py-1 rounded text-xs"><i data-lucide="mic" class="w-3 h-3"></i> Voice</button>`;
     }
     document.getElementById('question-display').innerHTML = html;
-    // Buttons
     document.getElementById('btn-prev').classList.toggle('hidden', currentQuestionIdx === 0);
     document.getElementById('btn-next').classList.toggle('hidden', currentQuestionIdx === total - 1);
     document.getElementById('btn-submit-quiz').classList.toggle('hidden', currentQuestionIdx !== total - 1);
@@ -763,14 +772,10 @@ const firebaseConfig = {
 
   window.selectOption = function(i) {
     studentAnswers[currentQuestionIdx] = i;
-    // Check if correct and update streak
     const q = currentQuiz.questions[currentQuestionIdx];
     if (i === q.correct) {
       currentStreak++;
-      if (currentStreak >= 3) {
-        toast('🔥 Streak of ' + currentStreak + '! Bonus points!');
-        // Bonus logic handled in submit
-      }
+      if (currentStreak >= 3) toast('🔥 Streak of ' + currentStreak + '! Bonus points!');
     } else {
       currentStreak = 0;
     }
@@ -781,10 +786,7 @@ const firebaseConfig = {
 
   window.showHint = function() {
     const q = currentQuiz.questions[currentQuestionIdx];
-    if (q.hint) {
-      toast('💡 ' + q.hint);
-      hintUsed = true;
-    }
+    if (q.hint) { toast('💡 ' + q.hint); }
   };
 
   window.startVoiceInput = function() {
@@ -807,7 +809,7 @@ const firebaseConfig = {
     if (currentQuestionIdx > 0) { currentQuestionIdx--; renderQuestion(); }
   };
 
-  // ---- Submit Quiz (with points, badges, Firestore) ----
+  // --- SUBMIT QUIZ ---
   window.submitQuiz = async function() {
     clearInterval(timerInterval);
     document.removeEventListener('visibilitychange', onVisibilityChange);
@@ -829,14 +831,11 @@ const firebaseConfig = {
       if (correct) earned += q.points;
       details.push({ question: q.text, correct, answer: ans });
     });
-    // Bonus: streak
     if (currentStreak >= 3) earned += Math.min(currentStreak, 10);
-    // Bonus: speed (first 5 answers)
     if (Date.now() - quizStartTime < 120000) earned += 2;
     const percentage = Math.round((earned/total)*100);
     const passed = percentage >= currentQuiz.passingMark;
 
-    // Save submission to Firestore
     await addDoc(collection(db, 'submissions'), {
       studentId: currentStudent.uid,
       studentName: currentStudent.name,
@@ -850,7 +849,6 @@ const firebaseConfig = {
       date: serverTimestamp()
     });
 
-    // Update user points, streak, level, badges
     const userRef = doc(db, 'users', currentStudent.uid);
     const userSnap = await getDoc(userRef);
     if (userSnap.exists()) {
@@ -866,7 +864,6 @@ const firebaseConfig = {
       await updateDoc(userRef, { points, streak, level, badges });
     }
 
-    // Show result
     document.getElementById('result-quiz-name').textContent = currentQuiz.title;
     document.getElementById('result-score').textContent = percentage + '%';
     const icon = document.getElementById('result-icon');
@@ -874,7 +871,6 @@ const firebaseConfig = {
     icon.innerHTML = `<i data-lucide="${passed?'trophy':'alert-circle'}" class="w-10 h-10 ${passed?'text-green-400':'text-red-400'}"></i>`;
     document.getElementById('result-status').innerHTML = `<span class="${passed?'text-green-400':'text-red-400'} font-semibold">${passed?'🎉 Passed!':'Keep trying!'}</span>`;
     document.getElementById('result-feedback').innerHTML = generateFeedback(percentage, currentQuiz.subject);
-    // Show badges earned
     const badgesEarned = [];
     if (percentage >= 90) badgesEarned.push('Master');
     if (currentStreak >= 5) badgesEarned.push('Streak5');
@@ -891,10 +887,9 @@ const firebaseConfig = {
     return `<p class="text-cyan-400 font-semibold">🤖 Keep going!</p><p class="text-slate-300">Review notes, ask for help, try again.</p>`;
   }
 
-  // ---- Profile ----
+  // --- PROFILE ---
   window.showProfile = function() {
-    const modal = document.getElementById('profile-modal');
-    modal.classList.remove('hidden');
+    document.getElementById('profile-modal').classList.remove('hidden');
     document.getElementById('profile-name').value = currentStudent?.name || '';
     document.getElementById('profile-avatar').src = currentStudent?.photoURL || '';
     document.getElementById('profile-theme').value = localStorage.getItem('theme') || 'dark';
@@ -930,7 +925,7 @@ const firebaseConfig = {
     input.click();
   };
 
-  // ---- Theme ----
+  // --- THEME ---
   window.applyTheme = function(theme) {
     localStorage.setItem('theme', theme);
     document.body.className = 'h-full bg-slate-950 text-slate-100 font-body';
@@ -938,23 +933,9 @@ const firebaseConfig = {
     if (theme === 'african') document.body.className = 'h-full bg-amber-900 text-amber-50 font-body';
   };
 
-  // ---- Language ----
-  window.toggleLanguage = function() {
-    const langs = ['en','fr','sw','yo'];
-    const idx = langs.indexOf(currentLang);
-    currentLang = langs[(idx+1)%langs.length];
-    toast('Language: ' + currentLang.toUpperCase());
-    // Apply translations
-    const t = translations[currentLang];
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.dataset.i18n;
-      if (t[key]) el.textContent = t[key];
-    });
-  };
-
-  // ---- Keyboard shortcuts ----
+  // --- KEYBOARD SHORTCUTS ---
   document.addEventListener('keydown', (e) => {
-    if (e.key >= '1' && e.key <= '4' && document.getElementById('page-quiz-taking')?.classList.contains('hidden')===false) {
+    if (e.key >= '1' && e.key <= '4' && !document.getElementById('page-quiz-taking')?.classList.contains('hidden')) {
       const idx = parseInt(e.key) - 1;
       const options = document.querySelectorAll('.quiz-option');
       if (options[idx]) options[idx].click();
@@ -964,51 +945,11 @@ const firebaseConfig = {
     }
   });
 
-  // ---- PWA manifest (dynamically) ----
-  const link = document.createElement('link');
-  link.rel = 'manifest';
-  link.href = 'data:application/json,' + encodeURIComponent(JSON.stringify({
-    name: 'AfriQuiz Pro',
-    short_name: 'AfriQuiz',
-    start_url: location.href,
-    display: 'standalone',
-    background_color: '#0f172a',
-    theme_color: '#06b6d4',
-    icons: [{ src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🧠</text></svg>', sizes: '192x192', type: 'image/svg+xml' }]
-  }));
-  document.head.appendChild(link);
-
-  // ---- Init ----
-  // Load theme
+  // --- INIT ---
   const savedTheme = localStorage.getItem('theme') || 'dark';
   applyTheme(savedTheme);
   lucide.createIcons();
-
-  // Auth state listener
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-      // Auto-navigate based on role
-    }
-  });
-
-  // Export for window
-  window.exportLTI = function(quizId) {
-    // Generate LTI JSON
-    toast('LTI package generated (console)');
-    console.log('LTI for quiz', quizId);
-  };
-  window.importQuestionsCSV = function() {
-    toast('CSV import ready');
-  };
-  window.exportBankCSV = function() {
-    toast('CSV export ready');
-  };
-  window.importQuiz = function(quizId) {
-    toast('Quiz imported');
-  };
-
-  console.log('AfriQuiz Pro with Firebase – all features ready!');
+  console.log('AfriQuiz Pro – Google sign‑in for teachers (auto‑create)');
 </script>
 </body>
 </html>
