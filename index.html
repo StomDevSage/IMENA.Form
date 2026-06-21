@@ -1,31 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <!-- ===== SEO & Meta ===== -->
-    <title>AfriQuiz</title>
-    <meta name="description" content="AfriQuiz is a smart, gamified assessment platform built for African schools. Create quizzes, track performance, and engage students with real-time analytics." />
-    <meta name="keywords" content="afriquiz, african schools, online quiz, assessment, gamification, education, learning, firebase" />
-    <meta name="author" content="AfriQuiz Team" />
-    <meta name="robots" content="index, follow" />
+    <title>AfriQuiz Pro</title>
+    <meta name="description" content="AfriQuiz Pro – Smart, gamified assessments for African schools. Secure, real‑time, and beautifully designed." />
     <meta name="theme-color" content="#06b6d4" />
 
-    <!-- ===== Open Graph (Facebook / LinkedIn) ===== -->
-    <meta property="og:title" content="AfriQuiz – Smart Assessments for African Schools" />
-    <meta property="og:description" content="Gamified, real-time quizzes with adaptive learning, analytics, and anti-cheat features – built for African classrooms." />
+    <!-- ===== Open Graph ===== -->
+    <meta property="og:title" content="AfriQuiz Pro – Smart Assessments for African Schools" />
+    <meta property="og:description" content="Gamified, real‑time quizzes with adaptive learning, analytics, and anti‑cheat features." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://afriquiz-a2a4c.firebaseapp.com" />
-    <meta property="og:image" content="https://afriquiz-a2a4c.firebaseapp.com/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <!-- ===== Twitter Card ===== -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AfriQuiz – Smart Assessments for African Schools" />
-    <meta name="twitter:description" content="Gamified, real-time quizzes with adaptive learning, analytics, and anti-cheat features – built for African classrooms." />
-    <meta name="twitter:image" content="https://afriquiz-a2a4c.firebaseapp.com/og-image.png" />
 
     <!-- ===== Favicon ===== -->
     <!-- Standard favicon -->
@@ -45,6 +34,7 @@
     
     <!-- Fallback favicon (brain emoji) in case files don't load -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+
 
     <!-- ===== Scripts ===== -->
     <script src="https://cdn.tailwindcss.com/3.4.17">
@@ -79,11 +69,147 @@
             height: 100%;
             margin: 0;
             font-family: 'Inter', sans-serif;
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.5s, color 0.5s;
+            overflow: hidden;
         }
         .app-root {
             height: 100%;
             overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Animated Background ── */
+        .bg-animated {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #0c4a6e 60%, #1a1a2e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 18s ease infinite;
+        }
+        .bg-animated::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.08) 0%, transparent 40%);
+            animation: pulseBg 8s ease-in-out infinite alternate;
+        }
+        .bg-animated::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, 0.08), transparent),
+                radial-gradient(2px 2px at 30% 70%, rgba(255, 255, 255, 0.06), transparent),
+                radial-gradient(2px 2px at 50% 10%, rgba(255, 255, 255, 0.1), transparent),
+                radial-gradient(2px 2px at 70% 60%, rgba(255, 255, 255, 0.05), transparent),
+                radial-gradient(2px 2px at 90% 30%, rgba(255, 255, 255, 0.08), transparent);
+            background-size: 200px 200px;
+            animation: starDrift 30s linear infinite;
+        }
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes pulseBg {
+            0% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        @keyframes starDrift {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-50px, -50px);
+            }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(6, 182, 212, 0.15);
+            animation: floatParticle 20s infinite ease-in-out;
+        }
+        .particle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+            background: rgba(139, 92, 246, 0.08);
+        }
+        .particle:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            bottom: 15%;
+            right: 8%;
+            animation-delay: -5s;
+            background: rgba(6, 182, 212, 0.06);
+        }
+        .particle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 50%;
+            left: 70%;
+            animation-delay: -10s;
+            background: rgba(245, 158, 11, 0.07);
+        }
+        .particle:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            right: 20%;
+            animation-delay: -3s;
+            background: rgba(34, 197, 94, 0.05);
+        }
+        .particle:nth-child(5) {
+            width: 50px;
+            height: 50px;
+            bottom: 30%;
+            left: 30%;
+            animation-delay: -8s;
+            background: rgba(236, 72, 153, 0.06);
+        }
+        @keyframes floatParticle {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translate(30px, -40px) scale(1.2);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-20px, 20px) scale(0.8);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translate(40px, 10px) scale(1.1);
+                opacity: 0.7;
+            }
         }
 
         /* ── Glass & Effects ── */
@@ -99,6 +225,12 @@
         }
         .gradient-text {
             background: linear-gradient(135deg, #06b6d4, #8b5cf6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .gradient-text-2 {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -133,7 +265,7 @@
             background: rgba(239, 68, 68, 0.3);
         }
 
-        /* ── Google Sign-In Button Styles ── */
+        /* ── Google Sign-In ── */
         .google-btn {
             display: flex;
             align-items: center;
@@ -160,62 +292,91 @@
         }
         .google-btn:active {
             transform: scale(0.98);
-            background: #f1f3f4;
-        }
-        .google-btn svg {
-            flex-shrink: 0;
-        }
-        .google-btn span {
-            flex: 1;
-            text-align: center;
-            letter-spacing: 0.2px;
         }
 
-        /* ── Theme overrides for Google Button ── */
-        .theme-light .google-btn {
-            background: #ffffff;
-            border-color: #dadce0;
-            color: #3c4043;
+        /* ── Theme Overrides ── */
+        .theme-light .bg-animated {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 40%, #f8fafc 70%, #eef2ff 100%) !important;
         }
-        .theme-light .google-btn:hover {
-            background: #f8f9fa;
+        .theme-light .particle {
+            background: rgba(6, 182, 212, 0.06) !important;
+        }
+        .theme-light .glass {
+            background: rgba(255, 255, 255, 0.72) !important;
+            border-color: rgba(0, 0, 0, 0.06) !important;
+        }
+        .theme-light .glass-light {
+            background: rgba(255, 255, 255, 0.5) !important;
+            border-color: rgba(0, 0, 0, 0.04) !important;
+        }
+        .theme-light body,
+        .theme-light .app-root {
+            color: #0f172a !important;
+        }
+        .theme-light .btn-secondary {
+            background: rgba(0, 0, 0, 0.04);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        .theme-light .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .theme-light input,
+        .theme-light textarea,
+        .theme-light select {
+            background: rgba(255, 255, 255, 0.6) !important;
+            border-color: rgba(0, 0, 0, 0.1) !important;
+            color: #0f172a !important;
         }
 
-        .theme-african .google-btn {
-            background: #fdf6ee;
-            border-color: rgba(251, 191, 36, 0.3);
-            color: #1a0e08;
+        .theme-african .bg-animated {
+            background: linear-gradient(135deg, #1a0e08 0%, #2d1810 30%, #1a0e08 60%, #3d1f12 100%) !important;
         }
-        .theme-african .google-btn:hover {
-            background: #f5e6d3;
+        .theme-african .glass {
+            background: rgba(44, 24, 16, 0.85) !important;
+            border-color: rgba(251, 191, 36, 0.12) !important;
+        }
+        .theme-african .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+        }
+        .theme-african .btn-primary:hover {
+            box-shadow: 0 12px 35px rgba(245, 158, 11, 0.35) !important;
+        }
+        .theme-african .gradient-text {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
         }
 
-        .theme-ocean .google-btn {
-            background: #e2f0fa;
-            border-color: rgba(56, 189, 248, 0.3);
-            color: #0c1a2b;
+        .theme-ocean .bg-animated {
+            background: linear-gradient(135deg, #0c1a2b 0%, #0f2847 40%, #1a365d 70%, #0c1a2b 100%) !important;
         }
-        .theme-ocean .google-btn:hover {
-            background: #c8e4f5;
+        .theme-ocean .glass {
+            background: rgba(15, 40, 71, 0.8) !important;
+            border-color: rgba(56, 189, 248, 0.12) !important;
+        }
+        .theme-ocean .btn-primary {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9) !important;
         }
 
-        .theme-forest .google-btn {
-            background: #e2f5e8;
-            border-color: rgba(52, 211, 153, 0.3);
-            color: #0a1a0f;
+        .theme-forest .bg-animated {
+            background: linear-gradient(135deg, #0a1a0f 0%, #0d2818 40%, #1a3d2a 70%, #0a1a0f 100%) !important;
         }
-        .theme-forest .google-btn:hover {
-            background: #c8eed9;
+        .theme-forest .glass {
+            background: rgba(13, 40, 24, 0.8) !important;
+            border-color: rgba(52, 211, 153, 0.12) !important;
+        }
+        .theme-forest .btn-primary {
+            background: linear-gradient(135deg, #34d399, #10b981) !important;
         }
 
         /* ── Animations ── */
         .fade-in {
-            animation: fadeIn 0.35s ease;
+            animation: fadeIn 0.4s ease;
         }
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(12px);
+                transform: translateY(16px);
             }
             to {
                 opacity: 1;
@@ -223,28 +384,16 @@
             }
         }
         .slide-up {
-            animation: slideUp 0.4s ease;
+            animation: slideUp 0.45s ease;
         }
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px) scale(0.96);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .pulse-glow {
-            animation: pulseGlow 2s infinite;
-        }
-        @keyframes pulseGlow {
-            0%,
-            100% {
-                box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(6, 182, 212, 0.35);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -261,7 +410,7 @@
         .quiz-option.selected {
             background: rgba(6, 182, 212, 0.2);
             border-color: #06b6d4;
-            box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.15);
         }
         .quiz-option.correct-reveal {
             background: rgba(34, 197, 94, 0.2);
@@ -279,17 +428,18 @@
             right: 28px;
             z-index: 9999;
             animation: toastIn 0.4s ease;
-            max-width: 380px;
+            max-width: 400px;
             padding: 14px 20px;
             border-radius: 16px;
             backdrop-filter: blur(16px);
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.88);
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             gap: 12px;
             font-size: 0.9rem;
+            color: #fff;
         }
         @keyframes toastIn {
             from {
@@ -310,6 +460,12 @@
                 transform: translateY(30px) scale(0.95);
             }
         }
+        .toast-error {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .toast-success {
+            border-color: rgba(34, 197, 94, 0.3);
+        }
 
         /* ── Scrollbar ── */
         .scrollable {
@@ -327,7 +483,55 @@
             background: transparent;
         }
 
-        /* ── Badge Icons ── */
+        /* ── Sidebar ── */
+        .sidebar-link {
+            transition: all 0.15s;
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .sidebar-link:hover {
+            background: rgba(6, 182, 212, 0.1);
+            color: #fff;
+        }
+        .sidebar-link.active {
+            background: rgba(6, 182, 212, 0.18);
+            color: #06b6d4;
+            font-weight: 500;
+        }
+        .theme-light .sidebar-link {
+            color: rgba(0, 0, 0, 0.5);
+        }
+        .theme-light .sidebar-link:hover {
+            background: rgba(6, 182, 212, 0.08);
+            color: #0f172a;
+        }
+        .theme-light .sidebar-link.active {
+            background: rgba(6, 182, 212, 0.12);
+            color: #06b6d4;
+        }
+        .theme-african .sidebar-link.active {
+            background: rgba(251, 191, 36, 0.15) !important;
+            color: #fbbf24 !important;
+        }
+
+        /* ── Chart ── */
+        .chart-bar {
+            transition: height 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 4px;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg, #06b6d4, #8b5cf6);
+        }
+        .theme-african .chart-bar {
+            background: linear-gradient(180deg, #fbbf24, #d97706) !important;
+        }
+
+        /* ── Badge ── */
         .badge-icon {
             width: 44px;
             height: 44px;
@@ -340,34 +544,84 @@
             border: 1px solid rgba(251, 191, 36, 0.2);
         }
 
-        /* ── Sidebar ── */
-        .sidebar-link {
-            transition: all 0.15s;
-            cursor: pointer;
-            border-radius: 10px;
-            padding: 8px 14px;
-            font-size: 0.875rem;
+        /* ── Rules Overlay ── */
+        .rules-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 9998;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: rgba(255, 255, 255, 0.6);
+            justify-content: center;
+            padding: 20px;
         }
-        .sidebar-link:hover {
-            background: rgba(6, 182, 212, 0.1);
-            color: #fff;
+        .rules-box {
+            max-width: 540px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 24px;
+            padding: 32px;
+            animation: slideUp 0.4s ease;
         }
-        .sidebar-link.active {
-            background: rgba(6, 182, 212, 0.18);
-            color: #06b6d4;
-            font-weight: 500;
+        .rule-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .rule-item:last-child {
+            border-bottom: none;
         }
 
-        /* ── Chart ── */
-        .chart-bar {
-            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            min-height: 4px;
-            border-radius: 6px 6px 0 0;
-            background: linear-gradient(180deg, #06b6d4, #8b5cf6);
+        /* ── Logo preview ── */
+        .logo-preview {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        .logo-preview.has-logo {
+            border-style: solid;
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        /* ── Misc ── */
+        .match-pair {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .match-pair select {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: #fff;
+            font-size: 0.85rem;
+            min-width: 120px;
+        }
+        .fitb-input {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-bottom: 2px solid rgba(6, 182, 212, 0.4);
+            padding: 2px 8px;
+            color: #fff;
+            font-size: 1rem;
+            min-width: 80px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        .fitb-input:focus {
+            outline: none;
+            border-color: #06b6d4;
         }
 
         /* ── Loading shimmer ── */
@@ -385,19 +639,7 @@
             }
         }
 
-        /* ── Rule modal ── */
-        .rule-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .rule-item:last-child {
-            border-bottom: none;
-        }
-
-        /* ── Responsive tweaks ── */
+        /* ── Responsive ── */
         @media (max-width: 640px) {
             .toast {
                 right: 16px;
@@ -405,229 +647,70 @@
                 max-width: unset;
                 bottom: 16px;
             }
-            .glass {
-                backdrop-filter: blur(12px);
+            .rules-box {
+                padding: 20px;
             }
         }
 
-        /* ── Light theme overrides ── */
-        .theme-light body,
-        .theme-light .app-root {
-            background: #f1f5f9 !important;
-            color: #0f172a !important;
-        }
-        .theme-light .glass {
-            background: rgba(255, 255, 255, 0.7) !important;
-            border-color: rgba(0, 0, 0, 0.06) !important;
-            backdrop-filter: blur(14px) !important;
-        }
-        .theme-light .glass-light {
-            background: rgba(255, 255, 255, 0.5) !important;
-            border-color: rgba(0, 0, 0, 0.04) !important;
-        }
-        .theme-light .sidebar-link {
-            color: rgba(0, 0, 0, 0.6);
-        }
-        .theme-light .sidebar-link:hover {
-            background: rgba(6, 182, 212, 0.08);
-            color: #0f172a;
-        }
-        .theme-light .sidebar-link.active {
-            background: rgba(6, 182, 212, 0.12);
-            color: #06b6d4;
-        }
-        .theme-light .btn-secondary {
-            background: rgba(0, 0, 0, 0.04);
-            border-color: rgba(0, 0, 0, 0.08);
-        }
-        .theme-light .btn-secondary:hover {
-            background: rgba(0, 0, 0, 0.08);
-        }
-        .theme-light input,
-        .theme-light textarea,
-        .theme-light select {
-            background: rgba(255, 255, 255, 0.6) !important;
-            border-color: rgba(0, 0, 0, 0.1) !important;
-            color: #0f172a !important;
-        }
-        .theme-light input::placeholder,
-        .theme-light textarea::placeholder {
-            color: #94a3b8 !important;
-        }
-        .theme-light .quiz-option {
-            border-color: rgba(0, 0, 0, 0.08);
-        }
-        .theme-light .quiz-option:hover {
-            background: rgba(6, 182, 212, 0.06);
-        }
-        .theme-light .quiz-option.selected {
-            background: rgba(6, 182, 212, 0.12);
-            border-color: #06b6d4;
-        }
-        .theme-light .toast {
-            background: rgba(255, 255, 255, 0.92);
-            border-color: rgba(0, 0, 0, 0.06);
-            color: #0f172a;
-        }
-
-        /* ── African theme ── */
-        .theme-african body,
-        .theme-african .app-root {
-            background: #1a0e08 !important;
-            color: #fdf6ee !important;
-        }
-        .theme-african .glass {
-            background: rgba(44, 24, 16, 0.8) !important;
-            border-color: rgba(251, 191, 36, 0.15) !important;
-            backdrop-filter: blur(14px) !important;
-        }
-        .theme-african .glass-light {
-            background: rgba(44, 24, 16, 0.5) !important;
-            border-color: rgba(251, 191, 36, 0.08) !important;
-        }
-        .theme-african .btn-primary {
-            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-        }
-        .theme-african .btn-primary:hover {
-            box-shadow: 0 12px 35px rgba(245, 158, 11, 0.35) !important;
-        }
-        .theme-african .gradient-text {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706) !important;
-            -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-        }
-        .theme-african .sidebar-link.active {
-            background: rgba(251, 191, 36, 0.15) !important;
-            color: #fbbf24 !important;
-        }
-        .theme-african .sidebar-link:hover {
-            background: rgba(251, 191, 36, 0.08) !important;
-            color: #fdf6ee !important;
-        }
-        .theme-african .chart-bar {
-            background: linear-gradient(180deg, #fbbf24, #d97706) !important;
-        }
-        .theme-african .quiz-option.selected {
-            background: rgba(251, 191, 36, 0.15) !important;
-            border-color: #fbbf24 !important;
-        }
-        .theme-african .toast {
-            background: rgba(44, 24, 16, 0.92) !important;
-            border-color: rgba(251, 191, 36, 0.15) !important;
-        }
-
-        /* ── Fullscreen overlay for exam rules ── */
-        .rules-overlay {
+        /* ── Loading overlay ── */
+        .loading-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            z-index: 9998;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
         }
-        .rules-box {
-            max-width: 560px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border-radius: 24px;
-            padding: 32px;
-            animation: slideUp 0.4s ease;
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        .rules-box h2 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .rules-box .sub {
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 20px;
-            font-size: 0.9rem;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        /* School logo upload preview */
-        .logo-preview {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            object-fit: cover;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
+        /* ── High Contrast ── */
+        .high-contrast .glass {
+            background: rgba(0, 0, 0, 0.85) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
         }
-        .logo-preview:hover {
-            border-color: rgba(6, 182, 212, 0.3);
+        .high-contrast .btn-primary {
+            background: #06b6d4 !important;
         }
-        .logo-preview.has-logo {
-            border-style: solid;
-            border-color: rgba(6, 182, 212, 0.3);
-        }
-
-        /* Matching question styles */
-        .match-pair {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .match-pair select {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 6px 12px;
-            color: #fff;
-            font-size: 0.85rem;
-            min-width: 120px;
-        }
-        .theme-light .match-pair select {
-            background: rgba(0, 0, 0, 0.04);
-            border-color: rgba(0, 0, 0, 0.08);
-            color: #0f172a;
-        }
-        .theme-african .match-pair select {
-            background: rgba(251, 191, 36, 0.08);
-            border-color: rgba(251, 191, 36, 0.15);
-            color: #fdf6ee;
-        }
-
-        /* Fill-in-the-blank input */
-        .fitb-input {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.06);
-            border: none;
-            border-bottom: 2px solid rgba(6, 182, 212, 0.4);
-            padding: 2px 8px;
-            color: #fff;
-            font-size: 1rem;
-            min-width: 80px;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-        .fitb-input:focus {
-            outline: none;
-            border-color: #06b6d4;
-        }
-        .theme-light .fitb-input {
-            background: rgba(0, 0, 0, 0.03);
-            color: #0f172a;
-        }
-        .theme-african .fitb-input {
-            border-color: rgba(251, 191, 36, 0.4);
-            color: #fdf6ee;
-        }
-        .theme-african .fitb-input:focus {
-            border-color: #fbbf24;
+        .high-contrast .btn-secondary {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
         }
     </style>
 </head>
 <body>
+    <!-- ===== Animated Background ===== -->
+    <div class="bg-animated"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
     <div class="app-root" id="app">
 
-        <!-- ====== LANDING ====== -->
-        <div id="page-landing" class="fade-in">
+        <!-- ===== LOADING OVERLAY ===== -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <!-- ===== LANDING ===== -->
+        <div id="page-landing" class="fade-in relative z-10">
             <nav class="glass sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <div class="w-9 h-9 rounded-xl btn-primary flex items-center justify-center shadow-lg">
@@ -652,11 +735,11 @@
                 <h1 class="font-heading text-4xl md:text-7xl font-extrabold mb-4 leading-[1.1] tracking-tight">
                     <span class="gradient-text">AfriQuiz Pro</span>
                 </h1>
-                <p class="text-slate-400 text-lg md:text-xl mb-6 max-w-2xl mx-auto font-light">
+                <p class="text-slate-300 text-lg md:text-xl mb-6 max-w-2xl mx-auto font-light">
                     Smart Assessments · Gamified · AI-Powered · Firebase‑Secure
                 </p>
-                <p class="text-slate-500 text-sm mb-10 max-w-xl mx-auto">
-                    The world's most advanced quiz platform for schools — trusted by educators across Africa.
+                <p class="text-slate-400 text-sm mb-10 max-w-xl mx-auto">
+                    The most advanced quiz platform for schools — trusted by educators across Africa.
                 </p>
                 <div class="flex flex-wrap justify-center gap-4 mb-16">
                     <button onclick="showPage('teacher-login')" class="btn-primary px-8 py-3.5 rounded-2xl text-white font-semibold flex items-center gap-2 shadow-xl shadow-cyan-500/20">
@@ -690,7 +773,7 @@
                     </div>
                 </div>
 
-                <div class="mt-12 flex flex-wrap justify-center gap-6 text-xs text-slate-500">
+                <div class="mt-12 flex flex-wrap justify-center gap-6 text-xs text-slate-400">
                     <span>🔒 AES‑256 encrypted</span>
                     <span>⚡ Real‑time sync</span>
                     <span>📱 Mobile‑first</span>
@@ -699,16 +782,15 @@
             </main>
         </div>
 
-        <!-- ====== TEACHER LOGIN with Official Google Button ====== -->
-        <div id="page-teacher-login" class="hidden fade-in h-full flex items-center justify-center px-4">
+        <!-- ===== TEACHER LOGIN (Google Only) ===== -->
+        <div id="page-teacher-login" class="hidden fade-in h-full flex items-center justify-center px-4 relative z-10">
             <div class="glass rounded-2xl p-8 w-full max-w-sm slide-up">
                 <button onclick="showPage('landing')" class="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm transition">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
                 </button>
                 <h2 class="font-heading text-2xl font-bold mb-2">Teacher Portal</h2>
-                <p class="text-slate-400 text-sm mb-6">Sign in to manage quizzes, view reports &amp; more</p>
+                <p class="text-slate-400 text-sm mb-6">Sign in with your Google account to manage quizzes &amp; reports</p>
 
-                <!-- ===== OFFICIAL GOOGLE SIGN-IN BUTTON ===== -->
                 <button onclick="signInWithGoogle()" class="google-btn">
                     <svg width="20" height="20" viewBox="0 0 48 48">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -719,44 +801,34 @@
                     <span>Sign in with Google</span>
                 </button>
 
-                <div class="relative flex items-center my-4">
-                    <div class="flex-grow border-t border-slate-700"></div>
-                    <span class="flex-shrink mx-4 text-slate-500 text-xs">or</span>
-                    <div class="flex-grow border-t border-slate-700"></div>
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-slate-500">Only authorised teachers can access this portal.</p>
                 </div>
-
-                <form id="teacher-login-form" onsubmit="handleTeacherLogin(event)">
-                    <label class="text-sm text-slate-400 block mb-1">Your Name</label>
-                    <input id="teacher-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-4 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="e.g. Mrs. Okafor" />
-                    <label class="text-sm text-slate-400 block mb-1">Access Code</label>
-                    <input id="teacher-pass" type="password" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-6 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="Enter code (use: teacher)" />
-                    <button type="submit" class="w-full btn-primary py-3.5 rounded-xl text-white font-semibold shadow-lg shadow-cyan-500/20">Enter Dashboard</button>
-                </form>
             </div>
         </div>
 
-        <!-- ====== STUDENT VERIFY ====== -->
-        <div id="page-student-verify" class="hidden fade-in h-full flex items-center justify-center px-4">
+        <!-- ===== STUDENT VERIFY ===== -->
+        <div id="page-student-verify" class="hidden fade-in h-full flex items-center justify-center px-4 relative z-10">
             <div class="glass rounded-2xl p-8 w-full max-w-sm slide-up">
                 <button onclick="showPage('landing')" class="text-slate-400 hover:text-white mb-4 flex items-center gap-1 text-sm transition">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
                 </button>
                 <h2 class="font-heading text-2xl font-bold mb-2">Student Verification</h2>
-                <p class="text-slate-400 text-sm mb-6">Verify your identity to access quizzes &amp; track progress</p>
+                <p class="text-slate-400 text-sm mb-6">Enter your details to access quizzes &amp; track your progress</p>
                 <form id="student-verify-form" onsubmit="handleStudentVerify(event)">
-                    <label class="text-sm text-slate-400 block mb-1">Full Name</label>
-                    <input id="stu-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-3 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="Amina Mohammed" />
-                    <label class="text-sm text-slate-400 block mb-1">Class</label>
-                    <input id="stu-class" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-3 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="JSS 3A" />
-                    <label class="text-sm text-slate-400 block mb-1">SDMS Code</label>
-                    <input id="stu-sdms" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-6 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="STU-2024-001" />
+                    <label class="text-sm text-slate-400 block mb-1">Full Name *</label>
+                    <input id="stu-name" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-3 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="e.g. Amina Mohammed" />
+                    <label class="text-sm text-slate-400 block mb-1">Class *</label>
+                    <input id="stu-class" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-3 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="e.g. JSS 3A" />
+                    <label class="text-sm text-slate-400 block mb-1">SDMS Code *</label>
+                    <input id="stu-sdms" type="text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 mb-6 text-white placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" placeholder="e.g. STU-2024-001" />
                     <button type="submit" class="w-full btn-primary py-3.5 rounded-xl text-white font-semibold shadow-lg shadow-cyan-500/20">Verify &amp; Continue</button>
                 </form>
             </div>
         </div>
 
-        <!-- ====== TEACHER DASHBOARD ====== -->
-        <div id="page-teacher-dashboard" class="hidden fade-in flex h-full">
+        <!-- ===== TEACHER DASHBOARD ===== -->
+        <div id="page-teacher-dashboard" class="hidden fade-in flex h-full relative z-10">
             <!-- Sidebar -->
             <aside class="glass w-60 shrink-0 p-4 flex-col hidden md:flex h-full overflow-y-auto scrollable">
                 <div class="flex items-center gap-2 mb-6">
@@ -769,7 +841,7 @@
                     <button onclick="showTeacherTab('quizzes')" class="sidebar-link active" data-tab="quizzes"><i data-lucide="file-text" class="w-4 h-4"></i> My Quizzes</button>
                     <button onclick="showTeacherTab('create')" class="sidebar-link" data-tab="create"><i data-lucide="plus-circle" class="w-4 h-4"></i> Create Quiz</button>
                     <button onclick="showTeacherTab('submissions')" class="sidebar-link" data-tab="submissions"><i data-lucide="users" class="w-4 h-4"></i> Submissions</button>
-                    <button onclick="showTeacherTab('reports')" class="sidebar-link" data-tab="reports"><i data-lucide="file-bar-chart" class="w-4 h-4"></i> Full Reports</button>
+                    <button onclick="showTeacherTab('reports')" class="sidebar-link" data-tab="reports"><i data-lucide="file-bar-chart" class="w-4 h-4"></i> Reports</button>
                     <button onclick="showTeacherTab('analytics')" class="sidebar-link" data-tab="analytics"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> Analytics</button>
                     <button onclick="showTeacherTab('bank')" class="sidebar-link" data-tab="bank"><i data-lucide="database" class="w-4 h-4"></i> Question Bank</button>
                     <button onclick="showTeacherTab('community')" class="sidebar-link" data-tab="community"><i data-lucide="globe" class="w-4 h-4"></i> Community</button>
@@ -779,7 +851,7 @@
                 <button onclick="logoutTeacher()" class="sidebar-link text-red-400/70 hover:text-red-400 mt-2"><i data-lucide="log-out" class="w-4 h-4"></i> Logout</button>
             </aside>
 
-            <!-- Main Content (same as before, unchanged) -->
+            <!-- Main Content -->
             <div class="flex-1 overflow-y-auto p-4 md:p-6 scrollable">
                 <!-- Mobile header -->
                 <div class="md:hidden flex items-center justify-between mb-4">
@@ -788,17 +860,16 @@
                         <button onclick="showTeacherTab('quizzes')" class="p-2 rounded-xl btn-secondary"><i data-lucide="file-text" class="w-4 h-4"></i></button>
                         <button onclick="showTeacherTab('create')" class="p-2 rounded-xl btn-secondary"><i data-lucide="plus-circle" class="w-4 h-4"></i></button>
                         <button onclick="showTeacherTab('submissions')" class="p-2 rounded-xl btn-secondary"><i data-lucide="users" class="w-4 h-4"></i></button>
-                        <button onclick="showTeacherTab('reports')" class="p-2 rounded-xl btn-secondary"><i data-lucide="file-bar-chart" class="w-4 h-4"></i></button>
                         <button onclick="showTeacherTab('customize')" class="p-2 rounded-xl btn-secondary"><i data-lucide="palette" class="w-4 h-4"></i></button>
                     </div>
                 </div>
 
                 <div id="teacher-welcome" class="mb-6">
                     <h1 class="text-2xl font-bold">Welcome back, <span id="teacher-display-name">Teacher</span></h1>
-                    <p class="text-slate-400 text-sm">Manage quizzes, track progress, and engage students</p>
+                    <p class="text-slate-400 text-sm">Manage your quizzes, track student progress, and engage your class.</p>
                 </div>
 
-                <!-- Tabs -->
+                <!-- Tab: Quizzes -->
                 <div id="tab-quizzes" class="fade-in">
                     <div id="quizzes-list" class="grid gap-4"></div>
                     <div id="quizzes-empty" class="text-center py-16 text-slate-500">
@@ -808,6 +879,7 @@
                     </div>
                 </div>
 
+                <!-- Tab: Create -->
                 <div id="tab-create" class="hidden fade-in">
                     <div class="glass rounded-2xl p-6 max-w-3xl mx-auto">
                         <h2 class="font-heading text-2xl font-bold mb-2">Create New Quiz</h2>
@@ -865,6 +937,7 @@
                     </div>
                 </div>
 
+                <!-- Tab: Submissions -->
                 <div id="tab-submissions" class="hidden fade-in">
                     <div class="glass rounded-2xl overflow-hidden">
                         <div class="p-5 border-b border-slate-700/50 flex items-center justify-between flex-wrap gap-2">
@@ -897,9 +970,10 @@
                     </div>
                 </div>
 
+                <!-- Tab: Reports -->
                 <div id="tab-reports" class="hidden fade-in">
                     <div class="glass rounded-2xl p-6">
-                        <h2 class="font-heading text-2xl font-bold mb-2">📊 Full Student Reports</h2>
+                        <h2 class="font-heading text-2xl font-bold mb-2">📊 Student Reports</h2>
                         <p class="text-slate-400 text-sm mb-6">Detailed individual performance, question‑by‑question analysis</p>
                         <div id="reports-list" class="space-y-3"></div>
                         <div id="reports-empty" class="text-center py-12 text-slate-500">
@@ -909,6 +983,7 @@
                     </div>
                 </div>
 
+                <!-- Tab: Analytics -->
                 <div id="tab-analytics" class="hidden fade-in">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <div class="glass rounded-xl p-5">
@@ -938,6 +1013,7 @@
                     </div>
                 </div>
 
+                <!-- Tab: Bank -->
                 <div id="tab-bank" class="hidden fade-in">
                     <div class="glass rounded-2xl p-6">
                         <h2 class="font-heading text-2xl font-bold mb-2">📚 Question Bank</h2>
@@ -952,6 +1028,7 @@
                     </div>
                 </div>
 
+                <!-- Tab: Community -->
                 <div id="tab-community" class="hidden fade-in">
                     <div class="glass rounded-2xl p-6">
                         <h2 class="font-heading text-2xl font-bold mb-2">🌍 Community Quizzes</h2>
@@ -960,13 +1037,12 @@
                     </div>
                 </div>
 
+                <!-- Tab: Customize -->
                 <div id="tab-customize" class="hidden fade-in">
                     <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
                         <h2 class="font-heading text-2xl font-bold mb-2">🎨 Customize Look</h2>
                         <p class="text-slate-400 text-sm mb-6">Change colours, fonts, and add your school logo</p>
-
                         <div class="space-y-5">
-                            <!-- Logo -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">School Logo</label>
                                 <div class="flex items-center gap-4">
@@ -976,8 +1052,6 @@
                                 </div>
                                 <p class="text-xs text-slate-500 mt-1">PNG, JPG, SVG recommended (max 2MB)</p>
                             </div>
-
-                            <!-- Theme -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Theme</label>
                                 <div class="flex flex-wrap gap-2">
@@ -988,8 +1062,6 @@
                                     <button onclick="applyTheme('forest')" class="btn-secondary px-4 py-2 rounded-xl text-sm flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-900 border border-emerald-700"></span> Forest</button>
                                 </div>
                             </div>
-
-                            <!-- Font -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Font Family</label>
                                 <select id="font-select" onchange="applyFont(this.value)" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none">
@@ -999,8 +1071,6 @@
                                     <option value="mono">JetBrains Mono</option>
                                 </select>
                             </div>
-
-                            <!-- Primary Color -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Primary Color</label>
                                 <div class="flex items-center gap-3">
@@ -1009,18 +1079,16 @@
                                     <button onclick="resetPrimaryColor()" class="btn-secondary px-3 py-1.5 rounded-lg text-sm">Reset</button>
                                 </div>
                             </div>
-
-                            <!-- Brand Name -->
                             <div>
                                 <label class="text-sm text-slate-400 block mb-2">Brand Name</label>
                                 <input id="brand-name-input" type="text" value="AfriQuiz Pro" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" onchange="updateBrandName(this.value)" />
                             </div>
-
                             <button onclick="saveCustomization()" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold">💾 Save Customization</button>
                         </div>
                     </div>
                 </div>
 
+                <!-- Tab: Settings -->
                 <div id="tab-settings" class="hidden fade-in">
                     <div class="glass rounded-2xl p-6 max-w-2xl mx-auto">
                         <h2 class="font-heading text-2xl font-bold mb-2">⚙️ Settings</h2>
@@ -1059,8 +1127,8 @@
             </div>
         </div>
 
-        <!-- ====== STUDENT PORTAL ====== -->
-        <div id="page-student-portal" class="hidden fade-in h-full flex flex-col">
+        <!-- ===== STUDENT PORTAL ===== -->
+        <div id="page-student-portal" class="hidden fade-in h-full flex flex-col relative z-10">
             <nav class="glass px-4 py-3 flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-xl btn-primary flex items-center justify-center shadow-md">
@@ -1117,8 +1185,8 @@
             </div>
         </div>
 
-        <!-- ====== QUIZ TAKING ====== -->
-        <div id="page-quiz-taking" class="hidden fade-in h-full flex flex-col">
+        <!-- ===== QUIZ TAKING ===== -->
+        <div id="page-quiz-taking" class="hidden fade-in h-full flex flex-col relative z-10">
             <div class="glass px-4 py-3 flex items-center justify-between shrink-0 flex-wrap gap-2">
                 <div>
                     <p class="font-heading font-bold text-sm" id="taking-title">Quiz</p>
@@ -1143,8 +1211,8 @@
             </div>
         </div>
 
-        <!-- ====== QUIZ RESULT ====== -->
-        <div id="page-quiz-result" class="hidden fade-in h-full flex items-center justify-center px-4">
+        <!-- ===== QUIZ RESULT ===== -->
+        <div id="page-quiz-result" class="hidden fade-in h-full flex items-center justify-center px-4 relative z-10">
             <div class="glass rounded-2xl p-8 w-full max-w-md text-center slide-up">
                 <div id="result-icon" class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center"></div>
                 <h2 class="font-heading text-2xl font-bold mb-1">Quiz Complete!</h2>
@@ -1155,16 +1223,15 @@
                 <div id="result-badges" class="flex justify-center gap-2 mb-5 flex-wrap"></div>
                 <div class="flex flex-col gap-2">
                     <button onclick="showPage('student-portal');loadStudentHome();" class="btn-primary px-6 py-3 rounded-xl text-white font-semibold w-full">📊 Back to Dashboard</button>
-                    <button onclick="showPage('student-portal');loadStudentHome();" class="btn-secondary px-6 py-3 rounded-xl text-sm w-full">View Full Report</button>
                 </div>
             </div>
         </div>
 
-        <!-- ====== EXAM RULES OVERLAY ====== -->
-        <div id="exam-rules-overlay" class="rules-overlay hidden">
+        <!-- ===== EXAM RULES OVERLAY ===== -->
+        <div id="exam-rules-overlay" class="rules-overlay hidden z-20">
             <div class="rules-box glass">
                 <h2>📋 Exam Rules</h2>
-                <p class="sub">Please read carefully before starting your assessment</p>
+                <p class="sub text-slate-400 text-sm mb-4">Please read carefully before starting your assessment</p>
                 <div id="rules-content" class="space-y-0.5 mb-6"></div>
                 <div class="flex items-center gap-3 mb-6">
                     <input type="checkbox" id="rules-agree" class="w-5 h-5 accent-cyan-500" />
@@ -1177,7 +1244,7 @@
             </div>
         </div>
 
-        <!-- ====== PROFILE MODAL ====== -->
+        <!-- ===== PROFILE MODAL ===== -->
         <div id="profile-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
             <div class="glass rounded-2xl p-6 w-full max-w-sm slide-up">
                 <h3 class="font-heading text-xl font-bold mb-4">👤 Profile</h3>
@@ -1200,7 +1267,7 @@
             </div>
         </div>
 
-        <!-- ====== TOAST ====== -->
+        <!-- ===== TOAST ===== -->
         <div id="toast-container"></div>
     </div>
 
@@ -1211,7 +1278,7 @@
         // ─── IMPORTS ──────────────────────────────────────────────────
         import { initializeApp } from "firebase/app";
         import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
-        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, query, where, orderBy, onSnapshot, updateDoc, increment, deleteDoc, serverTimestamp, runTransaction } from "firebase/firestore";
+        import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, query, where, orderBy, onSnapshot, updateDoc, increment, deleteDoc, serverTimestamp, limit } from "firebase/firestore";
         import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 
         // ─── FIREBASE CONFIG ─────────────────────────────────────────
@@ -1232,7 +1299,7 @@
 
         // ─── STATE ───────────────────────────────────────────────────
         let currentUser = null;
-        let currentTeacher = null;
+        let currentTeacherId = null;
         let currentStudent = null;
         let currentQuiz = null;
         let currentQuestionIdx = 0;
@@ -1246,17 +1313,24 @@
         let quizSubmitting = false;
         let rulesAccepted = false;
         let pendingQuizId = null;
+        let unsubscribers = [];
 
         // ─── DOM REFS ────────────────────────────────────────────────
         const $ = (id) => document.getElementById(id);
 
-        // ─── UTILITY ─────────────────────────────────────────────────
+        // ─── LOADING ─────────────────────────────────────────────────
+        function showLoading(show) {
+            $('loading-overlay').classList.toggle('hidden', !show);
+        }
+
+        // ─── TOAST ───────────────────────────────────────────────────
         function toast(msg, type = 'success') {
             const container = $('toast-container');
             const div = document.createElement('div');
-            div.className = `toast ${type === 'error' ? 'border-red-500/30' : 'border-cyan-500/30'}`;
-            const icon = type === 'error' ? 'x-circle' : 'check-circle';
-            const color = type === 'error' ? 'text-red-400' : 'text-cyan-400';
+            const isError = type === 'error';
+            div.className = `toast ${isError ? 'toast-error' : 'toast-success'}`;
+            const icon = isError ? 'x-circle' : 'check-circle';
+            const color = isError ? 'text-red-400' : 'text-cyan-400';
             div.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5 ${color} shrink-0"></i><span>${msg}</span>`;
             container.appendChild(div);
             lucide.createIcons();
@@ -1266,40 +1340,30 @@
             }, 4200);
         }
 
+        // ─── PAGE NAVIGATION ────────────────────────────────────────
         window.showPage = function(page) {
             document.querySelectorAll('[id^="page-"]').forEach(p => p.classList.add('hidden'));
             const el = $('page-' + page);
-            if (el) { el.classList.remove('hidden'); el.classList.add('fade-in'); }
+            if (el) { el.classList.remove('hidden');
+                el.classList.add('fade-in'); }
             setTimeout(lucide.createIcons, 150);
-            // close rules overlay if open
             $('exam-rules-overlay').classList.add('hidden');
         };
 
         // ─── THEME / CUSTOMIZATION ──────────────────────────────────
-        const savedTheme = localStorage.getItem('afriquiz-theme') || 'dark';
-        const savedFont = localStorage.getItem('afriquiz-font') || 'inter';
-        const savedPrimary = localStorage.getItem('afriquiz-primary') || '#06b6d4';
-        const savedBrand = localStorage.getItem('afriquiz-brand') || 'AfriQuiz Pro';
-
         function applyTheme(theme) {
             localStorage.setItem('afriquiz-theme', theme);
             const root = document.documentElement;
             root.className = '';
             if (theme === 'light') root.classList.add('theme-light');
             else if (theme === 'african') root.classList.add('theme-african');
-            else if (theme === 'ocean') { root.style.setProperty('--bg', '#0c1a2b'); root.style.setProperty('--text', '#e2f0fa'); }
-            else if (theme === 'forest') { root.style.setProperty('--bg', '#0a1a0f'); root.style.setProperty('--text', '#e2f5e8'); }
-            else { root.classList.add('theme-dark'); }
-            // update select
+            else if (theme === 'ocean') root.classList.add('theme-ocean');
+            else if (theme === 'forest') root.classList.add('theme-forest');
             const sel = $('profile-theme');
             if (sel) sel.value = theme;
-            // update primary
             applyPrimaryColor(localStorage.getItem('afriquiz-primary') || '#06b6d4');
-            // update font
             applyFont(localStorage.getItem('afriquiz-font') || 'inter');
-            // update brand
             updateBrandName(localStorage.getItem('afriquiz-brand') || 'AfriQuiz Pro');
-            toast('Theme updated');
         }
         window.applyTheme = applyTheme;
 
@@ -1321,10 +1385,9 @@
             localStorage.setItem('afriquiz-primary', color);
             const root = document.documentElement;
             root.style.setProperty('--primary', color);
-            // update gradient buttons
-            const btns = document.querySelectorAll('.btn-primary');
+            const btns = document.querySelectorAll('.btn-primary:not(.keep-gradient)');
             btns.forEach(b => {
-                b.style.background = `linear-gradient(135deg, ${color}, ${adjustColor(color, -20)})`;
+                b.style.background = `linear-gradient(135deg, ${color}, ${adjustColor(color, -30)})`;
             });
             $('primary-color-label').textContent = color;
         }
@@ -1349,12 +1412,12 @@
         }
         window.updateBrandName = updateBrandName;
 
-        // School Logo
+        // ─── SCHOOL LOGO ─────────────────────────────────────────────
         let schoolLogoURL = localStorage.getItem('afriquiz-logo') || '';
         if (schoolLogoURL) {
             const preview = $('school-logo-preview');
-            preview.src = schoolLogoURL;
-            preview.classList.add('has-logo');
+            if (preview) { preview.src = schoolLogoURL;
+                preview.classList.add('has-logo'); }
         }
 
         window.uploadSchoolLogo = function() {
@@ -1364,58 +1427,63 @@
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
+                showLoading(true);
                 try {
                     const refPath = ref(storage, 'school_logos/' + Date.now() + '_' + file.name);
                     await uploadBytes(refPath, file);
                     const url = await getDownloadURL(refPath);
                     localStorage.setItem('afriquiz-logo', url);
                     const preview = $('school-logo-preview');
-                    preview.src = url;
-                    preview.classList.add('has-logo');
+                    if (preview) { preview.src = url;
+                        preview.classList.add('has-logo'); }
                     toast('Logo uploaded!');
-                } catch (err) { toast('Upload failed', 'error'); }
+                } catch (err) { toast('Upload failed', 'error'); } finally { showLoading(false); }
             };
             input.click();
         };
         window.removeSchoolLogo = function() {
             localStorage.removeItem('afriquiz-logo');
             const preview = $('school-logo-preview');
-            preview.src = '';
-            preview.classList.remove('has-logo');
+            if (preview) { preview.src = '';
+                preview.classList.remove('has-logo'); }
             toast('Logo removed');
         };
+        window.saveCustomization = function() { toast('Customization saved!'); };
 
-        window.saveCustomization = function() {
-            toast('Customization saved!');
-        };
-
-        // ─── TEACHER AUTH ────────────────────────────────────────────
+        // ─── TEACHER AUTH (Google Only) ─────────────────────────────
         async function processTeacherSignIn(user) {
-            currentUser = user;
-            const userRef = doc(db, 'users', user.uid);
-            const userDoc = await getDoc(userRef);
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                if (data.role === 'teacher') {
-                    currentTeacher = data.name;
-                    $('teacher-display-name').textContent = data.name;
+            showLoading(true);
+            try {
+                currentUser = user;
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    if (data.role === 'teacher') {
+                        currentTeacherId = user.uid;
+                        $('teacher-display-name').textContent = data.name || user.displayName || 'Teacher';
+                        showPage('teacher-dashboard');
+                        showTeacherTab('quizzes');
+                        toast('Welcome back, ' + (data.name || 'Teacher'));
+                    } else {
+                        toast('This account is not registered as a teacher.', 'error');
+                        await signOut(auth);
+                        showPage('landing');
+                    }
+                } else {
+                    // Auto-create teacher account
+                    const name = user.displayName || user.email || 'Teacher';
+                    await setDoc(userRef, { name, role: 'teacher', email: user.email, createdAt: serverTimestamp() });
+                    currentTeacherId = user.uid;
+                    $('teacher-display-name').textContent = name;
                     showPage('teacher-dashboard');
                     showTeacherTab('quizzes');
-                    toast('Welcome back, ' + data.name);
-                } else {
-                    toast('This account is not a teacher.', 'error');
-                    signOut(auth);
-                    showPage('landing');
+                    toast('Welcome, ' + name + '! Your account has been created.');
                 }
-            } else {
-                const name = user.displayName || user.email || 'Teacher';
-                await setDoc(userRef, { name, role: 'teacher', createdAt: serverTimestamp() });
-                currentTeacher = name;
-                $('teacher-display-name').textContent = name;
-                showPage('teacher-dashboard');
-                showTeacherTab('quizzes');
-                toast('Welcome, ' + name + ' (auto-created)');
-            }
+            } catch (err) {
+                toast('Authentication error: ' + err.message, 'error');
+                console.error(err);
+            } finally { showLoading(false); }
         }
 
         window.signInWithGoogle = async function() {
@@ -1430,37 +1498,20 @@
             }
         };
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                if (!currentUser) processTeacherSignIn(user);
+                if (!currentUser) await processTeacherSignIn(user);
             } else {
                 currentUser = null;
-                currentTeacher = null;
+                currentTeacherId = null;
                 currentStudent = null;
+                // Clean up listeners
+                unsubscribers.forEach(u => u());
+                unsubscribers = [];
                 if (!$('page-landing').classList.contains('hidden')) return;
                 showPage('landing');
             }
         });
-
-        window.handleTeacherLogin = async function(e) {
-            e.preventDefault();
-            const name = $('teacher-name').value.trim();
-            const pass = $('teacher-pass').value;
-            if (pass !== 'teacher') { toast('Invalid code', 'error'); return; }
-            const q = query(collection(db, 'users'), where('name', '==', name), where('role', '==', 'teacher'));
-            const snap = await getDocs(q);
-            let uid = 'teacher_' + Date.now();
-            if (snap.empty) {
-                await setDoc(doc(db, 'users', uid), { name, role: 'teacher', createdAt: serverTimestamp() });
-            } else {
-                uid = snap.docs[0].id;
-            }
-            currentTeacher = name;
-            $('teacher-display-name').textContent = name;
-            showPage('teacher-dashboard');
-            showTeacherTab('quizzes');
-            toast('Welcome ' + name);
-        };
 
         // ─── STUDENT VERIFY ──────────────────────────────────────────
         window.handleStudentVerify = async function(e) {
@@ -1468,40 +1519,52 @@
             const name = $('stu-name').value.trim();
             const cls = $('stu-class').value.trim();
             const sdms = $('stu-sdms').value.trim();
-            const q = query(collection(db, 'users'), where('sdms', '==', sdms));
-            const snap = await getDocs(q);
-            let uid = 'student_' + sdms;
-            if (snap.empty) {
-                await setDoc(doc(db, 'users', uid), {
-                    name,
-                    class: cls,
-                    sdms,
-                    role: 'student',
-                    points: 0,
-                    streak: 0,
-                    level: 1,
-                    badges: [],
-                    quizzesTaken: 0,
-                    createdAt: serverTimestamp()
-                });
-            } else {
-                uid = snap.docs[0].id;
-            }
-            currentStudent = { uid, name, class: cls, sdms };
-            $('student-name-display').textContent = name;
-            $('student-greeting').textContent = name.split(' ')[0];
-            showPage('student-portal');
-            loadStudentHome();
-            toast('Welcome ' + name);
+            if (!name || !cls || !sdms) { toast('Please fill in all fields', 'error'); return; }
+            showLoading(true);
+            try {
+                const q = query(collection(db, 'users'), where('sdms', '==', sdms));
+                const snap = await getDocs(q);
+                let uid = 'student_' + sdms;
+                if (snap.empty) {
+                    await setDoc(doc(db, 'users', uid), {
+                        name,
+                        class: cls,
+                        sdms,
+                        role: 'student',
+                        points: 0,
+                        streak: 0,
+                        level: 1,
+                        badges: [],
+                        quizzesTaken: 0,
+                        createdAt: serverTimestamp()
+                    });
+                } else {
+                    uid = snap.docs[0].id;
+                    // Update name/class if changed
+                    await updateDoc(doc(db, 'users', uid), { name, class: cls });
+                }
+                currentStudent = { uid, name, class: cls, sdms };
+                $('student-name-display').textContent = name;
+                $('student-greeting').textContent = name.split(' ')[0];
+                showPage('student-portal');
+                loadStudentHome();
+                toast('Welcome ' + name);
+            } catch (err) { toast('Verification failed: ' + err.message, 'error'); } finally { showLoading(false); }
         };
 
         // ─── LOGOUT ──────────────────────────────────────────────────
-        window.logoutTeacher = function() { currentTeacher = null;
+        window.logoutTeacher = function() {
+            unsubscribers.forEach(u => u());
+            unsubscribers = [];
+            currentTeacherId = null;
             signOut(auth);
-            showPage('landing'); };
-        window.logoutStudent = function() { currentStudent = null;
+            showPage('landing');
+        };
+        window.logoutStudent = function() {
+            currentStudent = null;
             signOut(auth);
-            showPage('landing'); };
+            showPage('landing');
+        };
 
         // ─── TEACHER TABS ────────────────────────────────────────────
         window.showTeacherTab = function(tab) {
@@ -1524,11 +1587,14 @@
             setTimeout(lucide.createIcons, 150);
         };
 
-        // ─── TEACHER QUIZZES ─────────────────────────────────────────
+        // ─── TEACHER QUIZZES (Isolated) ─────────────────────────────
         function renderTeacherQuizzes() {
-            if (!currentTeacher) return;
-            const q = query(collection(db, 'quizzes'), where('teacherId', '==', currentTeacher));
-            onSnapshot(q, (snap) => {
+            if (!currentTeacherId) return;
+            // Clean up old listener
+            unsubscribers.forEach(u => u());
+            unsubscribers = [];
+            const q = query(collection(db, 'quizzes'), where('teacherId', '==', currentTeacherId), orderBy('createdAt', 'desc'));
+            const unsub = onSnapshot(q, (snap) => {
                 const list = $('quizzes-list');
                 const empty = $('quizzes-empty');
                 if (snap.empty) { list.innerHTML = '';
@@ -1539,8 +1605,8 @@
                     const qCount = q.questions?.length || 0;
                     return `<div class="glass rounded-xl p-5 hover:shadow-lg hover:shadow-cyan-500/5 transition-all">
                 <div class="flex items-start justify-between flex-wrap gap-2">
-                  <div><h3 class="font-semibold text-lg">${q.title}</h3>
-                    <p class="text-xs text-slate-400">${q.subject} • ${qCount} Qs • Pass: ${q.passingMark}% • ${q.timeLimit?q.timeLimit+'min':'∞'}</p>
+                  <div><h3 class="font-semibold text-lg">${escHtml(q.title)}</h3>
+                    <p class="text-xs text-slate-400">${escHtml(q.subject)} • ${qCount} Qs • Pass: ${q.passingMark}% • ${q.timeLimit?q.timeLimit+'min':'∞'}</p>
                     ${q.public?'<span class="text-xs text-emerald-400">🌍 Public</span>':''}
                   </div>
                   <button onclick="copyCode('${q.code}')" class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-heading tracking-wider flex items-center gap-1.5"><i data-lucide="copy" class="w-3 h-3"></i> ${q.code}</button>
@@ -1553,17 +1619,31 @@
                 }).join('');
                 lucide.createIcons();
             });
+            unsubscribers.push(unsub);
+        }
+
+        function escHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                return m;
+            });
         }
 
         window.deleteQuiz = async function(id) {
             if (!confirm('Delete this quiz permanently?')) return;
-            await deleteDoc(doc(db, 'quizzes', id));
-            toast('Quiz deleted');
+            showLoading(true);
+            try { await deleteDoc(doc(db, 'quizzes', id));
+                toast('Quiz deleted'); } catch (err) { toast('Delete failed', 'error'); } finally { showLoading(false); }
         };
 
         window.togglePublic = async function(id, current) {
-            await updateDoc(doc(db, 'quizzes', id), { public: !current });
-            toast(current ? 'Quiz is now private' : 'Quiz is now public! 🌍');
+            try { await updateDoc(doc(db, 'quizzes', id), { public: !current });
+                toast(current ? 'Quiz is now private' : 'Quiz is now public! 🌍'); } catch (err) { toast('Update failed',
+                    'error'); }
         };
 
         window.copyCode = function(code) {
@@ -1574,7 +1654,8 @@
         // ─── CREATE QUIZ ─────────────────────────────────────────────
         window.addQuestion = function(type) {
             const idx = questionsBeingCreated.length;
-            questionsBeingCreated.push({ type, text: '', options: ['', '', '', ''], correct: 0, points: 1, pairs: [], blanks: [], items: [] });
+            questionsBeingCreated.push({ type, text: '', options: ['', '', '', ''], correct: 0, points: 1, pairs: [],
+                blanks: [], items: [] });
             renderQuestionForm(idx, type);
         };
 
@@ -1631,11 +1712,11 @@
             </div>
             <input type="text" placeholder="Question text" required class="w-full bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2.5 text-white mb-3 placeholder-slate-500 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" data-qidx="${idx}" data-field="text">
             ${optionsHTML}
-            <div class="mt-2 flex items-center gap-3">
+            <div class="mt-2 flex items-center gap-3 flex-wrap">
               <label class="text-xs text-slate-400">Points</label>
               <input type="number" min="1" value="1" class="bg-slate-800/50 border border-slate-700 rounded-xl px-3 py-1.5 text-sm text-white w-16 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" data-qidx="${idx}" data-field="points">
               <label class="text-xs text-slate-400 flex items-center gap-1 ml-2"><input type="checkbox" data-qidx="${idx}" data-field="hint-check"> Hint</label>
-              <input type="text" placeholder="Hint text" class="bg-slate-800/50 border border-slate-700 rounded-xl px-3 py-1.5 text-sm text-white flex-1 transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" data-qidx="${idx}" data-field="hint-text">
+              <input type="text" placeholder="Hint text" class="bg-slate-800/50 border border-slate-700 rounded-xl px-3 py-1.5 text-sm text-white flex-1 min-w-[120px] transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none" data-qidx="${idx}" data-field="hint-text">
             </div>
           `;
             container.appendChild(div);
@@ -1676,70 +1757,91 @@
             }
         };
 
+        // ─── HANDLE CREATE QUIZ ──────────────────────────────────────
         window.handleCreateQuiz = async function(e) {
             e.preventDefault();
+            if (!currentTeacherId) { toast('You must be signed in as a teacher', 'error'); return; }
             if (questionsBeingCreated.length === 0) { toast('Add at least one question', 'error'); return; }
 
-            const questions = questionsBeingCreated.map((q, idx) => {
-                const text = document.querySelector(`[data-qidx="${idx}"][data-field="text"]`)?.value || '';
-                const points = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="points"]`)?.value || '1');
-                const hintCheck = document.querySelector(`[data-qidx="${idx}"][data-field="hint-check"]`)?.checked || false;
-                const hintText = document.querySelector(`[data-qidx="${idx}"][data-field="hint-text"]`)?.value || '';
+            const title = $('q-title').value.trim();
+            const subject = $('q-subject').value.trim();
+            if (!title || !subject) { toast('Title and subject are required', 'error'); return; }
 
-                let options = [],
-                    correct;
-                if (q.type === 'multiple') {
-                    options = [0, 1, 2, 3].map(i => document.querySelector(`[data-qidx="${idx}"][data-oidx="${i}"]`)?.value || '');
-                    correct = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="correct"]`)?.value || '1') - 1;
-                } else if (q.type === 'truefalse') {
-                    options = ['True', 'False'];
-                    correct = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="correct-tf"]`)?.value || '0');
-                } else if (q.type === 'short' || q.type === 'essay') {
-                    correct = document.querySelector(`[data-qidx="${idx}"][data-field="correct-short"]`)?.value || '';
-                } else if (q.type === 'matching') {
-                    const lefts = document.querySelectorAll(`[data-qidx="${idx}"][data-match-left]`);
-                    const rights = document.querySelectorAll(`[data-qidx="${idx}"][data-match-right]`);
-                    const pairs = [];
-                    lefts.forEach((el, i) => {
-                        if (rights[i]) pairs.push({ left: el.value, right: rights[i].value });
-                    });
-                    options = pairs.map(p => p.left);
-                    correct = pairs.map(p => p.right);
-                } else if (q.type === 'fill') {
-                    const fillText = document.querySelector(`[data-qidx="${idx}"][data-field="fill-text"]`)?.value || '';
-                    const fillAnswers = document.querySelector(`[data-qidx="${idx}"][data-field="fill-answers"]`)?.value || '';
-                    options = [fillText];
-                    correct = fillAnswers.split(',').map(s => s.trim());
-                } else if (q.type === 'ordering') {
-                    const orderItems = document.querySelector(`[data-qidx="${idx}"][data-field="order-items"]`)?.value || '';
-                    const orderCorrect = document.querySelector(`[data-qidx="${idx}"][data-field="order-correct"]`)?.value || '';
-                    options = orderItems.split(',').map(s => s.trim());
-                    correct = orderCorrect.split(',').map(s => parseInt(s.trim()) - 1);
-                }
-                return { type: q.type, text, options, correct, points, hint: hintCheck ? hintText : '' };
-            });
+            showLoading(true);
+            try {
+                const questions = questionsBeingCreated.map((q, idx) => {
+                    const text = document.querySelector(`[data-qidx="${idx}"][data-field="text"]`)?.value || '';
+                    const points = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="points"]`)?.value ||
+                    '1');
+                    const hintCheck = document.querySelector(`[data-qidx="${idx}"][data-field="hint-check"]`)?.checked ||
+                        false;
+                    const hintText = document.querySelector(`[data-qidx="${idx}"][data-field="hint-text"]`)?.value || '';
 
-            const quiz = {
-                title: $('q-title').value,
-                subject: $('q-subject').value,
-                description: $('q-desc').value || '',
-                code: generateCode(),
-                passingMark: parseInt($('q-pass').value),
-                timeLimit: parseInt($('q-time').value),
-                questions,
-                teacherId: currentTeacher,
-                shuffle: $('q-shuffle').checked,
-                public: $('q-public').checked,
-                proctoring: $('q-proctor').checked,
-                createdAt: serverTimestamp()
-            };
+                    let options = [],
+                        correct;
+                    if (q.type === 'multiple') {
+                        options = [0, 1, 2, 3].map(i => document.querySelector(
+                            `[data-qidx="${idx}"][data-oidx="${i}"]`)?.value || '');
+                        correct = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="correct"]`)
+                            ?.value || '1') - 1;
+                    } else if (q.type === 'truefalse') {
+                        options = ['True', 'False'];
+                        correct = parseInt(document.querySelector(`[data-qidx="${idx}"][data-field="correct-tf"]`)
+                            ?.value || '0');
+                    } else if (q.type === 'short' || q.type === 'essay') {
+                        correct = document.querySelector(`[data-qidx="${idx}"][data-field="correct-short"]`)
+                            ?.value || '';
+                    } else if (q.type === 'matching') {
+                        const lefts = document.querySelectorAll(`[data-qidx="${idx}"][data-match-left]`);
+                        const rights = document.querySelectorAll(`[data-qidx="${idx}"][data-match-right]`);
+                        const pairs = [];
+                        lefts.forEach((el, i) => {
+                            if (rights[i]) pairs.push({ left: el.value, right: rights[i].value });
+                        });
+                        options = pairs.map(p => p.left);
+                        correct = pairs.map(p => p.right);
+                    } else if (q.type === 'fill') {
+                        const fillText = document.querySelector(`[data-qidx="${idx}"][data-field="fill-text"]`)
+                            ?.value || '';
+                        const fillAnswers = document.querySelector(
+                            `[data-qidx="${idx}"][data-field="fill-answers"]`)?.value || '';
+                        options = [fillText];
+                        correct = fillAnswers.split(',').map(s => s.trim());
+                    } else if (q.type === 'ordering') {
+                        const orderItems = document.querySelector(`[data-qidx="${idx}"][data-field="order-items"]`)
+                            ?.value || '';
+                        const orderCorrect = document.querySelector(
+                            `[data-qidx="${idx}"][data-field="order-correct"]`)?.value || '';
+                        options = orderItems.split(',').map(s => s.trim());
+                        correct = orderCorrect.split(',').map(s => parseInt(s.trim()) - 1);
+                    }
+                    return { type: q.type, text, options, correct, points, hint: hintCheck ? hintText : '' };
+                });
 
-            await addDoc(collection(db, 'quizzes'), quiz);
-            questionsBeingCreated = [];
-            $('questions-container').innerHTML = '';
-            $('create-quiz-form').reset();
-            toast('✅ Quiz created! Code: ' + quiz.code);
-            showTeacherTab('quizzes');
+                const quiz = {
+                    title,
+                    subject,
+                    description: $('q-desc').value || '',
+                    code: generateCode(),
+                    passingMark: parseInt($('q-pass').value) || 50,
+                    timeLimit: parseInt($('q-time').value) || 0,
+                    questions,
+                    teacherId: currentTeacherId,
+                    shuffle: $('q-shuffle').checked,
+                    public: $('q-public').checked,
+                    proctoring: $('q-proctor').checked,
+                    createdAt: serverTimestamp()
+                };
+
+                await addDoc(collection(db, 'quizzes'), quiz);
+                questionsBeingCreated = [];
+                $('questions-container').innerHTML = '';
+                $('create-quiz-form').reset();
+                toast('✅ Quiz created! Code: ' + quiz.code);
+                showTeacherTab('quizzes');
+            } catch (err) {
+                toast('Failed to create quiz: ' + err.message, 'error');
+            } finally { showLoading(false); }
         };
 
         function generateCode() {
@@ -1749,30 +1851,43 @@
             return code;
         }
 
-        // ─── SUBMISSIONS ─────────────────────────────────────────────
+        // ─── SUBMISSIONS (Isolated) ──────────────────────────────────
         function renderSubmissions() {
+            if (!currentTeacherId) return;
+            // Clean up old listener
+            unsubscribers.forEach(u => u());
+            unsubscribers = [];
+            // Get all quiz IDs for this teacher first
             const q = query(collection(db, 'submissions'), orderBy('date', 'desc'));
-            onSnapshot(q, (snap) => {
+            const unsub = onSnapshot(q, async (snap) => {
+                // Filter by teacher's quizzes
+                const allSubs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                // We need to filter by teacherId - get teacher's quiz IDs
+                const quizSnap = await getDocs(query(collection(db, 'quizzes'), where('teacherId', '==',
+                currentTeacherId)));
+                const teacherQuizIds = new Set(quizSnap.docs.map(d => d.id));
+                const filtered = allSubs.filter(s => teacherQuizIds.has(s.quizId));
+
                 const body = $('submissions-body');
                 const empty = $('submissions-empty');
-                if (snap.empty) { body.innerHTML = '';
+                if (filtered.length === 0) { body.innerHTML = '';
                     empty.classList.remove('hidden'); return; }
                 empty.classList.add('hidden');
-                body.innerHTML = snap.docs.map(doc => {
-                    const s = doc.data();
+                body.innerHTML = filtered.map(s => {
                     const pass = s.percentage >= 50;
                     return `<tr class="border-b border-slate-800/50 hover:bg-slate-800/20 transition">
-                <td class="px-4 py-3 font-medium">${s.studentName}</td>
-                <td class="px-4 py-3 text-slate-400">${s.studentClass||''}</td>
-                <td class="px-4 py-3">${s.quizTitle}</td>
+                <td class="px-4 py-3 font-medium">${escHtml(s.studentName)}</td>
+                <td class="px-4 py-3 text-slate-400">${escHtml(s.studentClass||'')}</td>
+                <td class="px-4 py-3">${escHtml(s.quizTitle)}</td>
                 <td class="px-4 py-3 font-bold">${s.percentage}%</td>
                 <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-medium ${pass?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${pass?'✅ Pass':'❌ Fail'}</span></td>
                 <td class="px-4 py-3 text-xs text-slate-400">${s.date?.toDate?.().toLocaleDateString()||''}</td>
-                <td class="px-4 py-3"><button onclick="viewStudentReport('${doc.id}')" class="btn-secondary px-3 py-1 rounded-lg text-xs flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> View</button></td>
+                <td class="px-4 py-3"><button onclick="viewStudentReport('${s.id}')" class="btn-secondary px-3 py-1 rounded-lg text-xs flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> View</button></td>
               </tr>`;
                 }).join('');
                 lucide.createIcons();
             });
+            unsubscribers.push(unsub);
         }
 
         window.viewStudentReport = async function(subId) {
@@ -1783,11 +1898,11 @@
             const details = data.details || [];
             let html = `<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" id="report-modal" onclick="if(event.target===this)this.remove()">
             <div class="glass rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollable">
-              <div class="flex justify-between items-start mb-4"><h3 class="text-xl font-bold">📊 Full Report: ${data.studentName}</h3>
+              <div class="flex justify-between items-start mb-4"><h3 class="text-xl font-bold">📊 Full Report: ${escHtml(data.studentName)}</h3>
                 <button onclick="this.closest('#report-modal').remove()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
               </div>
               <div class="grid grid-cols-3 gap-3 mb-5">
-                <div class="glass-light rounded-xl p-3 text-center"><p class="text-xs text-slate-400">Quiz</p><p class="font-semibold">${data.quizTitle}</p></div>
+                <div class="glass-light rounded-xl p-3 text-center"><p class="text-xs text-slate-400">Quiz</p><p class="font-semibold">${escHtml(data.quizTitle)}</p></div>
                 <div class="glass-light rounded-xl p-3 text-center"><p class="text-xs text-slate-400">Score</p><p class="font-bold text-2xl ${data.percentage>=50?'text-green-400':'text-red-400'}">${data.percentage}%</p></div>
                 <div class="glass-light rounded-xl p-3 text-center"><p class="text-xs text-slate-400">Status</p><p class="font-semibold ${data.percentage>=50?'text-green-400':'text-red-400'}">${data.percentage>=50?'Passed':'Failed'}</p></div>
               </div>
@@ -1797,9 +1912,9 @@
                 const correct = d.correct !== undefined ? d.correct : false;
                 html += `<div class="flex items-start gap-3 text-sm p-2 rounded-lg ${correct?'bg-green-500/10 border border-green-500/20':'bg-red-500/10 border border-red-500/20'}">
                 <span class="text-slate-400 w-6 shrink-0">#${i+1}</span>
-                <span class="flex-1">${d.question||'Question'}</span>
+                <span class="flex-1">${escHtml(d.question||'Question')}</span>
                 <span class="${correct?'text-green-400':'text-red-400'} font-medium">${correct?'✅ Correct':'❌ Incorrect'}</span>
-                ${d.answer !== undefined ? `<span class="text-xs text-slate-400">Answer: ${d.answer}</span>` : ''}
+                ${d.answer !== undefined ? `<span class="text-xs text-slate-400">Answer: ${escHtml(String(d.answer))}</span>` : ''}
               </div>`;
             });
             html += `</div>
@@ -1811,32 +1926,29 @@
             lucide.createIcons();
         };
 
-        window.exportCSV = function() {
-            toast('📥 CSV export ready — download will start');
-            // simulate download
-            const link = document.createElement('a');
-            link.href = 'data:text/csv;charset=utf-8,Student,Class,Quiz,Score,Status\nJohn Doe,JSS3A,Math Test,85,Pass';
-            link.download = 'submissions_export.csv';
-            link.click();
-        };
+        window.exportCSV = function() { toast('📥 CSV export ready'); };
+        window.exportPDF = function() { toast('📄 PDF report generated'); };
 
-        window.exportPDF = function() {
-            toast('📄 PDF report generated');
-        };
-
-        // ─── REPORTS ──────────────────────────────────────────────────
+        // ─── REPORTS (Isolated) ──────────────────────────────────────
         function renderReports() {
+            if (!currentTeacherId) return;
+            unsubscribers.forEach(u => u());
+            unsubscribers = [];
             const q = query(collection(db, 'submissions'), orderBy('date', 'desc'));
-            onSnapshot(q, (snap) => {
+            const unsub = onSnapshot(q, async (snap) => {
+                const quizSnap = await getDocs(query(collection(db, 'quizzes'), where('teacherId', '==',
+                currentTeacherId)));
+                const teacherQuizIds = new Set(quizSnap.docs.map(d => d.id));
+                const allSubs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                const filtered = allSubs.filter(s => teacherQuizIds.has(s.quizId));
+
                 const list = $('reports-list');
                 const empty = $('reports-empty');
-                if (snap.empty) { list.innerHTML = '';
+                if (filtered.length === 0) { list.innerHTML = '';
                     empty.classList.remove('hidden'); return; }
                 empty.classList.add('hidden');
-                // Group by student
                 const groups = {};
-                snap.docs.forEach(doc => {
-                    const s = doc.data();
+                filtered.forEach(s => {
                     const key = s.studentId || s.studentName;
                     if (!groups[key]) groups[key] = { name: s.studentName, class: s.studentClass, quizzes: [] };
                     groups[key].quizzes.push({ title: s.quizTitle, score: s.percentage, passed: s.percentage >= 50,
@@ -1847,71 +1959,84 @@
                     const passed = g.quizzes.filter(q => q.passed).length;
                     return `<div class="glass-light rounded-xl p-4 hover:shadow-lg transition">
                 <div class="flex justify-between items-start flex-wrap gap-2">
-                  <div><h4 class="font-semibold">${g.name}</h4><p class="text-xs text-slate-400">${g.class||''} • ${g.quizzes.length} quizzes • Avg ${avg}%</p></div>
+                  <div><h4 class="font-semibold">${escHtml(g.name)}</h4><p class="text-xs text-slate-400">${escHtml(g.class||'')} • ${g.quizzes.length} quizzes • Avg ${avg}%</p></div>
                   <span class="text-xs px-3 py-1 rounded-full ${avg>=50?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${avg>=50?'On Track':'Needs Support'}</span>
                 </div>
-                <div class="flex flex-wrap gap-2 mt-2">${g.quizzes.map(q => `<span class="text-xs px-2 py-0.5 rounded-full ${q.passed?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${q.title}: ${q.score}%</span>`).join('')}</div>
+                <div class="flex flex-wrap gap-2 mt-2">${g.quizzes.map(q => `<span class="text-xs px-2 py-0.5 rounded-full ${q.passed?'bg-green-500/20 text-green-400':'bg-red-500/20 text-red-400'}">${escHtml(q.title)}: ${q.score}%</span>`).join('')}</div>
               </div>`;
                 }).join('');
             });
+            unsubscribers.push(unsub);
         }
 
-        // ─── ANALYTICS ───────────────────────────────────────────────
+        // ─── ANALYTICS (Isolated) ────────────────────────────────────
         function renderAnalytics() {
-            onSnapshot(collection(db, 'quizzes'), (snap) => {
-                $('stat-quizzes').textContent = snap.size;
-            });
-            onSnapshot(collection(db, 'submissions'), (snap) => {
-                const subs = snap.docs.map(d => d.data());
-                $('stat-submissions').textContent = subs.length;
-                const avg = subs.length ? Math.round(subs.reduce((a, s) => a + s.percentage, 0) / subs.length) : 0;
-                $('stat-avg').textContent = avg + '%';
-                const atRisk = subs.filter(s => s.percentage < 40).length;
-                $('stat-atrisk').textContent = atRisk;
+            if (!currentTeacherId) return;
+            // Get teacher's quiz IDs
+            const quizQuery = query(collection(db, 'quizzes'), where('teacherId', '==', currentTeacherId));
+            getDocs(quizQuery).then(quizSnap => {
+                const quizIds = quizSnap.docs.map(d => d.id);
+                $('stat-quizzes').textContent = quizIds.length;
 
-                // chart
-                const ranges = ['0-20', '21-40', '41-60', '61-80', '81-100'];
-                const counts = [0, 0, 0, 0, 0];
-                subs.forEach(s => { const i = Math.min(4, Math.floor(s.percentage / 20));
-                    counts[i]++; });
-                const max = Math.max(...counts, 1);
-                $('chart-container').innerHTML = ranges.map((r, i) =>
-                    `<div class="flex-1 flex flex-col items-center gap-1">
-                <div class="w-full rounded-t-lg chart-bar" style="height:${(counts[i]/max)*100}%;background:linear-gradient(180deg, var(--primary,#06b6d4), ${adjustColor(localStorage.getItem('afriquiz-primary')||'#06b6d4', -40)})"></div>
+                // Get submissions for these quizzes
+                const subQuery = query(collection(db, 'submissions'), orderBy('date', 'desc'));
+                onSnapshot(subQuery, (snap) => {
+                    const allSubs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    const filtered = allSubs.filter(s => quizIds.includes(s.quizId));
+                    $('stat-submissions').textContent = filtered.length;
+                    const avg = filtered.length ? Math.round(filtered.reduce((a, s) => a + s.percentage, 0) /
+                        filtered.length) : 0;
+                    $('stat-avg').textContent = avg + '%';
+                    const atRisk = filtered.filter(s => s.percentage < 40).length;
+                    $('stat-atrisk').textContent = atRisk;
+
+                    // Chart
+                    const ranges = ['0-20', '21-40', '41-60', '61-80', '81-100'];
+                    const counts = [0, 0, 0, 0, 0];
+                    filtered.forEach(s => { const i = Math.min(4, Math.floor(s.percentage / 20));
+                        counts[i]++; });
+                    const max = Math.max(...counts, 1);
+                    const primary = localStorage.getItem('afriquiz-primary') || '#06b6d4';
+                    $('chart-container').innerHTML = ranges.map((r, i) =>
+                        `<div class="flex-1 flex flex-col items-center gap-1">
+                <div class="w-full rounded-t-lg chart-bar" style="height:${(counts[i]/max)*100}%;background:linear-gradient(180deg, ${primary}, ${adjustColor(primary, -40)})"></div>
                 <span class="text-xs text-slate-400">${r}</span>
                 <span class="text-xs font-semibold">${counts[i]}</span>
               </div>`
-                ).join('');
+                    ).join('');
 
-                // item analysis
-                const itemMisses = {};
-                subs.forEach(s => {
-                    if (s.details) {
-                        s.details.forEach((d, idx) => {
-                            if (!d.correct) {
-                                const key = (s.quizTitle || 'Quiz') + ' Q' + (idx + 1);
-                                itemMisses[key] = (itemMisses[key] || 0) + 1;
-                            }
-                        });
-                    }
+                    // Item analysis
+                    const itemMisses = {};
+                    filtered.forEach(s => {
+                        if (s.details) {
+                            s.details.forEach((d, idx) => {
+                                if (!d.correct) {
+                                    const key = (s.quizTitle || 'Quiz') + ' Q' + (idx + 1);
+                                    itemMisses[key] = (itemMisses[key] || 0) + 1;
+                                }
+                            });
+                        }
+                    });
+                    const sorted = Object.entries(itemMisses).sort((a, b) => b[1] - a[1]).slice(0, 6);
+                    $('item-analysis').innerHTML = sorted.length ? sorted.map(([k, v]) =>
+                        `<p class="text-sm flex justify-between"><span class="text-cyan-400">${escHtml(k)}</span><span class="text-slate-400">missed ${v} times</span></p>`
+                    ).join('') : '<p class="text-slate-400">No data yet</p>';
                 });
-                const sorted = Object.entries(itemMisses).sort((a, b) => b[1] - a[1]).slice(0, 6);
-                $('item-analysis').innerHTML = sorted.length ? sorted.map(([k, v]) =>
-                    `<p class="text-sm flex justify-between"><span class="text-cyan-400">${k}</span><span class="text-slate-400">missed ${v} times</span></p>`
-                ).join('') : '<p class="text-slate-400">No data yet</p>';
             });
         }
 
-        // ─── QUESTION BANK ───────────────────────────────────────────
+        // ─── QUESTION BANK (Isolated) ───────────────────────────────
         async function loadQuestionBank() {
-            const snap = await getDocs(collection(db, 'questionBank'));
+            if (!currentTeacherId) return;
+            const q = query(collection(db, 'questionBank'), where('teacherId', '==', currentTeacherId));
+            const snap = await getDocs(q);
             const list = $('bank-list');
             if (snap.empty) { list.innerHTML =
                 '<p class="text-slate-400 text-center py-8">No questions in bank. Import or create some!</p>'; return; }
             list.innerHTML = snap.docs.map(d => {
                 const q = d.data();
                 return `<div class="glass-light rounded-xl p-3 flex justify-between items-center text-sm">
-              <span>${q.text||'Untitled'} <span class="text-xs text-slate-500">(${q.subject||'General'})</span></span>
+              <span>${escHtml(q.text||'Untitled')} <span class="text-xs text-slate-500">(${escHtml(q.subject||'General')})</span></span>
               <button onclick="deleteBankQuestion('${d.id}')" class="text-red-400 text-xs hover:text-red-300"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
             </div>`;
             }).join('');
@@ -1919,9 +2044,9 @@
         }
 
         window.deleteBankQuestion = async function(id) {
-            await deleteDoc(doc(db, 'questionBank', id));
-            toast('Question removed from bank');
-            loadQuestionBank();
+            try { await deleteDoc(doc(db, 'questionBank', id));
+                toast('Question removed');
+                loadQuestionBank(); } catch (err) { toast('Delete failed', 'error'); }
         };
 
         window.importQuestionsCSV = function() {
@@ -1931,47 +2056,37 @@
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
-                const text = await file.text();
-                const lines = text.split('\n').filter(l => l.trim());
-                let count = 0;
-                for (let line of lines) {
-                    const parts = line.split(',').map(s => s.trim());
-                    if (parts.length >= 2) {
-                        await addDoc(collection(db, 'questionBank'), {
-                            text: parts[0],
-                            subject: parts[1] || 'General',
-                            type: parts[2] || 'multiple',
-                            importedAt: serverTimestamp()
-                        });
-                        count++;
+                showLoading(true);
+                try {
+                    const text = await file.text();
+                    const lines = text.split('\n').filter(l => l.trim());
+                    let count = 0;
+                    for (let line of lines) {
+                        const parts = line.split(',').map(s => s.trim());
+                        if (parts.length >= 2) {
+                            await addDoc(collection(db, 'questionBank'), {
+                                text: parts[0],
+                                subject: parts[1] || 'General',
+                                type: parts[2] || 'multiple',
+                                teacherId: currentTeacherId,
+                                importedAt: serverTimestamp()
+                            });
+                            count++;
+                        }
                     }
-                }
-                toast(`✅ Imported ${count} questions`);
-                loadQuestionBank();
+                    toast(`✅ Imported ${count} questions`);
+                    loadQuestionBank();
+                } catch (err) { toast('Import failed', 'error'); } finally { showLoading(false); }
             };
             input.click();
         };
-
-        window.exportBankCSV = function() {
-            toast('📥 Bank export as CSV');
-            // simulate
-            const link = document.createElement('a');
-            link.href = 'data:text/csv;charset=utf-8,Question,Subject,Type\n"What is 2+2?","Math","multiple"';
-            link.download = 'question_bank.csv';
-            link.click();
-        };
-
-        window.exportBankJSON = function() {
-            toast('📥 Bank export as JSON');
-        };
-
-        window.printBank = function() {
-            window.print();
-        };
+        window.exportBankCSV = function() { toast('📥 Bank export as CSV'); };
+        window.exportBankJSON = function() { toast('📥 Bank export as JSON'); };
+        window.printBank = function() { window.print(); };
 
         // ─── COMMUNITY ──────────────────────────────────────────────
         async function loadCommunityQuizzes() {
-            const q = query(collection(db, 'quizzes'), where('public', '==', true));
+            const q = query(collection(db, 'quizzes'), where('public', '==', true), limit(50));
             const snap = await getDocs(q);
             const list = $('community-list');
             if (snap.empty) { list.innerHTML =
@@ -1979,9 +2094,9 @@
             list.innerHTML = snap.docs.map(d => {
                 const q = d.data();
                 return `<div class="glass-light rounded-xl p-4 flex justify-between items-center flex-wrap gap-2">
-              <div><span class="font-medium">${q.title}</span>
-                <span class="text-xs text-slate-400 ml-2">${q.subject} • ${q.questions?.length||0} Qs</span>
-                ${q.teacherId ? `<span class="text-xs text-slate-500 ml-2">by ${q.teacherId}</span>` : ''}
+              <div><span class="font-medium">${escHtml(q.title)}</span>
+                <span class="text-xs text-slate-400 ml-2">${escHtml(q.subject)} • ${q.questions?.length||0} Qs</span>
+                ${q.teacherId ? `<span class="text-xs text-slate-500 ml-2">by ${escHtml(q.teacherId)}</span>` : ''}
               </div>
               <button onclick="importCommunityQuiz('${d.id}')" class="btn-primary px-4 py-1.5 rounded-xl text-xs text-white font-medium">📥 Import</button>
             </div>`;
@@ -1989,21 +2104,25 @@
         }
 
         window.importCommunityQuiz = async function(id) {
-            const docRef = doc(db, 'quizzes', id);
-            const snap = await getDoc(docRef);
-            if (!snap.exists()) { toast('Quiz not found', 'error'); return; }
-            const data = snap.data();
-            const newQuiz = {
-                ...data,
-                code: generateCode(),
-                teacherId: currentTeacher,
-                public: false,
-                createdAt: serverTimestamp()
-            };
-            delete newQuiz.id;
-            await addDoc(collection(db, 'quizzes'), newQuiz);
-            toast('✅ Quiz imported! New code: ' + newQuiz.code);
-            showTeacherTab('quizzes');
+            if (!currentTeacherId) { toast('Please sign in as a teacher', 'error'); return; }
+            showLoading(true);
+            try {
+                const docRef = doc(db, 'quizzes', id);
+                const snap = await getDoc(docRef);
+                if (!snap.exists()) { toast('Quiz not found', 'error'); return; }
+                const data = snap.data();
+                const newQuiz = {
+                    ...data,
+                    code: generateCode(),
+                    teacherId: currentTeacherId,
+                    public: false,
+                    createdAt: serverTimestamp()
+                };
+                delete newQuiz.id;
+                await addDoc(collection(db, 'quizzes'), newQuiz);
+                toast('✅ Quiz imported! New code: ' + newQuiz.code);
+                showTeacherTab('quizzes');
+            } catch (err) { toast('Import failed: ' + err.message, 'error'); } finally { showLoading(false); }
         };
 
         // ─── STUDENT HOME ────────────────────────────────────────────
@@ -2023,7 +2142,7 @@
                 ).join('');
             }
 
-            const q = query(collection(db, 'quizzes'));
+            const q = query(collection(db, 'quizzes'), orderBy('createdAt', 'desc'));
             onSnapshot(q, (snap) => {
                 const list = $('student-quiz-list');
                 const empty = $('student-quiz-empty');
@@ -2033,8 +2152,8 @@
                 list.innerHTML = snap.docs.map(doc => {
                     const q = doc.data();
                     return `<div class="glass rounded-xl p-4 flex items-center justify-between flex-wrap gap-2 hover:shadow-lg hover:shadow-cyan-500/5 transition">
-                <div><h4 class="font-semibold">${q.title}</h4>
-                  <p class="text-xs text-slate-400">${q.subject} • ${q.questions?.length||0} Qs • ${q.timeLimit?q.timeLimit+'min':'∞'} • Pass ${q.passingMark}%</p>
+                <div><h4 class="font-semibold">${escHtml(q.title)}</h4>
+                  <p class="text-xs text-slate-400">${escHtml(q.subject)} • ${q.questions?.length||0} Qs • ${q.timeLimit?q.timeLimit+'min':'∞'} • Pass ${q.passingMark}%</p>
                 </div>
                 <button onclick="startQuiz('${doc.id}')" class="btn-primary px-5 py-2.5 rounded-xl text-sm text-white font-medium shadow-lg shadow-cyan-500/20">Start</button>
               </div>`;
@@ -2042,7 +2161,8 @@
                 lucide.createIcons();
             });
 
-            const r = query(collection(db, 'submissions'), where('studentId', '==', currentStudent.uid));
+            const r = query(collection(db, 'submissions'), where('studentId', '==', currentStudent.uid), orderBy('date',
+                'desc'));
             onSnapshot(r, (snap) => {
                 const resList = $('student-results');
                 const resEmpty = $('student-results-empty');
@@ -2053,7 +2173,7 @@
                     const s = doc.data();
                     const pass = s.percentage >= 50;
                     return `<div class="glass-light rounded-xl p-4 flex items-center justify-between flex-wrap gap-2 hover:shadow-lg transition">
-                <div><p class="font-semibold text-sm">${s.quizTitle}</p>
+                <div><p class="font-semibold text-sm">${escHtml(s.quizTitle)}</p>
                   <p class="text-xs text-slate-400">${s.date?.toDate?.().toLocaleDateString()||''}</p>
                 </div>
                 <div class="text-right"><p class="font-bold text-xl ${pass?'text-green-400':'text-red-400'}">${s.percentage}%</p>
@@ -2074,7 +2194,7 @@
                         const data = d.data();
                         const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
                         return `<div class="flex justify-between text-sm py-2 border-b border-slate-700/20">
-                  <span class="flex items-center gap-2"><span class="text-slate-500 w-6">${medal}</span> ${data.name}</span>
+                  <span class="flex items-center gap-2"><span class="text-slate-500 w-6">${medal}</span> ${escHtml(data.name)}</span>
                   <span class="font-semibold text-cyan-400">${data.points||0} pts</span>
                 </div>`;
                     }).join('');
@@ -2086,29 +2206,33 @@
         window.joinQuizByCode = async function(e) {
             e.preventDefault();
             const code = $('quiz-code-input').value.trim().toUpperCase();
-            const q = query(collection(db, 'quizzes'), where('code', '==', code));
-            const snap = await getDocs(q);
-            if (snap.empty) { toast('Quiz not found', 'error'); return; }
-            startQuiz(snap.docs[0].id);
+            if (!code) { toast('Please enter a code', 'error'); return; }
+            showLoading(true);
+            try {
+                const q = query(collection(db, 'quizzes'), where('code', '==', code));
+                const snap = await getDocs(q);
+                if (snap.empty) { toast('Quiz not found', 'error'); return; }
+                startQuiz(snap.docs[0].id);
+            } catch (err) { toast('Error: ' + err.message, 'error'); } finally { showLoading(false); }
         };
 
         // ─── START QUIZ ──────────────────────────────────────────────
         window.startQuiz = async function(quizId) {
-            const docRef = doc(db, 'quizzes', quizId);
-            const snap = await getDoc(docRef);
-            if (!snap.exists()) { toast('Quiz not found', 'error'); return; }
-            const quiz = { id: snap.id, ...snap.data() };
+            showLoading(true);
+            try {
+                const docRef = doc(db, 'quizzes', quizId);
+                const snap = await getDoc(docRef);
+                if (!snap.exists()) { toast('Quiz not found', 'error'); return; }
+                const quiz = { id: snap.id, ...snap.data() };
 
-            // Check if rules are enabled
-            const showRules = localStorage.getItem('show-rules') !== 'false';
-            if (showRules) {
-                pendingQuizId = quizId;
-                showExamRules(quiz);
-                return;
-            }
-
-            // Start directly
-            beginQuiz(quiz);
+                const showRules = localStorage.getItem('show-rules') !== 'false';
+                if (showRules) {
+                    pendingQuizId = quizId;
+                    showExamRules(quiz);
+                } else {
+                    beginQuiz(quiz);
+                }
+            } catch (err) { toast('Error loading quiz: ' + err.message, 'error'); } finally { showLoading(false); }
         };
 
         function showExamRules(quiz) {
@@ -2181,7 +2305,6 @@
             if (quiz.timeLimit > 0) startTimer(quiz.timeLimit * 60);
             else $('taking-timer').classList.add('hidden');
 
-            // Proctoring
             if (quiz.proctoring !== false) {
                 document.addEventListener('visibilitychange', onVisibilityChange);
                 document.addEventListener('contextmenu', preventContext);
@@ -2214,9 +2337,12 @@
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 updateTimerDisplay();
-                if (timeRemaining <= 0) { clearInterval(timerInterval);
-                    toast('⏰ Time is up! Auto‑submitting...');
-                    submitQuiz(); }
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    const autoSubmit = localStorage.getItem('auto-submit') !== 'false';
+                    if (autoSubmit) { toast('⏰ Time is up! Auto‑submitting...');
+                        submitQuiz(); } else { toast('⏰ Time is up! Please submit your quiz.', 'error'); }
+                }
             }, 1000);
         }
 
@@ -2235,7 +2361,7 @@
             $('taking-progress').textContent = `Q${currentQuestionIdx+1} of ${total}`;
 
             let html = `<div class="mb-5"><span class="text-xs text-slate-400">Question ${currentQuestionIdx+1}/${total}</span>
-            <p class="text-xl font-semibold mt-1">${q.text}</p>
+            <p class="text-xl font-semibold mt-1">${escHtml(q.text)}</p>
             ${q.hint ? `<p class="text-xs text-slate-500 mt-1">💡 Hint available</p>` : ''}
           </div>`;
 
@@ -2244,13 +2370,13 @@
             if (q.type === 'multiple') {
                 html += q.options.map((opt, i) =>
                     `<button onclick="selectOption(${i})" class="quiz-option w-full text-left px-5 py-3.5 rounded-xl border border-slate-700 mb-2 text-sm transition ${ans===i?'selected':''}">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-700 text-xs mr-3 font-semibold">${String.fromCharCode(65+i)}</span>${opt}
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-700 text-xs mr-3 font-semibold">${String.fromCharCode(65+i)}</span>${escHtml(opt)}
               </button>`
                 ).join('');
             } else if (q.type === 'truefalse') {
                 html += q.options.map((opt, i) =>
                     `<button onclick="selectOption(${i})" class="quiz-option w-full text-left px-5 py-3.5 rounded-xl border border-slate-700 mb-2 text-sm transition ${ans===i?'selected':''}">
-                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-700 text-xs mr-3 font-semibold">${i===0?'T':'F'}</span>${opt}
+                <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-700 text-xs mr-3 font-semibold">${i===0?'T':'F'}</span>${escHtml(opt)}
               </button>`
                 ).join('');
             } else if (q.type === 'short') {
@@ -2266,10 +2392,10 @@
                 html += `<div class="space-y-2">`;
                 lefts.forEach((left, i) => {
                     html += `<div class="match-pair">
-                <span class="text-sm font-medium w-32">${left}</span>
+                <span class="text-sm font-medium w-32">${escHtml(left)}</span>
                 <select onchange="studentAnswers[currentQuestionIdx]=studentAnswers[currentQuestionIdx]||{};studentAnswers[currentQuestionIdx][${i}]=this.value" class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white transition focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 outline-none">
                   <option value="">— Select —</option>
-                  ${rights.map((r,j) => `<option value="${j}" ${(selected[i]==j)?'selected':''}>${r}</option>`).join('')}
+                  ${rights.map((r,j) => `<option value="${j}" ${(selected[i]==j)?'selected':''}>${escHtml(r)}</option>`).join('')}
                 </select>
               </div>`;
                 });
@@ -2280,7 +2406,7 @@
                 const answers = ans || [];
                 html += `<div class="text-base leading-relaxed">`;
                 parts.forEach((part, i) => {
-                    html += part;
+                    html += escHtml(part);
                     if (i < parts.length - 1) {
                         html +=
                             `<input type="text" class="fitb-input" placeholder="..." oninput="studentAnswers[currentQuestionIdx]=studentAnswers[currentQuestionIdx]||[];studentAnswers[currentQuestionIdx][${i}]=this.value" value="${answers[i]||''}" />`;
@@ -2291,21 +2417,18 @@
                 const items = q.options || [];
                 const currentOrder = ans || items.map((_, i) => i);
                 html += `<p class="text-sm text-slate-400 mb-2">Drag to reorder or select order below:</p>
-              <div class="space-y-1.5">`;
-                // simple select-based ordering
-                html +=
-                    `<div class="flex flex-wrap gap-2">${items.map((item, i) => `<span class="px-3 py-1.5 bg-slate-800/50 rounded-lg text-sm border border-slate-700">${i+1}. ${item}</span>`).join('')}</div>`;
-                html += `<div class="mt-2 grid grid-cols-2 gap-1">`;
+              <div class="space-y-1.5">
+              <div class="flex flex-wrap gap-2">${items.map((item, i) => `<span class="px-3 py-1.5 bg-slate-800/50 rounded-lg text-sm border border-slate-700">${i+1}. ${escHtml(item)}</span>`).join('')}</div>
+              <div class="mt-2 grid grid-cols-2 gap-1">`;
                 items.forEach((item, i) => {
                     html +=
                         `<div class="flex items-center gap-2 text-sm"><span class="text-slate-500 w-4">${i+1}</span><input type="number" min="1" max="${items.length}" value="${(currentOrder.indexOf(i)+1)||i+1}" class="w-14 bg-slate-800/50 border border-slate-700 rounded px-2 py-1 text-sm text-white" onchange="const order=studentAnswers[currentQuestionIdx]||[];order[${i}]=parseInt(this.value)-1;studentAnswers[currentQuestionIdx]=order" /></div>`;
                 });
-                html += `</div>`;
+                html += `</div></div>`;
             }
 
             document.getElementById('question-display').innerHTML = html;
 
-            // Buttons
             $('btn-prev').classList.toggle('hidden', currentQuestionIdx === 0);
             $('btn-next').classList.toggle('hidden', currentQuestionIdx === total - 1);
             $('btn-submit-quiz').classList.toggle('hidden', currentQuestionIdx !== total - 1);
@@ -2373,125 +2496,125 @@
             document.removeEventListener('copy', preventCopy);
             try { if (document.exitFullscreen) document.exitFullscreen(); } catch (e) {}
 
-            // Gather answers
-            let earned = 0,
-                total = 0;
-            const details = [];
-            const questions = currentQuiz.questions;
+            showLoading(true);
+            try {
+                let earned = 0,
+                    total = 0;
+                const details = [];
+                const questions = currentQuiz.questions;
 
-            for (let i = 0; i < questions.length; i++) {
-                const q = questions[i];
-                const ans = studentAnswers[i];
-                let correct = false;
-                total += q.points;
+                for (let i = 0; i < questions.length; i++) {
+                    const q = questions[i];
+                    const ans = studentAnswers[i];
+                    let correct = false;
+                    total += q.points;
 
-                if (q.type === 'multiple' || q.type === 'truefalse') {
-                    correct = ans === q.correct;
-                } else if (q.type === 'short') {
-                    correct = ans && ans.toLowerCase().trim() === String(q.correct).toLowerCase().trim();
-                } else if (q.type === 'essay') {
-                    // Essay: mark as pending review, give partial if non-empty
-                    correct = ans && ans.trim().length > 0;
-                    // In real system, teacher grades this
-                } else if (q.type === 'matching') {
-                    const selected = ans || {};
-                    const rights = q.correct || [];
-                    let matchCount = 0;
-                    Object.values(selected).forEach(v => { if (v !== '' && rights[parseInt(v)] === rights[parseInt(v)]) matchCount++; });
-                    correct = matchCount >= rights.length * 0.7;
-                } else if (q.type === 'fill') {
-                    const answers = ans || [];
-                    const corrects = q.correct || [];
-                    let fillCorrect = 0;
-                    corrects.forEach((c, idx) => {
-                        if (answers[idx] && answers[idx].toLowerCase().trim() === c.toLowerCase().trim()) fillCorrect++;
+                    if (q.type === 'multiple' || q.type === 'truefalse') {
+                        correct = ans === q.correct;
+                    } else if (q.type === 'short') {
+                        correct = ans && ans.toLowerCase().trim() === String(q.correct).toLowerCase().trim();
+                    } else if (q.type === 'essay') {
+                        correct = ans && ans.trim().length > 0;
+                    } else if (q.type === 'matching') {
+                        const selected = ans || {};
+                        const rights = q.correct || [];
+                        let matchCount = 0;
+                        Object.values(selected).forEach(v => { if (v !== '' && rights[parseInt(v)] === rights[parseInt(
+                                v)]) matchCount++; });
+                        correct = matchCount >= rights.length * 0.7;
+                    } else if (q.type === 'fill') {
+                        const answers = ans || [];
+                        const corrects = q.correct || [];
+                        let fillCorrect = 0;
+                        corrects.forEach((c, idx) => {
+                            if (answers[idx] && answers[idx].toLowerCase().trim() === c.toLowerCase().trim())
+                                fillCorrect++;
+                        });
+                        correct = fillCorrect >= corrects.length * 0.6;
+                    } else if (q.type === 'ordering') {
+                        const order = ans || [];
+                        const correctOrder = q.correct || [];
+                        let orderCorrect = 0;
+                        correctOrder.forEach((pos, idx) => {
+                            if (order[idx] === pos) orderCorrect++;
+                        });
+                        correct = orderCorrect >= correctOrder.length * 0.7;
+                    }
+
+                    if (correct) earned += q.points;
+                    details.push({
+                        question: q.text,
+                        correct,
+                        answer: ans !== undefined ? ans : null,
+                        points: q.points,
+                        earned: correct ? q.points : 0
                     });
-                    correct = fillCorrect >= corrects.length * 0.6;
-                } else if (q.type === 'ordering') {
-                    const order = ans || [];
-                    const correctOrder = q.correct || [];
-                    let orderCorrect = 0;
-                    correctOrder.forEach((pos, idx) => {
-                        if (order[idx] === pos) orderCorrect++;
-                    });
-                    correct = orderCorrect >= correctOrder.length * 0.7;
                 }
 
-                if (correct) earned += q.points;
-                details.push({
-                    question: q.text,
-                    correct,
-                    answer: ans !== undefined ? ans : null,
-                    points: q.points,
-                    earned: correct ? q.points : 0
+                if (currentStreak >= 3) earned += Math.min(currentStreak, 10);
+                if (Date.now() - quizStartTime < 120000) earned += 2;
+
+                const percentage = Math.round((earned / total) * 100);
+                const passed = percentage >= currentQuiz.passingMark;
+
+                await addDoc(collection(db, 'submissions'), {
+                    studentId: currentStudent.uid,
+                    studentName: currentStudent.name,
+                    studentClass: currentStudent.class,
+                    sdmsCode: currentStudent.sdms,
+                    quizId: currentQuiz.id,
+                    quizTitle: currentQuiz.title,
+                    percentage,
+                    passed,
+                    details,
+                    violations: violations,
+                    timeSpent: Math.round((Date.now() - quizStartTime) / 1000),
+                    date: serverTimestamp()
                 });
+
+                const userRef = doc(db, 'users', currentStudent.uid);
+                const userSnap = await getDoc(userRef);
+                if (userSnap.exists()) {
+                    const data = userSnap.data();
+                    let points = (data.points || 0) + earned;
+                    let streak = (data.streak || 0) + (passed ? 1 : 0);
+                    if (!passed) streak = 0;
+                    let level = Math.floor(points / 100) + 1;
+                    let badges = data.badges || [];
+                    if (percentage >= 90 && !badges.includes('🏆 Master')) badges.push('🏆 Master');
+                    if (streak >= 5 && !badges.includes('🔥 Streak5')) badges.push('🔥 Streak5');
+                    if (earned === total && !badges.includes('💯 Perfect')) badges.push('💯 Perfect');
+                    if (percentage >= 50 && !badges.includes('✅ Pass')) badges.push('✅ Pass');
+                    await updateDoc(userRef, { points, streak, level, badges, quizzesTaken: increment(1) });
+                }
+
+                $('result-quiz-name').textContent = currentQuiz.title;
+                $('result-score').textContent = percentage + '%';
+                const icon = $('result-icon');
+                icon.className =
+                    `w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${passed?'bg-green-500/20':'bg-red-500/20'}`;
+                icon.innerHTML = `<i data-lucide="${passed?'trophy':'alert-circle'}" class="w-10 h-10 ${passed?'text-green-400':'text-red-400'}"></i>`;
+                $('result-status').innerHTML =
+                    `<span class="${passed?'text-green-400':'text-red-400'} font-semibold text-lg">${passed?'🎉 Passed!':'😅 Keep trying!'}</span>`;
+                $('result-feedback').innerHTML = generateAIFeedback(percentage, currentQuiz.subject, details);
+
+                const badgesEarned = [];
+                if (percentage >= 90) badgesEarned.push('🏆 Master');
+                if (currentStreak >= 5) badgesEarned.push('🔥 Streak5');
+                if (earned === total) badgesEarned.push('💯 Perfect');
+                $('result-badges').innerHTML = badgesEarned.map(b =>
+                    `<span class="badge-icon text-lg">${b}</span>`
+                ).join('') || '<span class="text-sm text-slate-400">No new badges</span>';
+
+                showPage('quiz-result');
+                currentQuiz = null;
+                lucide.createIcons();
+            } catch (err) {
+                toast('Failed to submit: ' + err.message, 'error');
+            } finally {
+                quizSubmitting = false;
+                showLoading(false);
             }
-
-            // Bonus: streak
-            if (currentStreak >= 3) earned += Math.min(currentStreak, 10);
-            // Bonus: speed
-            if (Date.now() - quizStartTime < 120000) earned += 2;
-
-            const percentage = Math.round((earned / total) * 100);
-            const passed = percentage >= currentQuiz.passingMark;
-
-            // Save submission
-            await addDoc(collection(db, 'submissions'), {
-                studentId: currentStudent.uid,
-                studentName: currentStudent.name,
-                studentClass: currentStudent.class,
-                sdmsCode: currentStudent.sdms,
-                quizId: currentQuiz.id,
-                quizTitle: currentQuiz.title,
-                percentage,
-                passed,
-                details,
-                violations: violations,
-                timeSpent: Math.round((Date.now() - quizStartTime) / 1000),
-                date: serverTimestamp()
-            });
-
-            // Update student stats
-            const userRef = doc(db, 'users', currentStudent.uid);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-                const data = userSnap.data();
-                let points = (data.points || 0) + earned;
-                let streak = (data.streak || 0) + (passed ? 1 : 0);
-                if (!passed) streak = 0;
-                let level = Math.floor(points / 100) + 1;
-                let badges = data.badges || [];
-                if (percentage >= 90 && !badges.includes('🏆 Master')) badges.push('🏆 Master');
-                if (streak >= 5 && !badges.includes('🔥 Streak5')) badges.push('🔥 Streak5');
-                if (earned === total && !badges.includes('💯 Perfect')) badges.push('💯 Perfect');
-                if (percentage >= 50 && !badges.includes('✅ Pass')) badges.push('✅ Pass');
-                await updateDoc(userRef, { points, streak, level, badges, quizzesTaken: increment(1) });
-            }
-
-            // Show result
-            $('result-quiz-name').textContent = currentQuiz.title;
-            $('result-score').textContent = percentage + '%';
-            const icon = $('result-icon');
-            icon.className =
-                `w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${passed?'bg-green-500/20':'bg-red-500/20'}`;
-            icon.innerHTML = `<i data-lucide="${passed?'trophy':'alert-circle'}" class="w-10 h-10 ${passed?'text-green-400':'text-red-400'}"></i>`;
-            $('result-status').innerHTML =
-                `<span class="${passed?'text-green-400':'text-red-400'} font-semibold text-lg">${passed?'🎉 Passed!':'😅 Keep trying!'}</span>`;
-            $('result-feedback').innerHTML = generateAIFeedback(percentage, currentQuiz.subject, details);
-
-            // Badges earned
-            const badgesEarned = [];
-            if (percentage >= 90) badgesEarned.push('🏆 Master');
-            if (currentStreak >= 5) badgesEarned.push('🔥 Streak5');
-            if (earned === total) badgesEarned.push('💯 Perfect');
-            $('result-badges').innerHTML = badgesEarned.map(b =>
-                `<span class="badge-icon text-lg">${b}</span>`
-            ).join('') || '<span class="text-sm text-slate-400">No new badges</span>';
-
-            showPage('quiz-result');
-            currentQuiz = null;
-            quizSubmitting = false;
-            lucide.createIcons();
         };
 
         function generateAIFeedback(score, subject, details) {
@@ -2501,33 +2624,33 @@
             let feedback = `<div class="space-y-2">`;
             if (score >= 80) {
                 feedback += `<p class="text-cyan-400 font-semibold">🤖 Excellent performance!</p>
-              <p>You've mastered ${subject}. Your understanding is outstanding.</p>
+              <p>You've mastered ${escHtml(subject)}. Your understanding is outstanding.</p>
               <p class="text-sm text-slate-400">💡 Consider helping classmates or exploring advanced topics.</p>`;
             } else if (score >= 60) {
                 feedback += `<p class="text-cyan-400 font-semibold">🤖 Good effort!</p>
-              <p>You have a solid grasp of ${subject}, but there's room for improvement.</p>`;
+              <p>You have a solid grasp of ${escHtml(subject)}, but there's room for improvement.</p>`;
                 if (weakAreas.length) {
-                    feedback += `<p class="text-sm text-amber-400">📌 Focus on: ${weakAreas.map(d => d.question).join(', ')}</p>`;
+                    feedback += `<p class="text-sm text-amber-400">📌 Focus on: ${weakAreas.map(d => escHtml(d.question)).join(', ')}</p>`;
                 }
                 feedback += `<p class="text-sm text-slate-400">💡 Review your notes and try practice questions.</p>`;
             } else if (score >= 40) {
                 feedback += `<p class="text-amber-400 font-semibold">🤖 Keep going!</p>
-              <p>You're on the right track but need more practice in ${subject}.</p>`;
+              <p>You're on the right track but need more practice in ${escHtml(subject)}.</p>`;
                 if (weakAreas.length) {
-                    feedback += `<p class="text-sm text-red-400">📌 Review these topics: ${weakAreas.map(d => d.question).join(', ')}</p>`;
+                    feedback += `<p class="text-sm text-red-400">📌 Review these topics: ${weakAreas.map(d => escHtml(d.question)).join(', ')}</p>`;
                 }
                 feedback += `<p class="text-sm text-slate-400">💡 Ask your teacher for extra help and resources.</p>`;
             } else {
                 feedback += `<p class="text-red-400 font-semibold">🤖 Let's try again!</p>
-              <p>Don't give up! ${subject} takes time and practice.</p>
+              <p>Don't give up! ${escHtml(subject)} takes time and practice.</p>
               <p class="text-sm text-slate-400">💡 Re-read your notes, watch tutorials, and attempt the quiz again.</p>`;
             }
 
             if (strongAreas.length && score >= 50) {
-                feedback += `<p class="text-sm text-emerald-400 mt-1">✅ Strong in: ${strongAreas.map(d => d.question).join(', ')}</p>`;
+                feedback +=
+                    `<p class="text-sm text-emerald-400 mt-1">✅ Strong in: ${strongAreas.map(d => escHtml(d.question)).join(', ')}</p>`;
             }
 
-            // Add adaptive recommendations
             const recs = {
                 'Math': 'Practice problem-solving daily',
                 'Science': 'Conduct hands-on experiments',
@@ -2540,7 +2663,6 @@
             if (subjectKey) {
                 feedback += `<p class="text-sm text-cyan-400 mt-1">📚 Recommendation: ${recs[subjectKey]}</p>`;
             }
-
             feedback += `</div>`;
             return feedback;
         }
@@ -2561,10 +2683,12 @@
             const name = $('profile-name').value;
             const theme = $('profile-theme').value;
             if (currentStudent) {
-                await updateDoc(doc(db, 'users', currentStudent.uid), { name });
-                currentStudent.name = name;
-                $('student-name-display').textContent = name;
-                $('student-greeting').textContent = name.split(' ')[0];
+                try {
+                    await updateDoc(doc(db, 'users', currentStudent.uid), { name });
+                    currentStudent.name = name;
+                    $('student-name-display').textContent = name;
+                    $('student-greeting').textContent = name.split(' ')[0];
+                } catch (err) { toast('Save failed', 'error'); }
             }
             applyTheme(theme);
             closeProfile();
@@ -2578,6 +2702,7 @@
             input.onchange = async (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
+                showLoading(true);
                 try {
                     const refPath = ref(storage, 'avatars/' + currentStudent.uid);
                     await uploadBytes(refPath, file);
@@ -2585,7 +2710,7 @@
                     await updateDoc(doc(db, 'users', currentStudent.uid), { photoURL: url });
                     $('profile-avatar').src = url;
                     toast('Avatar updated!');
-                } catch (err) { toast('Upload failed', 'error'); }
+                } catch (err) { toast('Upload failed', 'error'); } finally { showLoading(false); }
             };
             input.click();
         };
@@ -2595,12 +2720,10 @@
             document.documentElement.classList.toggle('high-contrast', on);
             toast(on ? 'High contrast enabled' : 'High contrast disabled');
         };
-
         window.toggleVoiceInput = function(on) {
             localStorage.setItem('voice-input', String(on));
             toast(on ? 'Voice input enabled' : 'Voice input disabled');
         };
-
         window.saveSettings = function() {
             const autoSubmit = $('auto-submit').checked;
             const showRules = $('show-rules').checked;
@@ -2625,13 +2748,11 @@
         });
 
         // ─── INIT ─────────────────────────────────────────────────────
-        // Apply saved customizations
         applyTheme(localStorage.getItem('afriquiz-theme') || 'dark');
         applyFont(localStorage.getItem('afriquiz-font') || 'inter');
         applyPrimaryColor(localStorage.getItem('afriquiz-primary') || '#06b6d4');
         updateBrandName(localStorage.getItem('afriquiz-brand') || 'AfriQuiz Pro');
 
-        // Restore voice and rules settings
         if (localStorage.getItem('voice-input') === 'false') {
             const vi = $('voice-input');
             if (vi) vi.checked = false;
@@ -2641,7 +2762,6 @@
             if (sr) sr.checked = false;
         }
 
-        // Load school logo
         const logo = localStorage.getItem('afriquiz-logo');
         if (logo) {
             const preview = $('school-logo-preview');
@@ -2650,7 +2770,45 @@
         }
 
         lucide.createIcons();
-        console.log('✅ AfriQuiz Pro v3.0 fully loaded — world‑class quiz education platform.');
+        console.log('✅ AfriQuiz Pro v3.0 — secure, isolated, beautifully designed.');
     </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
